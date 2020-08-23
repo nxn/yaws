@@ -1,0 +1,26 @@
+*
+{
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+}
+
+body
+{
+    background: #fff;
+    padding: 20px;
+}
+
+#sudoku
+{
+    background-color: #222;
+    overflow: auto;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#sudoku > div
+{
+    float: left;
+}
