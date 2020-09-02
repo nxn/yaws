@@ -1,0 +1,434 @@
+@font-face {
+    font-family: 'Cabin Condensed';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(assets/fonts/3f5cbf2f67a8b68269a61d7f93cfd9fe.woff2) format('woff2'),
+         url(assets/fonts/00e6199a2df053712c5970207a0d1ae1.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(assets/fonts/b23f260bff6018dfe21c16d42946ecc6.woff2) format('woff2'),
+         url(assets/fonts/3275febc0baf52f7e347fe5a9189d0ae.woff) format('woff');
+}
+
+.board
+{
+    text-align: center;
+    display: inline-grid;
+    grid-template-columns: auto auto auto auto auto auto auto auto auto;
+    vertical-align: middle;
+    background: #666;
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.board .cell
+{
+    position: relative;
+    width: 64px;
+    height: 64px;
+    background: #f8f8f8;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    transition: background-color 250ms ease;
+    transition-delay: 100ms;
+}
+
+/* Separate grid boxes (columns and rows 3 and 6) */
+.board .cell.c3, .board .cell.c6 { margin-right: 5px; }
+.board .cell.r3, .board .cell.r6 { margin-bottom: 5px; }
+
+/* Remove borders and margins on the last column and row */
+.board .cell.c9 { margin-right: 0px; border-right: 0px; } 
+.board .cell.r9 { margin-bottom: 0px; border-bottom: 0px; }
+
+
+
+
+.board .cell > div
+{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.board .static.cell .notes
+{ 
+    display: none;
+}
+
+.board .editable.cell .notes
+{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+
+
+.board .cell > .value
+{
+    color: #333;
+    font-family: 'Cabin Condensed', sans-serif;
+    font-size: 42px;
+    line-height: 64px;
+}
+
+.board .static.cell > .value
+{
+    border: 1px solid #bababa;
+    border-radius: 3px;
+    line-height: 44px;
+    height: 45px;
+    width: 45px;
+    margin: 8px;
+    background-color: #ddd;
+    /*background-image: linear-gradient(
+        #efefef 0px,
+        #efefef 50%,
+        #ddd 50%,
+        #ddd 100%
+    );*/
+}
+
+
+.board .editable.cell .notes .candidate
+{
+    box-sizing: border-box;
+    color: rgba(187,187,187,0);
+    font-size: 13px;
+    font-family: 'Roboto Mono', monospace;
+    line-height: 20px;
+    border-right: 1px solid rgba(187,187,187,0);
+    border-bottom: 1px solid rgba(187,187,187,0);
+    transition-property: color, border;
+    transition-duration: 250ms;
+    transition-timing-function: ease;
+}
+
+/* Mouse pointer candidate picker styles */
+.board .editable.cell .notes:hover .candidate
+{
+    color: rgba(166,166,166,1);
+    border-right: 1px solid rgba(187,187,187,1);
+    border-bottom: 1px solid rgba(187,187,187,1);
+}
+
+.board .editable.cell .notes .candidate:hover
+{
+    color: rgba(255, 113, 0, 1);
+}
+
+.board .editable.cell .notes       .selected.candidate,
+.board .editable.cell .notes:hover .selected.candidate
+{
+    color: #666;
+}
+
+
+
+
+/* Cursor and Highlight Styles */
+.board .highlight.cell
+{
+    background-color: #eaeaea;
+    transition: background-color 250ms ease;
+}
+.board .cursor.cell
+{
+    background-color: #ccc;
+}
+.board .static.cursor.cell .value
+{
+    border-color: #999;
+    /*background-color: #eaeaea;*/
+}
+/* Darken the following values to make up for the darker
+ * cursor background color */
+.board .editable.cursor.cell .notes:hover .candidate
+{
+    color: rgba(128,128,128,1);
+    border-right: 1px solid rgba(166,166,166,1);
+    border-bottom: 1px solid rgba(166,166,166,1);
+}
+.board .editable.cursor.cell .notes .candidate:hover
+{
+    color: rgba(255, 64, 0, 1);
+}
+.board .editable.cursor.cell .notes       .selected.candidate,
+.board .editable.cursor.cell .notes:hover .selected.candidate
+{
+    color: #333;
+}
+
+
+
+
+/* Invalid Styles */
+.board .editable.cell .invalid.value,
+.board .editable.cell .notes       .invalid.selected.candidate,
+.board .editable.cell .notes:hover .invalid.selected.candidate
+{
+    color: #C90014;
+}
+.board .editable.cell > .invalid.value
+{
+    background-image: linear-gradient(
+        -135deg,
+        transparent 8px, 
+        #C90014 8px,
+        #C90014 15px,
+        transparent 15px,
+        transparent 64px
+    );
+}
+.board .static.cell > .invalid.value
+{
+    border: 2px solid #C90014;
+    border-radius: 3px;
+    background-color: #F2DFD5;
+    line-height: 42px;
+    height: 43px;
+    width: 43px;
+}
+
+
+
+
+
+
+.board .hidden
+{
+    display: none !important;
+}
+
+
+
+
+
+.last-column, .c9 { margin-right: 0px !important; border-right: 0px !important; } 
+.last-row, .r9 { margin-bottom: 0px !important; border-bottom: 0px !important; }
+
+.tools
+{
+    color: #fff;
+    margin-left: 5px;
+}
+
+.tools .spacer
+{
+    height: 10px;
+}
+
+.tools .panel .spacer
+{
+    height: 3px;
+}
+@font-face {
+    font-family: 'Sen';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(assets/fonts/42ed05f6c2485fe718d79b54e44b9f36.woff2) format('woff2'),
+         url(assets/fonts/57b3b65584405ed030a565bfc2578de0.woff) format('woff');
+}
+
+.panel {
+    font-family: 'Sen', sans-serif;
+    font-size: 14px;
+}
+
+.tabs {
+    overflow: hidden;
+}
+
+
+.btn {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #666;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 2px;
+}
+.btn:hover {
+    background-color: #777;
+}
+.btn:focus {
+    outline: none;
+}
+
+.btn::-moz-focus-inner {
+    border: 0;
+}
+
+.tabs > .tab-buttons {
+    display: flex;
+}
+
+.tabs > .tab-buttons .btn {
+    flex: auto;
+    width: auto;
+    color: #fff;
+    background-color: transparent;
+    font-family: 'Sen', sans-serif;
+    font-size: 14px;
+    padding: 3px 5px;
+}
+
+.tabs > .tab-buttons .btn.active {
+    background-color: #444;
+    border-radius: 3px 3px 0px 0px;
+}
+
+.tabs .tab-panels > .panel {
+    display: none;
+    padding: 3px;
+    width: 250px;
+    border-radius: 3px 3px 3px 3px;
+}
+
+.tabs .tab-panels > .panel.active {
+    display:block;
+    background-color: #444;
+}
+
+.tabs .tab-panels > .panel:first-child {
+    border-top-left-radius: 0px;
+}
+
+.tabs .tab-panels > .panel:last-child {
+    border-top-right-radius: 0px;
+}
+
+.list {
+    background-color: #333;
+    border-radius: 2px;
+    padding: 5px;
+    list-style-type: none;
+}
+
+.list.top {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.list.bottom {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.list .list-item {
+    padding: 3px 5px;
+}
+
+.button-group {
+    display: flex;
+}
+
+.button-group .btn {
+    flex: auto;
+    width: auto;
+    box-sizing: border-box;
+    background-color: #666;
+    border: none;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    margin-right: 1px;
+    border-radius: 0px;
+}
+/*.button-group.icons .btn {
+    font-size: 16px;
+}*/
+
+.button-group .btn:hover {
+    background-color: #777;
+}
+
+.button-group .btn:first-child {
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+
+.button-group .btn:last-child {
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    margin-right: 0px;
+}
+
+.button-group.bottom .btn:first-child {
+    border-top-left-radius: 0px;
+}
+.button-group.bottom .btn:last-child {
+    border-top-right-radius: 0px;
+}
+
+.button-group.top .btn:first-child {
+    border-bottom-left-radius: 0px;
+}
+.button-group.top .btn:last-child {
+    border-bottom-right-radius: 0px;
+}
+
+/*.button-group.bottom .btn, .button-group.top .btn {
+    padding: 3px 10px;
+}*/
+
+
+.fieldset {
+    border: 1px solid #333;
+    border-radius: 3px;
+    margin: 0px 2px 5px 2px;
+    padding: 5px;
+}
+.fieldset legend {
+    color: #aaa;
+}
+
+.fieldset legend .arrow {
+    color: #333;
+}
+*
+{
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+}
+
+body
+{
+    background: #fff;
+    padding: 20px;
+}
+
+#sudoku
+{
+    background-color: #222;
+    overflow: auto;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#sudoku > div
+{
+    float: left;
+}
+
+
+/*# sourceMappingURL=yaws.3dae3853584264850200.css.map*/
