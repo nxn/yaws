@@ -2,16 +2,21 @@ const path                    = require('path');
 const WorkerPlugin            = require('worker-plugin');
 const HtmlWebpackPlugin       = require('html-webpack-plugin');
 const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
+const MiniCssExtractPlugin    = require('mini-css-extract-plugin');
+const CopyPlugin              = require('copy-webpack-plugin');
+
+const outputPath = path.resolve(__dirname, 'dist');
+const workers = /src[\/\\]components[\/\\]web-workers[\/\\].*\.tsx?$/i;
 
 module.exports = {
   entry: {
-    app: './src/app.ts'
+    yaws: './src/app.ts'
   },
   mode: 'development',
   target: 'web',
   devtool: 'source-map',
   devServer: {
-    contentBase: './dist',
+    contentBase: outputPath,
     hot: true
   },
   module: {
@@ -19,39 +24,37 @@ module.exports = {
       test: /\.tsx?$/,
       /* Code within the /src/components/workers directory should be compiled using a separate ts-loader instance so 
       that the compiler uses the correct tsconfig.json file*/
-      exclude: [/src\/components\/web-workers\/.*\.tsx?$/, /node_modules/],
+      exclude: [workers, /node_modules/],
       loader: 'ts-loader',
       options: {
         instance: "root",
         configFile: path.resolve(__dirname, 'tsconfig.json')
       }
     },{ // Web Worker TypeScript loader instance
-      test: /src\/components\/web-workers\/.*\.tsx?$/,
+      test: workers,
       loader: 'ts-loader',
       options: {
         instance: "workers",
         configFile: path.resolve(__dirname, 'src/components/web-workers/tsconfig.json')
       }
-    },{ // Sourse map loader
+    },{ // Sourse maps
       enforce: "pre",
-      test: /\.js$/,
+      test: /\.js$/i,
       loader: "source-map-loader"
-    },{ // CSS/Stylesheet loader
-      test: /\.css$/,
+    },{ // CSS/Stylesheets
+      test: /\.css$/i,
       use: [
-        'style-loader',
+        MiniCssExtractPlugin.loader,
         'css-loader'
       ],
-    },{ // Image loader (file)
-      test: /\.(png|svg|jpg|gif)$/,
-      use: [
-        'file-loader'
-      ]
-    },{ // Font loader(file)
-      test: /\.(woff|woff2|eot|ttf|otf)$/,
-      use: [
-        'file-loader'
-      ]
+    },{ // Images (file-loader)
+      test: /\.(png|svg|jpg|gif)$/i,
+      loader: 'file-loader',
+      options: { outputPath: 'assets/images' }
+    },{ // Fonts (file-loader)
+      test: /\.(woff|woff2|eot|ttf|otf)$/i,
+      loader: 'file-loader',
+      options: { outputPath: 'assets/fonts' }
     }]
   },
   resolve: {
@@ -64,12 +67,17 @@ module.exports = {
     }
   },
   output: {
-    filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].[hash:20].js',
+    path: outputPath
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new CopyPlugin({ patterns: [{ from: 'CNAME', to: outputPath }] }),
     new WorkerPlugin({ globalObject: 'self' }),
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash].css", 
+      chunkFilename: "[id].[contenthash].css"
+    }),
     new HtmlWebpackPlugin({ template: 'src/components/page/index.html' })
   ]
 };
