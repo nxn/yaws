@@ -59,7 +59,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Amatic SC';
+    font-family: 'Amatic SC', cursive;
     font-weight: bold;
 }
 
@@ -116,7 +116,7 @@ a:hover {
 }
 
 #page {
-    font-family: 'Roboto Slab';
+    font-family: 'Roboto Slab', serif;
     line-height: 1.5em;
     margin: 2rem var(--page-margin);
 }
