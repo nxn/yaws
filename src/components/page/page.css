@@ -10,7 +10,7 @@
     --link-color:       #29302d;
     --link-hover-color: #767D75;
     /* --board-min-width: 53.9375rem;  expanded tools */
-    --board-min-width: 37em;
+    --board-min-width: 37rem;
     --page-min-width: calc(var(--board-min-width) + 0.3125rem * 2);
     --page-margin: calc(((100vw - var(--page-min-width)) / 2 * 0.25) + 1.0rem);
 }
