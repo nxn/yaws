@@ -134,7 +134,7 @@ a:hover {
     fill: var(--almost-black);
 }
 
-.grid {
+.content-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
