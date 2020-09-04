@@ -74,13 +74,7 @@ h1 {
     flex-grow: 1;
     border: 2rem solid var(--white);
     border-image-source: url('images/border.svg');
-    border-image-slice: 25% 9% fill
-    
-    /*border: solid 0.125rem var(--black);
-    border-top-left-radius: 100% 1rem;
-    border-top-right-radius: 75% 1rem;
-    border-bottom-right-radius: 25% 1rem;
-    border-bottom-left-radius: 1rem 75%;*/
+    border-image-slice: 25% 9%;
 }
 
 h1 .accent {
