@@ -1,5 +1,7 @@
 import { IKeyboardController, IKeyPress, ICell, KeyboardActions, IBoard } from "./interfaces";
- 
+
+const rxNumberInput = /(?:Digit|Numpad)([1-9])/i;
+
 const actionMap: { [key: string]: (board: IBoard) => ICell } = {
     [KeyboardActions.left]:         b => b.cursor.columnLeft(),
     [KeyboardActions.right]:        b => b.cursor.columnRight(),
@@ -16,32 +18,31 @@ const actionMap: { [key: string]: (board: IBoard) => ICell } = {
 
 export const defaultMap: { [key: string]: string[] } = {
     // Standard
-    'ArrowUp'     : [KeyboardActions.up],
-    'ArrowLeft'   : [KeyboardActions.left],
-    'ArrowDown'   : [KeyboardActions.down],
-    'ArrowRight'  : [KeyboardActions.right],
+    'arrowup'     : [KeyboardActions.up],       'shift+arrowup'     : [KeyboardActions.boxUp],
+    'arrowleft'   : [KeyboardActions.left],     'shift+arrowleft'   : [KeyboardActions.boxLeft],
+    'arrowdown'   : [KeyboardActions.down],     'shift+arrowdown'   : [KeyboardActions.boxDown],
+    'arrowright'  : [KeyboardActions.right],    'shift+arrowright'  : [KeyboardActions.boxRight],
 
     // Vim-like
-    'h': [KeyboardActions.left],      'H': [KeyboardActions.boxLeft],
-    'j': [KeyboardActions.down],      'J': [KeyboardActions.boxDown],
-    'k': [KeyboardActions.up],        'K': [KeyboardActions.boxUp],
-    'l': [KeyboardActions.right],     'L': [KeyboardActions.boxRight],
+    'h': [KeyboardActions.left],      'shift+h': [KeyboardActions.boxLeft],
+    'j': [KeyboardActions.down],      'shift+j': [KeyboardActions.boxDown],
+    'k': [KeyboardActions.up],        'shift+k': [KeyboardActions.boxUp],
+    'l': [KeyboardActions.right],     'shift+l': [KeyboardActions.boxRight],
 
     // WASD
-    'w': [KeyboardActions.up],        'W': [KeyboardActions.boxUp],
-    'a': [KeyboardActions.left],      'A': [KeyboardActions.boxLeft],
-    's': [KeyboardActions.down],      'S': [KeyboardActions.boxDown],
-    'd': [KeyboardActions.right],     'D': [KeyboardActions.boxRight],
+    'w': [KeyboardActions.up],        'shift+w': [KeyboardActions.boxUp],
+    'a': [KeyboardActions.left],      'shift+a': [KeyboardActions.boxLeft],
+    's': [KeyboardActions.down],      'shift+s': [KeyboardActions.boxDown],
+    'd': [KeyboardActions.right],     'shift+d': [KeyboardActions.boxRight],
 
     // Go to error
-    'e': [KeyboardActions.nextError], 'E': [KeyboardActions.prevError],
-
-    'x': [KeyboardActions.nextError, KeyboardActions.clearCell],
-    'X': [KeyboardActions.prevError, KeyboardActions.clearCell],
+    'e': [KeyboardActions.nextError], 'shift+e': [KeyboardActions.prevError],
 
     // Clear
-    'Backspace'   : [KeyboardActions.clearCell],
-    'Delete'      : [KeyboardActions.clearCell],
+    'backspace'   : [KeyboardActions.clearCell],
+    'delete'      : [KeyboardActions.clearCell],
+    'x'           : [KeyboardActions.clearCell], 
+    'shift+x'     : [KeyboardActions.clearCell],
 };
 
 export function createKeyboardController(board: IBoard, map = defaultMap) {
@@ -58,12 +59,13 @@ export function createKeyboardController(board: IBoard, map = defaultMap) {
 function onKey(controller: IKeyboardController, board: IBoard, keyPress: IKeyPress) {
     const cell = board.cursor.cell;
 
-    if (keyPress.code.startsWith('Digit')) {
+    if (keyPress.code.match(rxNumberInput)) {
         digitHandler(cell, keyPress);
         return;
     }
 
-    const actions = controller.map[keyPress.key];
+    let input = (keyPress.shiftKey ? 'shift+' + keyPress.key : keyPress.key).toLowerCase();
+    const actions = controller.map[input];
 
     if (!actions) { return; }
 
@@ -74,20 +76,26 @@ function onKey(controller: IKeyboardController, board: IBoard, keyPress: IKeyPre
 }
 
 function digitHandler(cell: ICell, keyPress: IKeyPress): void {
-    if (!keyPress.code.startsWith('Digit')) {
+    let match = keyPress.code.match(rxNumberInput);
+    if (!match || match.length !== 2) {
         return;
     }
 
-    const num = parseInt(keyPress.key);
+    const num = parseInt(match[1]);
+    if (Number.isNaN(num)) { return; }
 
-    // If parsing the key value did not result in a number but the event code signified a number input, shift was being
-    // held during the input. If so we take that to mean that the cell value should be set.
-    if (Number.isNaN(num)) {
-        cell.value = parseInt(keyPress.code.substring(5));
+    // Shift+[Numpad-Key] events have their 'shiftKey' property set to false despite the fact
+    // it is being held. So instead, if the number parsed from the event 'code' doesn't match
+    // the event 'key' property, assume it is because shift was being held. This could be the
+    // case for other reasons, of course, but this will have to do for the time being.
+    if (num !== parseInt(keyPress.key)) {
+        keyPress.preventDefault();
+        cell.value = num;
         return;
     }
     
     if (num > 0 && num < 10) {
+        keyPress.preventDefault();
         if (cell.value > 0) {
             // If cell already has a value set, update it
             cell.value = num;
