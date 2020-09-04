@@ -121,6 +121,7 @@ export interface IKeyboardController {
 export interface IKeyPress {
     key: string;
     code: string;
+    preventDefault: () => void;
 }
 //#endregion
 

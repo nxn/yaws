@@ -5,10 +5,140 @@
     padding: 0px;
 }
 
+@font-face {
+    font-family: 'Amatic SC';
+    src: url('fonts/AmaticSC-Regular.woff2') format('woff2'),
+        url('fonts/AmaticSC-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Amatic SC';
+    src: url('fonts/AmaticSC-Bold.woff2') format('woff2'),
+        url('fonts/AmaticSC-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Roboto Slab';
+    src: url('fonts/RobotoSlab-Regular.woff2') format('woff2'),
+        url('fonts/RobotoSlab-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Roboto Slab';
+    src: url('fonts/RobotoSlab-Bold.woff2') format('woff2'),
+        url('fonts/RobotoSlab-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
 body
 {
     background: #fff;
-    padding: 20px;
+    padding: 0 2rem;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+    font-family: 'Amatic SC';
+    font-weight: bold;
+}
+
+h1
+{
+    font-size: 2.5rem;
+    line-height: 1em;
+    padding: 0.84rem 0;
+    margin-left: 3rem;
+    color: #efefef;
+    background: #444;
+    text-align: center;
+    flex-grow: 1;
+    border: solid 0.125rem #000;
+    border-top-left-radius: 100% 1rem;
+    border-top-right-radius: 75% 1rem;
+    border-bottom-right-radius: 25% 1rem;
+    border-bottom-left-radius: 1rem 75%;
+}
+
+h2
+{
+    color: #222;
+    background-color: #efefef;
+    padding: 0.25rem 1rem;
+    font-size: 2rem;
+    line-height: 1em;
+    border: solid 0.125rem #444;
+    border-top-left-radius: 100% 0.5rem;
+    border-top-right-radius: 75% 0.5rem;
+    border-bottom-right-radius: 75% 15%;
+    border-bottom-left-radius: 1rem 100%;
+}
+h2.alt {
+    color: #efefef;
+    background: #444;
+    border-color: #000;
+}
+h2.warn {
+    color: #fff;
+    background-color: #941223;
+    border-color: #222;
+}
+
+a {
+    color: #29302d
+}
+a:hover {
+    color: #767D75
+}
+
+#page
+{
+    font-family: 'Roboto Slab';
+    line-height: 1.5em;
+}
+#header
+{
+    display: flex;
+    margin: 0 auto;
+    align-items: flex-end;
+    width: 863px;
+    margin: 3rem auto;
+}
+
+#logo
+{
+    width: 11rem;
+    fill: #222;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+section {
+    break-inside: avoid;
+}
+
+section p {
+    padding: 1rem;
+}
+
+section ul {
+    padding-left: 2rem;
+    padding-bottom: 1rem;
+}
+section li {
+    padding-left: 0.5rem;
 }
 
 #sudoku
@@ -19,9 +149,14 @@ body
     padding: 5px;
     width: 853px;
     margin: 0 auto;
+    margin-bottom: 5rem;
 }
 
 #sudoku > div
 {
     float: left;
 }
+
+
+
+

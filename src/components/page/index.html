@@ -6,9 +6,90 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div id="sudoku">
-            <div id="board-root"></div>
-            <div id="tool-root"></div>
+        <div id="page">
+            <div id="header">
+                <img id="logo" src="images/yaws-logo.svg" alt="YAWS Logo">
+                <h1 id="full-name">Yet. Another. Web Sudoku.</h1>
+            </div>
+            <div class="multi-column">
+            </div>
+
+            <div id="sudoku">
+                <div id="board-root"></div>
+                <div id="tool-root"></div>
+            </div>
+
+            <div class="grid">
+                <section>
+                    <h2>Sudoku Rules</h2>
+                    <p>
+                        The objective is to fill the 9×9 grid with digits so that each column, each row, and each of the
+                        nine 3×3 subgrids contain all of the digits from 1 to 9. For more information regarding Sudoku,
+                        feel free to <a href="https://en.wikipedia.org/wiki/Sudoku" target="_blank">visit the wikipedia 
+                        article.</a>
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="warn">Disclaimer</h2>
+                    <p>
+                        This game is in a very early stage of development; lots of things may be broken, misbehaving, or
+                        simply not be implemented yet. 
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Controls</h2>
+                    <p>
+                        Besides using a <strong>mouse</strong>, you can use <strong>Arrow Keys</strong>, <strong>W / A /
+                        S / D</strong>, or (if you're familiar with VIM-like navigation) <strong>H / J / K / L</strong> 
+                        to move the cursor by a single cell. Holding <strong>Shift</strong> while pressing any direction
+                        key will move the cursor over by a box.
+                    </p>
+                    <p>
+                        If any are errors are present on the grid, pressing <strong>E</strong> will cause the cursor to
+                        cycle through them. <strong>Shift + E</strong> can be used to move in the opposite direction.
+                        Alternatively, <strong>X</strong> and <strong>Shift + X</strong> cycle through the errors
+                        while clearing the erronous cells of value.
+                    </p>
+                    <p>
+                        Using <strong>Backspace</strong> or <strong>Delete</strong> will clear the current cell of its
+                        value. If there is no value it will clear all marked candidates.
+                    </p>
+                    <p>
+                        <i>
+                            Customizing keyboard inputs along with controller support is a planned and upcoming feature.
+                        </i>
+                    </p>
+                </section>
+                
+                <section>
+                    <h2 class="alt">About This Project</h2>
+                    <p>
+                        <strong>YAWS</strong> is a personal project to create a modern and functional web-based sudoku
+                        game using standard browser technologies. It is able to solve and generate challenging puzzles 
+                        in a consistant manner via the use of <a href="https://webassembly.org/">Web Assembly</a> for
+                        its core code. The user interface was created using standard HTML5, CSS, and JavaScript 
+                        techniques.
+                    </p>
+                    <p>
+                        Its source code is freely available at the following repositories: 
+                    </p>
+                    <ul>
+                        <li>
+                            User Interface: <a href="https://github.com/nxn/yaws">https://github.com/nxn/yaws</a>
+                        </li>
+                        <li>
+                            Rust puzzle generator and solver: <a href="https://github.com/nxn/waffle-iron">
+                                https://github.com/nxn/waffle-iron</a>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            
+            <div id="footer">
+
+            </div>
         </div>
     </body>
 </html>

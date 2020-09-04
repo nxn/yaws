@@ -56,6 +56,7 @@ export function createKeyboardController(board: IBoard, map = defaultMap) {
 }
 
 function onKey(controller: IKeyboardController, board: IBoard, keyPress: IKeyPress) {
+    keyPress.preventDefault();
     const cell = board.cursor.cell;
 
     if (keyPress.code.startsWith('Digit')) {
