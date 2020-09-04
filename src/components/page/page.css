@@ -1,19 +1,24 @@
-/*
-calc((100vw - 40rem) / 2):                  represents the total amount of remaining viewport space left before the 40rem breakport is hit
-calc(((100vw - 40rem) / 2) + 2rem):         this will leave a minimum margin of 2rem on either side of the grid
-calc(((100vw - 40rem) / 2 * 0.15) + 2rem):  15% of the remaining space will be used by the margins in addition to the 2rem minimum
-*/
 :root 
-{ 
-    --board-min-width: 53.9375rem;
-    --content-margin: calc(((100vw - var(--board-min-width)) / 2 * 0.25) + 2rem);
+{
+    --white:            #fff;
+    --almost-white:     #efefef;
+    --black:            #000;
+    --almost-black:     #222;
+    --gray:             #444;
+    --red:              #941223;
+    --accent:           rgb(255, 161, 85);
+    --link-color:       #29302d;
+    --link-hover-color: #767D75;
+    /* --board-min-width: 53.9375rem;  expanded tools */
+    --board-min-width: 37em;
+    --page-min-width: calc(var(--board-min-width) + 0.3125rem * 2);
+    --page-margin: calc(((100vw - var(--page-min-width)) / 2 * 0.25) + 1.0rem);
 }
 
-*
-{
-    margin: 0px;
-    border: 0px;
-    padding: 0px;
+* {
+    margin: 0;
+    border: 0;
+    padding: 0;
 }
 
 @font-face {
@@ -49,83 +54,90 @@ calc(((100vw - 40rem) / 2 * 0.15) + 2rem):  15% of the remaining space will be u
     font-display: swap;
 }
 
-body
-{
-    background: #fff;
+body {
+    background: var(--white);
 }
 
-h1, h2, h3, h4, h5, h6
-{
+h1, h2, h3, h4, h5, h6 {
     font-family: 'Amatic SC';
     font-weight: bold;
 }
 
-h1
-{
+h1 {
     font-size: 2.5rem;
     line-height: 1em;
-    padding: 0.84rem 0;
+    padding: 0;
     margin-left: 3rem;
-    color: #efefef;
-    background: #444;
+    color: var(--almost-white);
+    background-color: var(--gray);
     text-align: center;
     flex-grow: 1;
-    border: solid 0.125rem #000;
+    border: 2rem solid var(--white);
+    border-image-source: url('images/border.svg');
+    border-image-slice: 25% 9% fill
+    
+    /*border: solid 0.125rem var(--black);
     border-top-left-radius: 100% 1rem;
     border-top-right-radius: 75% 1rem;
     border-bottom-right-radius: 25% 1rem;
-    border-bottom-left-radius: 1rem 75%;
+    border-bottom-left-radius: 1rem 75%;*/
 }
 
-h2
-{
-    color: #222;
-    background-color: #efefef;
+h1 .accent {
+    color: var(--accent);
+}
+
+h2 {
+    color: var(--almost-black);
+    background-color: var(--almost-white);
     padding: 0.25rem 1rem;
     font-size: 2rem;
     line-height: 1em;
-    border: solid 0.125rem #444;
+    border: solid 0.125rem var(--gray);
     border-top-left-radius: 100% 0.5rem;
     border-top-right-radius: 75% 0.5rem;
     border-bottom-right-radius: 75% 15%;
     border-bottom-left-radius: 1rem 100%;
 }
 h2.alt {
-    color: #efefef;
-    background: #444;
-    border-color: #000;
+    color: var(--almost-white);
+    background: var(--gray);
+    border-color: var(--black);
 }
 h2.warn {
-    color: #fff;
-    background-color: #941223;
-    border-color: #222;
+    color: var(--white);
+    background-color: var(--red);
+    border-color: var(--almost-black);
 }
 
 a {
-    color: #29302d
+    color: var(--link-color)
 }
 a:hover {
-    color: #767D75
+    color: var(--link-hover-color)
 }
 
-#page
-{
+#page, #header, #grid {
+    min-width: var(--page-min-width);
+}
+
+#page {
     font-family: 'Roboto Slab';
     line-height: 1.5em;
-    margin: 2rem var(--content-margin);
+    margin: 2rem var(--page-margin);
 }
-#header
-{
+
+#header {
     display: flex;
     margin: 0 auto;
     align-items: flex-end;
     margin: 3rem auto;
 }
 
-#logo
-{
+#logo {
     width: 11rem;
-    fill: #222;
+    padding-bottom: 1rem;
+    fill: var(--almost-black);
 }
 
 .grid {
@@ -151,22 +163,17 @@ section li {
     padding-left: 0.5rem;
 }
 
-#sudoku
-{
-    background-color: #222;
+#sudoku {
+    background-color: var(--almost-black);
     overflow: auto;
-    border-radius: 5px;
-    padding: 5px;
-    width: 853px;
+    border-radius: 0.3125rem;
+    padding: 0.3125rem;
+    /*width: 853px; expanded tools*/
+    width: var(--board-min-width);
     margin: 0 auto;
     margin-bottom: 5rem;
 }
 
-#sudoku > div
-{
+#sudoku > div {
     float: left;
 }
-
-
-
-

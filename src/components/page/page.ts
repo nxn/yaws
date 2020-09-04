@@ -7,7 +7,7 @@ import './page.css';
 export function init(board: IBoard, store: IStorageCollection<Uint8Array>, parent: string) {
     const page = Object.create(null,
         { board: { value : boardViewInit(board, '#board-root') }
-        , tools: { value : toolViewInit('tool-root') }
+        //, tools: { value : toolViewInit('tool-root') }
         }
     );
 
