@@ -1,3 +1,14 @@
+/*
+calc((100vw - 40rem) / 2):                  represents the total amount of remaining viewport space left before the 40rem breakport is hit
+calc(((100vw - 40rem) / 2) + 2rem):         this will leave a minimum margin of 2rem on either side of the grid
+calc(((100vw - 40rem) / 2 * 0.15) + 2rem):  15% of the remaining space will be used by the margins in addition to the 2rem minimum
+*/
+:root 
+{ 
+    --board-min-width: 53.9375rem;
+    --content-margin: calc(((100vw - var(--board-min-width)) / 2 * 0.25) + 2rem);
+}
+
 *
 {
     margin: 0px;
@@ -41,7 +52,6 @@
 body
 {
     background: #fff;
-    padding: 0 2rem;
 }
 
 h1, h2, h3, h4, h5, h6
@@ -102,13 +112,13 @@ a:hover {
 {
     font-family: 'Roboto Slab';
     line-height: 1.5em;
+    margin: 2rem var(--content-margin);
 }
 #header
 {
     display: flex;
     margin: 0 auto;
     align-items: flex-end;
-    width: 863px;
     margin: 3rem auto;
 }
 
