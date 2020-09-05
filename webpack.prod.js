@@ -4,6 +4,8 @@ const HtmlWebpackPlugin       = require('html-webpack-plugin');
 const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
 const MiniCssExtractPlugin    = require('mini-css-extract-plugin');
 const CopyPlugin              = require('copy-webpack-plugin');
+const OptimizeCssAssetsPlugin   = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin              = require('terser-webpack-plugin');
 
 const outputPath = path.resolve(__dirname, 'dist');
 const workers = /src[\/\\]components[\/\\]web-workers[\/\\].*\.tsx?$/i;
@@ -12,13 +14,8 @@ module.exports = {
   entry: {
     yaws: './src/app.ts'
   },
-  mode: 'development',
+  mode: 'production',
   target: 'web',
-  devtool: 'source-map',
-  devServer: {
-    contentBase: outputPath,
-    hot: true
-  },
   module: {
     rules: [{ // Main app/root TypeScript loader instance
       test: /\.tsx?$/,
@@ -88,5 +85,16 @@ module.exports = {
       chunkFilename: "[id].[contenthash].css"
     }),
     new HtmlWebpackPlugin({ template: 'src/components/page/index.html' })
-  ]
+  ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true
+      }),
+      new OptimizeCssAssetsPlugin({})
+    ]
+  }
 };
