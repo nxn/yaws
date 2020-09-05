@@ -46,12 +46,12 @@ module.exports = {
       use: [
         MiniCssExtractPlugin.loader,
         'css-loader'
-      ],
+      ]
     },{
       test: /\.html$/i,
       use: [
         'html-loader'
-      ],
+      ]
     },{ // Images (file-loader)
       test: /\.(png|svg|jpg|gif)$/i,
       loader: 'file-loader',
@@ -77,7 +77,11 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyPlugin({ patterns: [{ from: 'CNAME', to: outputPath }] }),
+    new CopyPlugin({ 
+      patterns: [
+        { from: 'CNAME', to: outputPath },
+        //{ from: 'manifest.json', to: outputPath }
+      ]}),
     new WorkerPlugin({ globalObject: 'self' }),
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css", 

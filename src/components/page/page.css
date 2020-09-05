@@ -11,8 +11,8 @@
     --link-hover-color: #767D75;
     /* --board-min-width: 53.9375rem;  expanded tools */
     --board-min-width: 37rem;
-    --page-min-width: calc(var(--board-min-width) + 0.3125rem * 2);
-    --page-margin: calc(((100vw - var(--page-min-width)) / 2 * 0.25) + 1.0rem);
+    --page-min-width: calc(var(--board-min-width) + 0.625rem); /* 5px border around sudoku board */
+    --page-margin: calc(((100vw - var(--page-min-width)) / 2 * 0.25) + 1.1875rem);
 }
 
 * {
@@ -111,18 +111,14 @@ a:hover {
     color: var(--link-hover-color)
 }
 
-#page, #header, #grid {
-    min-width: var(--page-min-width);
-}
-
 #page {
     font-family: 'Roboto Slab', serif;
     line-height: 1.5em;
-    margin: 2rem var(--page-margin);
+    margin: 2rem;
 }
 
 #header {
-    display: flex;
+    display: none;
     margin: 0 auto;
     align-items: flex-end;
     margin: 3rem auto;
@@ -135,7 +131,7 @@ a:hover {
 }
 
 .content-grid {
-    display: grid;
+    display: none;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
     margin-bottom: 3rem;
@@ -158,6 +154,7 @@ section li {
 }
 
 #sudoku {
+    display: none;
     background-color: var(--almost-black);
     overflow: auto;
     border-radius: 0.3125rem;
@@ -170,4 +167,15 @@ section li {
 
 #sudoku > div {
     float: left;
+}
+
+@media (min-width: 40rem) {
+    .not-supported { display: none; }
+    #header { display: flex; }
+    #sudoku { display: block; }
+    .content-grid { display: grid; }
+    #page {
+        margin: 2rem var(--page-margin);
+        min-width: var(--page-min-width);
+    }
 }
