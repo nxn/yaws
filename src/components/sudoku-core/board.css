@@ -16,6 +16,16 @@
          url('./fonts/robotomono-bold-digits.woff') format('woff');
 }
 
+:root {
+    --scale: 2
+}
+.yaws {
+    background-color: #222;
+    border-radius: calc(0.25rem * var(--scale));
+    padding: calc(0.1875rem * var(--scale));
+    margin: 0 auto;
+    width: calc(auto * var(--scale));
+}
 .board
 {
     text-align:             center;
@@ -23,7 +33,7 @@
     grid-template-columns:  repeat(9, auto);
     vertical-align:         middle;
     background:             #666;
-    border-radius:          0.1875rem;
+    border-radius:          calc(0.125rem * var(--scale));
     cursor:                 default;
     -webkit-user-select:    none;
     -moz-user-select:       none;
@@ -36,8 +46,8 @@
 {
     background:         #f8f8f8;
     position:           relative;
-    width:              4rem;
-    height:             4rem;
+    width:              calc(2rem * var(--scale));
+    height:             calc(2rem * var(--scale));
     margin-right:       0.0625rem;
     margin-bottom:      0.0625rem;
     transition:         background-color 250ms ease;
@@ -45,8 +55,8 @@
 }
 
 /* Separate grid boxes (columns and rows 3 and 6) */
-.board .cell.c3, .board .cell.c6 { margin-right:    0.3125rem; }
-.board .cell.r3, .board .cell.r6 { margin-bottom:   0.3125rem; }
+.board .cell.c3, .board .cell.c6 { margin-right:    calc(0.1875rem * var(--scale)); }
+.board .cell.r3, .board .cell.r6 { margin-bottom:   calc(0.1875rem * var(--scale)); }
 
 /* Remove borders and margins on the last column and row */
 .board .cell.c9 { margin-right:     0; border-right:    0; } 
@@ -80,18 +90,19 @@
 {
     color:          #333;
     font-family:    'Cabin Condensed', sans-serif;
-    font-size:      2.625rem;
-    line-height:    4rem;
+    font-size:      calc(1.3125rem * var(--scale));
+    line-height:    calc(2rem * var(--scale));
 }
 
 .board .static.cell > .value
 {
+    box-sizing: border-box;
     border:             0.0625rem solid #bababa;
-    border-radius:      0.1875rem;
-    line-height:        2.75rem;
-    height:             2.8125rem;
-    width:              2.8125rem;
-    margin:             0.5rem;
+    border-radius:      calc(0.125rem * var(--scale));
+    line-height:        calc(1.375rem * var(--scale));
+    height:             calc(1.5rem * var(--scale));
+    width:              calc(1.5rem * var(--scale));
+    margin:             calc(0.25rem * var(--scale));
     background-color: #ddd;
 }
 
@@ -101,8 +112,8 @@
     box-sizing:                 border-box;
     color:                      rgba(187,187,187,0);
     font-family:                'Roboto Mono', monospace;
-    font-size:                  0.8125rem;
-    line-height:                1.25rem;
+    font-size:                  calc(0.40625rem * var(--scale));
+    line-height:                calc(0.625rem * var(--scale));
     border-right:               0.0625rem solid rgba(187,187,187,0);
     border-bottom:              0.0625rem solid rgba(187,187,187,0);
     transition-property:        color, border;
@@ -179,21 +190,19 @@
 {
     background-image: linear-gradient(
         -135deg,
-        transparent 0.5rem, 
-        #C90014   0.5rem,
-        #C90014   0.9375rem,
-        transparent 0.9375rem,
-        transparent 4rem
+        transparent calc(0.25rem * var(--scale)), 
+        #C90014   calc(0.25rem * var(--scale)),
+        #C90014   calc(0.46875rem * var(--scale)),
+        transparent calc(0.46875rem * var(--scale)),
+        transparent calc(2rem * var(--scale))
     );
 }
 .board .static.cell > .invalid.value
 {
-    background-color: #F2DFD5;
-    border:             0.125rem solid #C90014;
-    border-radius:      0.1875rem;
-    line-height:        2.625rem;
-    height:             2.6875rem;
-    width:              2.6875rem;
+    background-color:   #F2DFD5;
+    border-color:       #C90014;
+    border-width:       calc(0.0625rem * var(--scale));
+    line-height:        calc(1.3125rem * var(--scale));
 }
 
 

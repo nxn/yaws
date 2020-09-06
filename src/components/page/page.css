@@ -155,12 +155,7 @@ section li {
 
 #sudoku {
     display: none;
-    background-color: var(--almost-black);
     overflow: auto;
-    border-radius: 0.3125rem;
-    padding: 0.3125rem;
-    /*width: 853px; expanded tools*/
-    width: var(--board-min-width);
     margin: 0 auto;
     margin-bottom: 5rem;
 }

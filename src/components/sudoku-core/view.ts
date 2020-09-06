@@ -29,10 +29,13 @@ export function init(board: IBoard, parent = 'body') {
 }
 
 function boardEnter(selection:Selection<any, IBoard, any, unknown>) {
-    return selection.append('div')
-        .attr('id', (g:IBoard) => g.id)
-        .attr('class', 'board')
-        .on('mouseleave', g => setHighlight(g.cursor.cell));
+    return selection
+        .append('div')
+            .attr('id', (g:IBoard) => g.id)
+            .attr('class', 'yaws')
+        .append('div')
+            .attr('class', 'board')
+            .on('mouseleave', g => setHighlight(g.cursor.cell));
 }
 
 function cellEnter(selection:Selection<any, ICell, any, IBoard>) {
