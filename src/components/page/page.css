@@ -155,13 +155,8 @@ section li {
 
 #sudoku {
     display: none;
-    overflow: auto;
-    margin: 0 auto;
     margin-bottom: 5rem;
-}
-
-#sudoku > div {
-    float: left;
+    text-align: center;
 }
 
 @media (min-width: 40rem) {
