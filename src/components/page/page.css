@@ -67,7 +67,6 @@ h1 {
     font-size: 2.5rem;
     line-height: 1em;
     padding: 0;
-    margin-left: 3rem;
     color: var(--almost-white);
     background-color: var(--gray);
     text-align: center;
@@ -114,14 +113,14 @@ a:hover {
 #page {
     font-family: 'Roboto Slab', serif;
     line-height: 1.5em;
-    margin: 2rem;
 }
 
 #header {
-    display: none;
-    margin: 0 auto;
-    align-items: flex-end;
-    margin: 3rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    margin: 3rem 1rem;
 }
 
 #logo {
@@ -131,9 +130,10 @@ a:hover {
 }
 
 .content-grid {
-    display: none;
-    grid-template-columns: 1fr 1fr;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 2rem;
+    margin: 1rem;
     margin-bottom: 3rem;
 }
 
@@ -154,18 +154,27 @@ section li {
 }
 
 #sudoku {
-    display: none;
     margin-bottom: 5rem;
     text-align: center;
 }
 
 @media (min-width: 40rem) {
-    .not-supported { display: none; }
-    #header { display: flex; }
-    #sudoku { display: block; }
-    .content-grid { display: grid; }
-    #page {
+    #header, .content-grid {
         margin: 2rem var(--page-margin);
         min-width: var(--page-min-width);
+    }
+
+    #header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    h1 {
+        margin-left: 3rem;
     }
 }

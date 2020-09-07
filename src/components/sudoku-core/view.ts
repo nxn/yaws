@@ -5,6 +5,9 @@ import './board.css';
 let refresh: (...args:any) => void = () => undefined;
 
 export function init(board: IBoard, parent = 'body') {
+    scaleToViewport();
+    window.addEventListener('resize', scaleToViewport);
+
     const dom = select(parent);
 
     refresh = (updateHighlight = true) => {
@@ -26,6 +29,18 @@ export function init(board: IBoard, parent = 'body') {
     refresh();
 
     return refresh;
+}
+
+function scaleToViewport() {
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    
+    const vmin = 320;
+    const vailable = Math.min(vw, vh);
+    
+    const scale = Math.max(1, Math.min(2, vailable/vmin));
+
+    document.documentElement.style.setProperty('--yaws-scale', scale.toString());
 }
 
 function boardEnter(selection:Selection<any, IBoard, any, unknown>) {

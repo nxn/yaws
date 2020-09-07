@@ -17,7 +17,7 @@
 }
 
 :root {
-    --yaws-scale:                                           2;
+    --yaws-scale: 1;
 
     --yaws-board-spacer-color:                              #666;
     --yaws-board-width:                                     calc(auto * var(--yaws-scale));
@@ -61,6 +61,14 @@
     --yaws-cell-static-marker-invalid-border-color:         var(--yaws-cell-invalid-value-color);
     --yaws-cell-static-marker-invalid-border-width:         calc(0.0625rem * var(--yaws-scale));
     --yaws-cell-static-marker-invalid-value-line-height:    calc(1.3125rem * var(--yaws-scale));
+
+    --yaws-candidate-font-size-min: 0.625rem;
+    --yaws-candidate-font-size-max: 0.8125rem;
+    --yaws-candidate-font-size: calc(
+        var(--yaws-candidate-font-size-min)
+        + (var(--yaws-candidate-font-size-max) - var(--yaws-candidate-font-size-min))
+        * (var(--yaws-scale) - 1)
+    );
 }
 
 .yaws {
@@ -122,7 +130,7 @@
 .board .editable.cell .notes
 {
     display:                grid;
-    grid-template-columns:  repeat(3, auto);
+    grid-template-columns:  repeat(3, 1fr);
     grid-template-rows:     repeat(3, 1fr);
 }
 
@@ -150,11 +158,13 @@
 
 .board .editable.cell .notes .candidate
 {
-    box-sizing:                 border-box;
+    /*box-sizing:                 border-box;*/
+    width:                      calc(0.625rem * var(--yaws-scale));
+    height:                     calc(0.625rem * var(--yaws-scale));
+    line-height:                calc(0.625rem * var(--yaws-scale));
     color:                      rgba(187,187,187,0);
     font-family:                'Roboto Mono', monospace;
-    font-size:                  calc(0.40625rem * var(--yaws-scale));
-    line-height:                calc(0.625rem * var(--yaws-scale));
+    font-size:                  var(--yaws-candidate-font-size);
     border-right:               0.0625rem solid rgba(187,187,187,0);
     border-bottom:              0.0625rem solid rgba(187,187,187,0);
     transition-property:        color, border;
