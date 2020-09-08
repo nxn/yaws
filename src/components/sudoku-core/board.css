@@ -100,6 +100,9 @@
     --yaws-control-panel-button-clear-border-color:     #222;
 }
 
+:focus              { outline:none; }
+::-moz-focus-inner  { border: 0; }
+
 .yaws
 {
     display:            flex;
@@ -367,9 +370,9 @@
     height: var(--yaws-control-panel-button-icon-height);
 }
 
-.yaws .control-panel .candidates .left      { justify-content:  left; }
+.yaws .control-panel .candidates .left      { justify-content:  flex-start; }
 .yaws .control-panel .candidates .center    { justify-content:  center; }
-.yaws .control-panel .candidates .right     { justify-content:  right; }
+.yaws .control-panel .candidates .right     { justify-content:  flex-end; }
 .yaws .control-panel .candidates .top       { align-items:      flex-start; }
 .yaws .control-panel .candidates .middle    { align-items:      center; }
 .yaws .control-panel .candidates .bottom    { align-items:      flex-end; }

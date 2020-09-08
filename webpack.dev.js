@@ -19,7 +19,10 @@ module.exports = {
   devtool: 'source-map',
   devServer: {
     contentBase: outputPath,
-    hot: true
+    hot: true,
+    host: '0.0.0.0',
+    port: 8080,
+    disableHostCheck: true,
   },
   module: {
     rules: [{ // Main app/root TypeScript loader instance

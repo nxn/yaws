@@ -69,16 +69,15 @@ function cellEnter(selection:Selection<any, ICell, any, IBoard>) {
         .classed('cursor', function(c) {
             return c === (select(this.parentNode).datum() as IBoard).cursor.cell;
         })
-        .on('touchstart', function(c) {
-            event.preventDefault();
+        .on('touchend', function(c) {
             (select(this.parentNode).datum() as IBoard).cursor.cell = c;
             refresh(true);
-        }, true)
-        .on('mouseenter', setHighlight)
-        // .on('mouseenter', function(c) {
-        //     (select(this.parentNode).datum() as IBoard).cursor.cell = c;
-        //     refresh();
-        // });
+        })
+        .on('click', function(c) {
+            (select(this.parentNode).datum() as IBoard).cursor.cell = c;
+            refresh(false);
+        })
+        .on('mouseenter', setHighlight);
 
     cell.append('div')
         .attr('class', c => c.isValid ? 'value' : 'value invalid')
@@ -115,9 +114,8 @@ function candidateEnter(selection:Selection<any, ICellCandidate, any, ICell>) {
     return selection.append('div')
         .attr('class', getCandidateClasses)
         .text(c => c.value)
-        .on('touchend', function(c) {
-            event.preventDefault();
-        }, true)
+        // Prevent touch events from selecting candidates
+        .on('touchend', function() { event.preventDefault(); })
         .on('click', c => {
             c.selected = !c.selected; 
             refresh(false); 
