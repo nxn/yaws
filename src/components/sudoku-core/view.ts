@@ -186,7 +186,7 @@ function initControlPanel(root: Selection<any, unknown, HTMLElement, any>, curso
                 .attr('class', getCssClass)
                 .attr('type', 'button')
                 .text(n => n.toString())
-                .on('click', function(n: number) {
+                .on('click', (n: number) => {
                     if (cursor.cell.value && cursor.cell.value === n) {
                         cursor.clear();
                     }
@@ -204,9 +204,12 @@ function initControlPanel(root: Selection<any, unknown, HTMLElement, any>, curso
                 .attr('class', getCssClass)
                 .attr('type', 'button')
                 .text(n => n.toString())
-                .on('click', function(n: number) {
+                .on('click', (n: number) => {
+                    if (cursor.cell.value) return;
+
                     let candidate = cursor.cell.candidates[n-1];
                     if (!candidate) return;
+                    
                     candidate.selected = !candidate.selected;
                     refresh(false);
                 });
@@ -215,7 +218,7 @@ function initControlPanel(root: Selection<any, unknown, HTMLElement, any>, curso
     controlPanel.append('button')
         .attr('class', 'btn-clear')
         .attr('type', 'button')
-        .on('click', function() {
+        .on('click', () => {
             cursor.clear();
             refresh(false);
         })
