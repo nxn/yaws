@@ -72,8 +72,8 @@
     --yaws-control-panel-button-color:          #333;
     --yaws-control-panel-button-width:          calc(1.5rem * var(--yaws-scale));
 
-    --yaws-control-panel-button-width-min: 2.0rem;
-    --yaws-control-panel-button-width-max: 3.0rem;
+    --yaws-control-panel-button-width-min: 2.25rem;
+    --yaws-control-panel-button-width-max: 3.5rem;
     --yaws-control-panel-button-width: calc(
         var(--yaws-control-panel-button-width-min)
         + (var(--yaws-control-panel-button-width-max) - var(--yaws-control-panel-button-width-min))
