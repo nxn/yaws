@@ -1,5 +1,5 @@
 import { IBoard, ICell, ICellCandidate, ICursor } from './interfaces';
-import { select, selectAll, Selection } from "d3-selection";
+import { select, selectAll, Selection, event } from "d3-selection";
 import { range } from "@components/utilities/misc";
 import './board.css';
 import icons from './icons.svg';
@@ -69,6 +69,11 @@ function cellEnter(selection:Selection<any, ICell, any, IBoard>) {
         .classed('cursor', function(c) {
             return c === (select(this.parentNode).datum() as IBoard).cursor.cell;
         })
+        .on('touchstart', function(c) {
+            event.preventDefault();
+            (select(this.parentNode).datum() as IBoard).cursor.cell = c;
+            refresh(true);
+        })
         .on('mouseenter', setHighlight)
         // .on('mouseenter', function(c) {
         //     (select(this.parentNode).datum() as IBoard).cursor.cell = c;
@@ -110,7 +115,10 @@ function candidateEnter(selection:Selection<any, ICellCandidate, any, ICell>) {
     return selection.append('div')
         .attr('class', getCandidateClasses)
         .text(c => c.value)
-        .on('click', c => { 
+        .on('touchend', function(c) {
+            event.preventDefault();
+        })
+        .on('click', c => {
             c.selected = !c.selected; 
             refresh(false); 
         })
