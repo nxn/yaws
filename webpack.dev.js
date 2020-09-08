@@ -49,9 +49,11 @@ module.exports = {
         MiniCssExtractPlugin.loader,
         'css-loader'
       ]
-    },{
-      test: /\.html$/i,
-      use: [
+    },{ // EJS/HTML (ejs-loader)
+      test: /\.ejs$/i,
+      use: [ 
+        { loader: 'ejs-loader', options: { variable: 'data' } },
+        'extract-loader',
         'html-loader'
       ]
     },{ // Images (file-loader)
@@ -89,6 +91,6 @@ module.exports = {
       filename: "[name].[contenthash].css", 
       chunkFilename: "[id].[contenthash].css"
     }),
-    new HtmlWebpackPlugin({ template: 'src/components/page/index.html' })
+    new HtmlWebpackPlugin({ template: 'src/components/page/index.ejs' })
   ]
 };

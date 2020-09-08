@@ -1,7 +1,8 @@
-import { IBoard, ICell, ICellCandidate } from './interfaces';
+import { IBoard, ICell, ICellCandidate, ICursor } from './interfaces';
 import { select, selectAll, Selection } from "d3-selection";
 import { range } from "@components/utilities/misc";
 import './board.css';
+import icons from './icons.svg';
 
 let refresh: (...args:any) => void = () => undefined;
 
@@ -29,7 +30,7 @@ export function init(board: IBoard, parent = 'body') {
 
     refresh();
 
-    initControlPanel(root);
+    initControlPanel(root, board.cursor);
 
     return refresh;
 }
@@ -159,7 +160,7 @@ function setHighlight(cell: ICell): void {
         .classed('highlight', true);
 }
 
-function initControlPanel(root: Selection<any, unknown, HTMLElement, any>) {
+function initControlPanel(root: Selection<any, unknown, HTMLElement, any>, cursor: ICursor) {
     const getCssClass = function(n: number): string {
         let classes = [];
 
@@ -178,25 +179,46 @@ function initControlPanel(root: Selection<any, unknown, HTMLElement, any>) {
 
     let controlPanel = root.append('div').attr('class', 'control-panel');
 
-    controlPanel.append('div').attr('class', 'candidates')
-        .selectAll('.btn-candidate')
-            .data(numberButtons)
-            .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
-                return selection.append('button')
-                    .attr('class', getCssClass)
-                    .attr('type', 'button')
-                    .text(n => n.toString());
-            });
+    controlPanel.append('div').attr('class', 'values').selectAll('.btn-value')
+        .data(numberButtons)
+        .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
+            return selection.append('button')
+                .attr('class', getCssClass)
+                .attr('type', 'button')
+                .text(n => n.toString())
+                .on('click', function(n: number) {
+                    if (cursor.cell.value && cursor.cell.value === n) {
+                        cursor.clear();
+                    }
+                    else {
+                        cursor.cell.value = n;
+                    }
+                    refresh(false);
+                });
+        });
 
-    controlPanel.append('div').attr('class', 'values')
-        .selectAll('.btn-value')
-            .data(numberButtons)
-            .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
-                return selection.append('button')
-                    .attr('class', getCssClass)
-                    .attr('type', 'button')
-                    .text(n => n.toString());
-            });
+    controlPanel.append('div').attr('class', 'candidates').selectAll('.btn-candidate')
+        .data(numberButtons)
+        .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
+            return selection.append('button')
+                .attr('class', getCssClass)
+                .attr('type', 'button')
+                .text(n => n.toString())
+                .on('click', function(n: number) {
+                    let candidate = cursor.cell.candidates[n-1];
+                    if (!candidate) return;
+                    candidate.selected = !candidate.selected;
+                    refresh(false);
+                });
+        });
 
-    controlPanel.append('button').attr('class', 'btn-clear').attr('type', 'button').text('DEL')
+    controlPanel.append('button')
+        .attr('class', 'btn-clear')
+        .attr('type', 'button')
+        .on('click', function() {
+            cursor.clear();
+            refresh(false);
+        })
+        .append('svg').attr('class', 'icon')
+        .append('use').attr('href', `${icons}#yaws-icon-x`);
 }

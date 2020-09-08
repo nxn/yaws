@@ -1,4 +1,5 @@
-@font-face {
+@font-face
+{
     font-family: 'Cabin Condensed';
     font-style: normal;
     font-weight: 700;
@@ -7,7 +8,8 @@
          url('./fonts/cabincondensed-bold-digits.woff') format('woff');
 }
 
-@font-face {
+@font-face
+{
     font-family: 'Roboto Mono';
     font-style: normal;
     font-weight: 700;
@@ -20,7 +22,6 @@
     --yaws-scale: 1;
 
     --yaws-board-spacer-color:          #666;
-    --yaws-board-width:                 calc(auto * var(--yaws-scale));
     --yaws-board-border:                calc(0.1875rem * var(--yaws-scale)) solid #222;
     --yaws-board-border-outer-radius:   calc(0.25rem * var(--yaws-scale));
     --yaws-board-border-inner-radius:   calc(0.125rem * var(--yaws-scale));
@@ -81,6 +82,9 @@
         * (var(--yaws-scale) - 1)
     );
     --yaws-control-panel-button-height:         var(--yaws-control-panel-button-width);
+    --yaws-control-panel-button-icon-width:     calc(var(--yaws-control-panel-button-width)/2);
+    --yaws-control-panel-button-icon-height:    var(--yaws-control-panel-button-icon-width);
+
     --yaws-control-panel-button-line-height:    calc(var(--yaws-control-panel-button-height) - 0.125rem);
     --yaws-control-panel-button-border:         0.0625rem solid #bababa;
     --yaws-control-panel-button-border-radius:  calc(0.125rem * var(--yaws-scale));
@@ -96,7 +100,8 @@
     --yaws-control-panel-button-clear-border-color:     #222;
 }
 
-.yaws {
+.yaws
+{
     display:            flex;
     flex-flow:          column nowrap;
     align-items:        center;
@@ -287,20 +292,22 @@
 }
 
 .yaws .last-column, .c9 { margin-right:   0 !important; border-right:     0 !important; } 
-.yaws .last-row, .r9 {    margin-bottom:  0 !important; border-bottom:    0 !important; }
+.yaws .last-row, .r9    { margin-bottom:  0 !important; border-bottom:    0 !important; }
 
 
 
 
 
 
-.yaws .control-panel {
+.yaws .control-panel
+{
     display: grid;
     gap: calc(1rem * var(--yaws-scale));
 }
 
 .yaws .control-panel .values,
-.yaws .control-panel .candidates {
+.yaws .control-panel .candidates
+{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: calc(0.25rem * var(--yaws-scale));
@@ -317,7 +324,8 @@
 .yaws .control-panel .values      { grid-area: values }
 .yaws .control-panel .btn-clear   { grid-area: clear }
 
-.yaws  .control-panel button {
+.yaws .control-panel button
+{
     box-sizing:         border-box;
     width:              var(--yaws-control-panel-button-width);
     height:             var(--yaws-control-panel-button-height);
@@ -331,24 +339,32 @@
     justify-content:    center;
 }
 
-.yaws .control-panel .candidates button {
+.yaws .control-panel .candidates button
+{
     padding:            10%;
     font-size:          var(--yaws-control-panel-button-candidate-font-size);
     font-family:        var(--yaws-control-panel-button-candidate-font-family);
     line-height:        calc(var(--yaws-control-panel-button-line-height)/3);
 }
 
-.yaws .control-panel .values button {
-    
+.yaws .control-panel .values button
+{
     font-family:        var(--yaws-control-panel-button-value-font-family);
     font-size:          var(--yaws-control-panel-button-value-font-size);
 }
 
-.yaws .control-panel .btn-clear {
-    height: 100%;
+.yaws .control-panel .btn-clear
+{
     color:              var(--yaws-control-panel-button-clear-color);
     border-color:       var(--yaws-control-panel-button-clear-border-color);
     background-color:   var(--yaws-control-panel-button-clear-bg-color);
+}
+
+.yaws .control-panel .btn-clear .icon
+{
+    fill:   var(--yaws-control-panel-button-clear-color);
+    width:  var(--yaws-control-panel-button-icon-width);
+    height: var(--yaws-control-panel-button-icon-height);
 }
 
 .yaws .control-panel .candidates .left      { justify-content:  left; }
@@ -358,41 +374,59 @@
 .yaws .control-panel .candidates .middle    { align-items:      center; }
 .yaws .control-panel .candidates .bottom    { align-items:      flex-end; }
 
-@media (orientation: landscape) {
-    .yaws {
+@media (orientation: landscape)
+{
+    .yaws
+    {
         width: 100%;
         flex-direction: row;
         justify-content: space-evenly;
     }
-    .yaws .control-panel {
+
+    .yaws .control-panel
+    {
         /*margin-left: 2rem;*/
         grid-template-areas:
             'values'
             'clear'
             'candidates';
     }
+
     .yaws .control-panel .values,
-    .yaws .control-panel .candidates {
+    .yaws .control-panel .candidates
+    {
         flex-flow: column nowrap;
     }
 
-    .yaws .control-panel .btn-clear {
-        width: 100%
+    .yaws .control-panel .btn-clear
+    {
+        width: 100%;
     }
 }
-  
-  @media (orientation: portrait) {
-    .yaws { 
+
+@media (orientation: portrait)
+{
+    .yaws
+    { 
         flex-direction: column;
     }
-    .yaws .control-panel {
+
+    .yaws .control-panel
+    {
         margin-top: 2rem;
         grid-template-areas:
             'values clear candidates'
     }
+
     .yaws .control-panel .values,
-    .yaws .control-panel .candidates {
+    .yaws .control-panel .candidates
+    {
         flex-flow: row nowrap;
         justify-content: space-evenly;
+    }
+
+    .yaws .control-panel .btn-clear
+    {
+        height: 100%;
     }
 }
