@@ -73,7 +73,7 @@ function cellEnter(selection:Selection<any, ICell, any, IBoard>) {
             event.preventDefault();
             (select(this.parentNode).datum() as IBoard).cursor.cell = c;
             refresh(true);
-        })
+        }, true)
         .on('mouseenter', setHighlight)
         // .on('mouseenter', function(c) {
         //     (select(this.parentNode).datum() as IBoard).cursor.cell = c;
@@ -117,7 +117,7 @@ function candidateEnter(selection:Selection<any, ICellCandidate, any, ICell>) {
         .text(c => c.value)
         .on('touchend', function(c) {
             event.preventDefault();
-        })
+        }, true)
         .on('click', c => {
             c.selected = !c.selected; 
             refresh(false); 
