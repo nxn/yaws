@@ -19,33 +19,33 @@
 :root {
     --yaws-scale: 1;
 
-    --yaws-board-spacer-color:                              #666;
-    --yaws-board-width:                                     calc(auto * var(--yaws-scale));
-    --yaws-board-border:                                    calc(0.1875rem * var(--yaws-scale)) solid #222;
-    --yaws-board-border-outer-radius:                       calc(0.25rem * var(--yaws-scale));
-    --yaws-board-border-inner-radius:                       calc(0.125rem * var(--yaws-scale));
+    --yaws-board-spacer-color:          #666;
+    --yaws-board-width:                 calc(auto * var(--yaws-scale));
+    --yaws-board-border:                calc(0.1875rem * var(--yaws-scale)) solid #222;
+    --yaws-board-border-outer-radius:   calc(0.25rem * var(--yaws-scale));
+    --yaws-board-border-inner-radius:   calc(0.125rem * var(--yaws-scale));
 
-    --yaws-box-spacer-size:                                 calc(0.1875rem * var(--yaws-scale));
+    --yaws-box-spacer-size: calc(0.1875rem * var(--yaws-scale));
 
-    --yaws-cell-bg-color:                                   #f8f8f8;
-    --yaws-cell-width:                                      calc(2rem * var(--yaws-scale));
-    --yaws-cell-height:                                     var(--yaws-cell-width);
-    --yaws-cell-spacer-size:                                0.0625rem;
-    --yaws-cell-value-color:                                #333;
-    --yaws-cell-value-font-family:                          'Cabin Condensed', sans-serif;
-    --yaws-cell-value-font-size:                            calc(1.3125rem * var(--yaws-scale));
-    --yaws-cell-value-line-height:                          calc(2rem * var(--yaws-scale));
+    --yaws-cell-bg-color:           #f8f8f8;
+    --yaws-cell-width:              calc(2rem * var(--yaws-scale));
+    --yaws-cell-height:             var(--yaws-cell-width);
+    --yaws-cell-spacer-size:        0.0625rem;
+    --yaws-cell-value-color:        #333;
+    --yaws-cell-value-font-family:  'Cabin Condensed', sans-serif;
+    --yaws-cell-value-font-size:    calc(1.3125rem * var(--yaws-scale));
+    --yaws-cell-value-line-height:  calc(2rem * var(--yaws-scale));
 
-    --yaws-cell-static-marker-border:                       0.0625rem solid #bababa;
-    --yaws-cell-static-marker-border-radius:                calc(0.125rem * var(--yaws-scale));
-    --yaws-cell-static-marker-line-height:                  calc(1.375rem * var(--yaws-scale));
-    --yaws-cell-static-marker-width:                        calc(1.5rem * var(--yaws-scale));
-    --yaws-cell-static-marker-height:                       var(--yaws-cell-static-marker-width);
-    --yaws-cell-static-marker-margin:                       calc(0.25rem * var(--yaws-scale));
-    --yaws-cell-static-marker-bg-color:                     #ddd;
+    --yaws-cell-static-marker-border:           0.0625rem solid #bababa;
+    --yaws-cell-static-marker-border-radius:    calc(0.125rem * var(--yaws-scale));
+    --yaws-cell-static-marker-line-height:      calc(1.375rem * var(--yaws-scale));
+    --yaws-cell-static-marker-width:            calc(1.5rem * var(--yaws-scale));
+    --yaws-cell-static-marker-height:           var(--yaws-cell-static-marker-width);
+    --yaws-cell-static-marker-margin:           calc(0.25rem * var(--yaws-scale));
+    --yaws-cell-static-marker-bg-color:         #ddd;
 
-    --yaws-cell-invalid-value-color:                        #C90014;
-    --yaws-cell-invalid-value-bg-image:                     linear-gradient(
+    --yaws-cell-invalid-value-color:    #C90014;
+    --yaws-cell-invalid-value-bg-image: linear-gradient(
         -135deg,
         transparent                             calc(0.25rem * var(--yaws-scale)), 
         var(--yaws-cell-invalid-value-color)    calc(0.25rem * var(--yaws-scale)),
@@ -61,7 +61,7 @@
 
     --yaws-candidate-font-size-min: 0.625rem;
     --yaws-candidate-font-size-max: 0.8125rem;
-    --yaws-candidate-font-size: calc(
+    --yaws-candidate-font-size:     calc(
         var(--yaws-candidate-font-size-min)
         + (var(--yaws-candidate-font-size-max) - var(--yaws-candidate-font-size-min))
         * (var(--yaws-scale) - 1)
@@ -69,8 +69,8 @@
 
     --yaws-candidate-font-family:   'Roboto Mono', monospace;
 
-    --yaws-control-panel-button-color:          #333;
-    --yaws-control-panel-button-width:          calc(1.5rem * var(--yaws-scale));
+    --yaws-control-panel-button-color:  #333;
+    --yaws-control-panel-button-width:  calc(1.5rem * var(--yaws-scale));
 
     --yaws-control-panel-button-width-min: 2.25rem;
     --yaws-control-panel-button-width-max: 3.5rem;
@@ -350,9 +350,9 @@ background-color:   var(--yaws-control-panel-button-value-bg-color);
 .yaws .control-panel .candidates .left      { text-align:   left; }
 .yaws .control-panel .candidates .center    { text-align:   center; }
 .yaws .control-panel .candidates .right     { text-align:   right; }
-.yaws .control-panel .candidates .top       { line-height:  calc(   var(--yaws-control-panel-button-line-height)*0.5); }
-.yaws .control-panel .candidates .middle    { line-height:          var(--yaws-control-panel-button-line-height); }
-.yaws .control-panel .candidates .bottom    { line-height:  calc(   var(--yaws-control-panel-button-line-height)*1.5); }
+.yaws .control-panel .candidates .top       { line-height:  calc(var(--yaws-control-panel-button-line-height)*0.5); }
+.yaws .control-panel .candidates .middle    { line-height:  var(--yaws-control-panel-button-line-height); }
+.yaws .control-panel .candidates .bottom    { line-height:  calc(var(--yaws-control-panel-button-line-height)*1.5); }
 
 @media (orientation: landscape) {
     .yaws {
