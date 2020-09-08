@@ -21,11 +21,9 @@
 
     --yaws-board-spacer-color:                              #666;
     --yaws-board-width:                                     calc(auto * var(--yaws-scale));
-    --yaws-board-border-color:                              #222;
+    --yaws-board-border:                                    calc(0.1875rem * var(--yaws-scale)) solid #222;
     --yaws-board-border-outer-radius:                       calc(0.25rem * var(--yaws-scale));
     --yaws-board-border-inner-radius:                       calc(0.125rem * var(--yaws-scale));
-    --yaws-board-border-width:                              calc(0.1875rem * var(--yaws-scale));
-    --yaws-board-border-style:                              solid;
 
     --yaws-box-spacer-size:                                 calc(0.1875rem * var(--yaws-scale));
 
@@ -38,9 +36,7 @@
     --yaws-cell-value-font-size:                            calc(1.3125rem * var(--yaws-scale));
     --yaws-cell-value-line-height:                          calc(2rem * var(--yaws-scale));
 
-    --yaws-cell-static-marker-border-width:                 0.0625rem;
-    --yaws-cell-static-marker-border-style:                 solid;
-    --yaws-cell-static-marker-border-color:                 #bababa;
+    --yaws-cell-static-marker-border:                       0.0625rem solid #bababa;
     --yaws-cell-static-marker-border-radius:                calc(0.125rem * var(--yaws-scale));
     --yaws-cell-static-marker-line-height:                  calc(1.375rem * var(--yaws-scale));
     --yaws-cell-static-marker-width:                        calc(1.5rem * var(--yaws-scale));
@@ -72,6 +68,32 @@
     );
 
     --yaws-candidate-font-family:   'Roboto Mono', monospace;
+
+    --yaws-control-panel-button-color:          #333;
+    --yaws-control-panel-button-width:          calc(1.5rem * var(--yaws-scale));
+
+    --yaws-control-panel-button-width-min: 2.0rem;
+    --yaws-control-panel-button-width-max: 3.0rem;
+    --yaws-control-panel-button-width: calc(
+        var(--yaws-control-panel-button-width-min)
+        + (var(--yaws-control-panel-button-width-max) - var(--yaws-control-panel-button-width-min))
+        * (var(--yaws-scale) - 1)
+    );
+    --yaws-control-panel-button-height:         var(--yaws-control-panel-button-width);
+    --yaws-control-panel-button-line-height:    calc(var(--yaws-control-panel-button-height) - 0.125rem);
+    --yaws-control-panel-button-border:         0.0625rem solid #bababa;
+    --yaws-control-panel-button-border-radius:  calc(0.125rem * var(--yaws-scale));
+
+    --yaws-control-panel-button-value-font-family:      'Cabin Condensed', sans-serif;
+    --yaws-control-panel-button-value-font-size:        calc(1.3125rem * var(--yaws-scale));
+    --yaws-control-panel-button-value-bg-color:         #eaeaea;
+
+    --yaws-control-panel-button-candidate-font-family: 'Roboto Mono', monospace;
+    --yaws-control-panel-button-candidate-font-size:    calc(var(--yaws-control-panel-button-value-font-size)/2);
+
+    --yaws-control-panel-button-clear-color:            #eaeaea;
+    --yaws-control-panel-button-clear-bg-color:         #222;
+    --yaws-control-panel-button-clear-border-color:     #222;
 }
 
 .yaws {
@@ -95,9 +117,7 @@
     grid-template-columns:  repeat(9, auto);
     vertical-align:         middle;
     background:             var(--yaws-board-spacer-color);
-    border-style:           var(--yaws-board-border-style);
-    border-width:           var(--yaws-board-border-width);
-    border-color:           var(--yaws-board-border-color);
+    border:                 var(--yaws-board-border);
     border-radius:          var(--yaws-board-border-outer-radius);
 }
 
@@ -159,9 +179,7 @@
 .yaws .board .static.cell > .value
 {
     box-sizing:         border-box;
-    border-color:       var(--yaws-cell-static-marker-border-color);
-    border-style:       var(--yaws-cell-static-marker-border-style);
-    border-width:       var(--yaws-cell-static-marker-border-width);
+    border:             var(--yaws-cell-static-marker-border);
     border-radius:      var(--yaws-cell-static-marker-border-radius);
     line-height:        var(--yaws-cell-static-marker-line-height);
     height:             var(--yaws-cell-static-marker-height);
@@ -278,68 +296,76 @@
 
 .yaws .control-panel {
     display: grid;
-    grid-template-columns:  1fr auto;
-    grid-template-rows:     1fr auto;
+    gap: calc(1rem * var(--yaws-scale));
 }
 
 .yaws .control-panel .values,
 .yaws .control-panel .candidates {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: calc(0.25rem * var(--yaws-scale));
 }
 
+/*
 .yaws .control-panel,
 .yaws .control-panel .values,
 .yaws .control-panel .candidates {
-    gap: var(--yaws-box-spacer-size);
-}
+    gap: calc(0.25rem * var(--yaws-scale));
+}*/
 
 .yaws .control-panel .candidates  { grid-area: candidates }
 .yaws .control-panel .values      { grid-area: values }
 .yaws .control-panel .btn-clear   { grid-area: clear }
 
 .yaws  .control-panel .touch-button {
-    box-sizing: border-box;
-    width: var(--yaws-cell-static-marker-width);
-    height: var(--yaws-cell-static-marker-height);
-
-    color: var(--yaws-cell-value-color);
-
-    
-    line-height: var(--yaws-cell-static-marker-line-height);
-
-    border-width: var(--yaws-cell-static-marker-border-width);
-    border-style: var(--yaws-cell-static-marker-border-style);
-    border-color: var(--yaws-cell-static-marker-border-color);
-    border-radius: var(--yaws-cell-static-marker-border-radius);
+    box-sizing:     border-box;
+    width:          var(--yaws-control-panel-button-width);
+    height:         var(--yaws-control-panel-button-height);
+    border:         var(--yaws-control-panel-button-border);
+    border-radius:  var(--yaws-control-panel-button-border-radius);
+    color:          var(--yaws-control-panel-button-color);
+    line-height:    var(--yaws-control-panel-button-line-height);
 }
 
 .yaws .control-panel .candidates .touch-button {
-    font-size: calc(var(--yaws-cell-value-font-size)/2);
-    font-family: var(--yaws-candidate-font-family);
+    padding: 0 10%;
+background-color:   var(--yaws-control-panel-button-value-bg-color);
+    font-size:      var(--yaws-control-panel-button-candidate-font-size);
+    font-family:    var(--yaws-control-panel-button-candidate-font-family);
 }
 
 .yaws .control-panel .values .touch-button {
-    background-color: #eaeaea;
-    font-family: var(--yaws-cell-value-font-family);
-    font-size: var(--yaws-cell-value-font-size);
+    background-color:   var(--yaws-control-panel-button-value-bg-color);
+    font-family:        var(--yaws-control-panel-button-value-font-family);
+    font-size:          var(--yaws-control-panel-button-value-font-size);
 }
 
 .yaws .control-panel .btn-clear {
     height: 100%;
-    color: var(--yaws-cell-bg-color);
-    border-color: var(--yaws-board-border-color);
-    background-color: var(--yaws-board-border-color);
+    color:              var(--yaws-control-panel-button-clear-color);
+    border-color:       var(--yaws-control-panel-button-clear-border-color);
+    background-color:   var(--yaws-control-panel-button-clear-bg-color);
 }
 
+.yaws .control-panel .candidates .left      { text-align:   left; }
+.yaws .control-panel .candidates .center    { text-align:   center; }
+.yaws .control-panel .candidates .right     { text-align:   right; }
+.yaws .control-panel .candidates .top       { line-height:  calc(   var(--yaws-control-panel-button-line-height)*0.5); }
+.yaws .control-panel .candidates .middle    { line-height:          var(--yaws-control-panel-button-line-height); }
+.yaws .control-panel .candidates .bottom    { line-height:  calc(   var(--yaws-control-panel-button-line-height)*1.5); }
+
 @media (orientation: landscape) {
-    .yaws { 
+    .yaws {
+        width: 100%;
         flex-direction: row;
+        justify-content: space-evenly;
     }
     .yaws .control-panel {
-        margin-left: 3rem;
+        /*margin-left: 2rem;*/
         grid-template-areas:
-            'values candidates'
-            'clear  clear';
+            'values'
+            'clear'
+            'candidates';
     }
     .yaws .control-panel .values,
     .yaws .control-panel .candidates {
@@ -358,8 +384,7 @@
     .yaws .control-panel {
         margin-top: 2rem;
         grid-template-areas:
-            'values     clear'
-            'candidates clear';
+            'values clear candidates'
     }
     .yaws .control-panel .values,
     .yaws .control-panel .candidates {

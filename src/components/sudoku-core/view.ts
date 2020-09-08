@@ -35,9 +35,21 @@ export function init(board: IBoard, parent = 'body') {
 }
 
 function initControlPanel(root: Selection<any, unknown, HTMLElement, any>) {
-    const numberButtons = range(1, 9).map(
-        n => { return { text: n.toString(), cssClass: 'touch-button' } }
-    );
+    const getCssClass = function(n: number): string {
+        let classes = ['touch-button'];
+
+        if      (n <= 3)    { classes.push('top'); }
+        else if (n <= 6)    { classes.push('middle'); }
+        else                { classes.push('bottom'); }
+
+        if      (n % 3 === 1)   { classes.push('left'); }
+        else if (n % 3 === 2)   { classes.push('center'); }
+        else                    { classes.push('right'); }
+
+        return classes.join(' ');
+    }
+
+    const numberButtons = range(1, 9);
 
     let controlPanel = root.append('div').attr('class', 'control-panel');
 
@@ -45,17 +57,17 @@ function initControlPanel(root: Selection<any, unknown, HTMLElement, any>) {
         .selectAll('.btn-candidate')
             .data(numberButtons)
             .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
-                return selection.append('div').attr('class', b => b.cssClass ).text(b => b.text);
+                return selection.append('div').attr('class', getCssClass).text(n => n.toString());
             });
 
     controlPanel.append('div').attr('class', 'values')
         .selectAll('.btn-value')
             .data(numberButtons)
             .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
-                return selection.append('div').attr('class', b => b.cssClass ).text(b => b.text);
+                return selection.append('div').attr('class', getCssClass).text(n => n.toString());
             });
 
-    controlPanel.append('div').attr('class', 'btn-clear touch-button').text('X')
+    controlPanel.append('div').attr('class', 'btn-clear touch-button').text('DEL')
 }
 
 function scaleToViewport() {
@@ -63,9 +75,9 @@ function scaleToViewport() {
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
     
     const vmin = 320;
-    const vailable = Math.min(vw, vh);
+    const vsize = Math.min(vw, vh);
     
-    const scale = Math.max(1, Math.min(2, vailable/vmin));
+    const scale = Math.max(1, Math.min(2, vsize/vmin));
 
     document.documentElement.style.setProperty('--yaws-scale', scale.toString());
 }
