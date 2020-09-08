@@ -1,5 +1,6 @@
 import { IBoard, ICell, ICellCandidate } from './interfaces';
 import { select, selectAll, Selection } from "d3-selection";
+import { range } from "@components/utilities/misc";
 import './board.css';
 
 let refresh: (...args:any) => void = () => undefined;
@@ -8,10 +9,10 @@ export function init(board: IBoard, parent = 'body') {
     scaleToViewport();
     window.addEventListener('resize', scaleToViewport);
 
-    const dom = select(parent);
-
+    const root = select(parent).attr('class', 'yaws');
+    
     refresh = (updateHighlight = true) => {
-        dom.selectAll(`#${board.id}`)
+        root.selectAll(`#${board.id}`)
                 .data([board], (g:IBoard) => g.id)
                 .join(boardEnter)
             .selectAll('.cell')
@@ -20,7 +21,7 @@ export function init(board: IBoard, parent = 'body') {
             .selectAll('.candidate')
                 .data(c => c.candidates)
                 .join(candidateEnter, candidateUpdate);
-
+        
         if (updateHighlight) {
             setHighlight(board.cursor.cell)
         }
@@ -28,7 +29,33 @@ export function init(board: IBoard, parent = 'body') {
 
     refresh();
 
+    initControlPanel(root);
+
     return refresh;
+}
+
+function initControlPanel(root: Selection<any, unknown, HTMLElement, any>) {
+    const numberButtons = range(1, 9).map(
+        n => { return { text: n.toString(), cssClass: 'touch-button' } }
+    );
+
+    let controlPanel = root.append('div').attr('class', 'control-panel');
+
+    controlPanel.append('div').attr('class', 'candidates')
+        .selectAll('.btn-candidate')
+            .data(numberButtons)
+            .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
+                return selection.append('div').attr('class', b => b.cssClass ).text(b => b.text);
+            });
+
+    controlPanel.append('div').attr('class', 'values')
+        .selectAll('.btn-value')
+            .data(numberButtons)
+            .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
+                return selection.append('div').attr('class', b => b.cssClass ).text(b => b.text);
+            });
+
+    controlPanel.append('div').attr('class', 'btn-clear touch-button').text('X')
 }
 
 function scaleToViewport() {
@@ -47,8 +74,6 @@ function boardEnter(selection:Selection<any, IBoard, any, unknown>) {
     return selection
         .append('div')
             .attr('id', (g:IBoard) => g.id)
-            .attr('class', 'yaws')
-        .append('div')
             .attr('class', 'board')
             .on('mouseleave', g => setHighlight(g.cursor.cell));
 }

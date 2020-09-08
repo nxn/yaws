@@ -25,6 +25,7 @@
     --yaws-board-border-outer-radius:                       calc(0.25rem * var(--yaws-scale));
     --yaws-board-border-inner-radius:                       calc(0.125rem * var(--yaws-scale));
     --yaws-board-border-width:                              calc(0.1875rem * var(--yaws-scale));
+    --yaws-board-border-style:                              solid;
 
     --yaws-box-spacer-size:                                 calc(0.1875rem * var(--yaws-scale));
 
@@ -69,33 +70,38 @@
         + (var(--yaws-candidate-font-size-max) - var(--yaws-candidate-font-size-min))
         * (var(--yaws-scale) - 1)
     );
+
+    --yaws-candidate-font-family:   'Roboto Mono', monospace;
 }
 
 .yaws {
-    display:            inline-block;
-    background-color:   var(--yaws-board-border-color);
-    border-radius:      var(--yaws-board-border-outer-radius);
-    padding:            var(--yaws-board-border-width);
-    width:              var(--yaws-board-width);
-}
+    display:            flex;
+    flex-flow:          column nowrap;
+    align-items:        center;
+    justify-content:    center;
 
-.board
-{
-    text-align:             center;
-    display:                grid;
-    grid-template-columns:  repeat(9, auto);
-    vertical-align:         middle;
-    background:             var(--yaws-board-spacer-color);
-    border-radius:          var(--yaws-board-border-inner-radius);
     cursor:                 default;
     -webkit-user-select:    none;
     -moz-user-select:       none;
     -ms-user-select:        none;
     user-select:            none;
-    overflow:               hidden;
 }
 
-.board .cell
+.yaws .board
+{
+    flex-grow:              0;
+    text-align:             center;
+    display:                grid;
+    grid-template-columns:  repeat(9, auto);
+    vertical-align:         middle;
+    background:             var(--yaws-board-spacer-color);
+    border-style:           var(--yaws-board-border-style);
+    border-width:           var(--yaws-board-border-width);
+    border-color:           var(--yaws-board-border-color);
+    border-radius:          var(--yaws-board-border-outer-radius);
+}
+
+.yaws .board .cell
 {
     position:           relative;
     background:         var(--yaws-cell-bg-color);
@@ -107,34 +113,42 @@
     transition-delay:   100ms;
 }
 
+/* Apply board inner radius to corner cells -- alternate way of doing this involves settings 
+ * the overflow property on the board, but that causes problems with small viewport sizes 
+ */
+.yaws .board .cell.c1.r1 { border-top-left-radius:        var(--yaws-board-border-inner-radius) ;}
+.yaws .board .cell.c9.r1 { border-top-right-radius:       var(--yaws-board-border-inner-radius) ;}
+.yaws .board .cell.c1.r9 { border-bottom-left-radius:     var(--yaws-board-border-inner-radius) ;}
+.yaws .board .cell.c9.r9 { border-bottom-right-radius:    var(--yaws-board-border-inner-radius) ;}
+
 /* Separate grid boxes (columns and rows 3 and 6) */
-.board .cell.c3, .board .cell.c6 { margin-right:    var(--yaws-box-spacer-size) }
-.board .cell.r3, .board .cell.r6 { margin-bottom:   var(--yaws-box-spacer-size) }
+.yaws .board .cell.c3, .board .cell.c6 { margin-right:    var(--yaws-box-spacer-size) }
+.yaws .board .cell.r3, .board .cell.r6 { margin-bottom:   var(--yaws-box-spacer-size) }
 
 /* Remove borders and margins on the last column and row */
-.board .cell.c9 { margin-right:     0; border-right:    0; } 
-.board .cell.r9 { margin-bottom:    0; border-bottom:   0; }
+.yaws .board .cell.c9 { margin-right:     0; border-right:    0; } 
+.yaws .board .cell.r9 { margin-bottom:    0; border-bottom:   0; }
 
-.board .cell > div
+.yaws .board .cell > div
 {
     position:   absolute;
     width:      100%;
     height:     100%;
 }
 
-.board .static.cell .notes
+.yaws .board .static.cell .notes
 { 
     display: none;
 }
 
-.board .editable.cell .notes
+.yaws .board .editable.cell .notes
 {
     display:                grid;
     grid-template-columns:  repeat(3, 1fr);
     grid-template-rows:     repeat(3, 1fr);
 }
 
-.board .cell > .value
+.yaws .board .cell > .value
 {
     color:          var(--yaws-cell-value-color);
     font-family:    var(--yaws-cell-value-font-family);
@@ -142,7 +156,7 @@
     line-height:    var(--yaws-cell-value-line-height);
 }
 
-.board .static.cell > .value
+.yaws .board .static.cell > .value
 {
     box-sizing:         border-box;
     border-color:       var(--yaws-cell-static-marker-border-color);
@@ -156,7 +170,7 @@
     background-color:   var(--yaws-cell-static-marker-bg-color);
 }
 
-.board .editable.cell .notes .candidate
+.yaws .board .editable.cell .notes .candidate
 {
     /*box-sizing:                 border-box;*/
     width:                      calc(0.625rem * var(--yaws-scale));
@@ -173,20 +187,20 @@
 }
 
 /* Mouse pointer candidate picker styles */
-.board .editable.cell .notes:hover .candidate
+.yaws .board .editable.cell .notes:hover .candidate
 {
     color:          rgba(166,166,166,1);
     border-right:   0.0625rem solid rgba(187,187,187,1);
     border-bottom:  0.0625rem solid rgba(187,187,187,1);
 }
 
-.board .editable.cell .notes .candidate:hover
+.yaws .board .editable.cell .notes .candidate:hover
 {
     color: rgba(255, 113, 0, 1);
 }
 
-.board .editable.cell .notes       .selected.candidate,
-.board .editable.cell .notes:hover .selected.candidate
+.yaws .board .editable.cell .notes       .selected.candidate,
+.yaws .board .editable.cell .notes:hover .selected.candidate
 {
     color: #666;
 }
@@ -195,34 +209,34 @@
 
 
 /* Cursor and Highlight Styles */
-.board .highlight.cell
+.yaws .board .highlight.cell
 {
     background-color:   #eaeaea;
     transition:         background-color 250ms ease;
 }
-.board .cursor.cell
+.yaws .board .cursor.cell
 {
     background-color: #ccc;
 }
-.board .static.cursor.cell .value
+.yaws .board .static.cursor.cell .value
 {
     border-color: #999;
     /*background-color: #eaeaea;*/
 }
 /* Darken the following values to make up for the darker
  * cursor background color */
-.board .editable.cursor.cell .notes:hover .candidate
+.yaws .board .editable.cursor.cell .notes:hover .candidate
 {
     color:          rgba(128,128,128,1);
     border-right:   0.0625rem solid rgba(166,166,166,1);
     border-bottom:  0.0625rem solid rgba(166,166,166,1);
 }
-.board .editable.cursor.cell .notes .candidate:hover
+.yaws .board .editable.cursor.cell .notes .candidate:hover
 {
     color: rgba(255, 64, 0, 1);
 }
-.board .editable.cursor.cell .notes       .selected.candidate,
-.board .editable.cursor.cell .notes:hover .selected.candidate
+.yaws .board .editable.cursor.cell .notes       .selected.candidate,
+.yaws .board .editable.cursor.cell .notes:hover .selected.candidate
 {
     color: #333;
 }
@@ -231,17 +245,17 @@
 
 
 /* Invalid Styles */
-.board .editable.cell .invalid.value,
-.board .editable.cell .notes       .invalid.selected.candidate,
-.board .editable.cell .notes:hover .invalid.selected.candidate
+.yaws .board .editable.cell .invalid.value,
+.yaws .board .editable.cell .notes       .invalid.selected.candidate,
+.yaws .board .editable.cell .notes:hover .invalid.selected.candidate
 {
     color: var(--yaws-cell-invalid-value-color);
 }
-.board .editable.cell > .invalid.value
+.yaws .board .editable.cell > .invalid.value
 {
     background-image: var(--yaws-cell-invalid-value-bg-image);
 }
-.board .static.cell > .invalid.value
+.yaws .board .static.cell > .invalid.value
 {
     background-color:   var(--yaws-cell-static-marker-invalid-bg-color);
     border-color:       var(--yaws-cell-static-marker-invalid-border-color);
@@ -249,10 +263,107 @@
     line-height:        var(--yaws-cell-static-marker-invalid-value-line-height);
 }
 
-.board .hidden
+.yaws .board .hidden
 {
     display: none !important;
 }
 
-.last-column, .c9 { margin-right:   0 !important; border-right:     0 !important; } 
-.last-row, .r9 {    margin-bottom:  0 !important; border-bottom:    0 !important; }
+.yaws .last-column, .c9 { margin-right:   0 !important; border-right:     0 !important; } 
+.yaws .last-row, .r9 {    margin-bottom:  0 !important; border-bottom:    0 !important; }
+
+
+
+
+
+
+.yaws .control-panel {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 1fr auto;
+}
+
+.yaws .control-panel .values,
+.yaws .control-panel .candidates {
+    display: flex;
+}
+
+.yaws .control-panel,
+.yaws .control-panel .values,
+.yaws .control-panel .candidates {
+    gap: var(--yaws-box-spacer-size);
+}
+
+.yaws .control-panel .candidates  { grid-area: candidates }
+.yaws .control-panel .values      { grid-area: values }
+.yaws .control-panel .btn-clear   { grid-area: clear }
+
+.yaws  .control-panel .touch-button {
+    box-sizing: border-box;
+    width: var(--yaws-cell-static-marker-width);
+    height: var(--yaws-cell-static-marker-height);
+
+    color: var(--yaws-cell-value-color);
+
+    
+    line-height: var(--yaws-cell-static-marker-line-height);
+
+    border-width: var(--yaws-cell-static-marker-border-width);
+    border-style: var(--yaws-cell-static-marker-border-style);
+    border-color: var(--yaws-cell-static-marker-border-color);
+    border-radius: var(--yaws-cell-static-marker-border-radius);
+}
+
+.yaws .control-panel .candidates .touch-button {
+    font-size: calc(var(--yaws-cell-value-font-size)/2);
+    font-family: var(--yaws-candidate-font-family);
+}
+
+.yaws .control-panel .values .touch-button {
+    background-color: #eaeaea;
+    font-family: var(--yaws-cell-value-font-family);
+    font-size: var(--yaws-cell-value-font-size);
+}
+
+.yaws .control-panel .btn-clear {
+    height: 100%;
+    color: var(--yaws-cell-bg-color);
+    border-color: var(--yaws-board-border-color);
+    background-color: var(--yaws-board-border-color);
+}
+
+@media (orientation: landscape) {
+    .yaws { 
+        flex-direction: row;
+    }
+    .yaws .control-panel {
+        margin-left: 3rem;
+        grid-template-areas:
+            'values candidates'
+            'clear  clear';
+    }
+    .yaws .control-panel .values,
+    .yaws .control-panel .candidates {
+        flex-flow: column nowrap;
+    }
+
+    .yaws .control-panel .btn-clear {
+        width: 100%
+    }
+}
+  
+  @media (orientation: portrait) {
+    .yaws { 
+        flex-direction: column;
+    }
+    .yaws .control-panel {
+        margin-top: 2rem;
+        grid-template-areas:
+            'values     clear'
+            'candidates clear';
+    }
+    .yaws .control-panel .values,
+    .yaws .control-panel .candidates {
+        flex-flow: row nowrap;
+        justify-content: space-evenly;
+    }
+}
