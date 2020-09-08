@@ -34,42 +34,6 @@ export function init(board: IBoard, parent = 'body') {
     return refresh;
 }
 
-function initControlPanel(root: Selection<any, unknown, HTMLElement, any>) {
-    const getCssClass = function(n: number): string {
-        let classes = ['touch-button'];
-
-        if      (n <= 3)    { classes.push('top'); }
-        else if (n <= 6)    { classes.push('middle'); }
-        else                { classes.push('bottom'); }
-
-        if      (n % 3 === 1)   { classes.push('left'); }
-        else if (n % 3 === 2)   { classes.push('center'); }
-        else                    { classes.push('right'); }
-
-        return classes.join(' ');
-    }
-
-    const numberButtons = range(1, 9);
-
-    let controlPanel = root.append('div').attr('class', 'control-panel');
-
-    controlPanel.append('div').attr('class', 'candidates')
-        .selectAll('.btn-candidate')
-            .data(numberButtons)
-            .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
-                return selection.append('div').attr('class', getCssClass).text(n => n.toString());
-            });
-
-    controlPanel.append('div').attr('class', 'values')
-        .selectAll('.btn-value')
-            .data(numberButtons)
-            .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
-                return selection.append('div').attr('class', getCssClass).text(n => n.toString());
-            });
-
-    controlPanel.append('div').attr('class', 'btn-clear touch-button').text('DEL')
-}
-
 function scaleToViewport() {
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
@@ -193,4 +157,46 @@ function setHighlight(cell: ICell): void {
     selectAll('.highlight').classed('highlight', false);
     selectAll(`.${cell.row.name}, .${cell.column.name}`)
         .classed('highlight', true);
+}
+
+function initControlPanel(root: Selection<any, unknown, HTMLElement, any>) {
+    const getCssClass = function(n: number): string {
+        let classes = [];
+
+        if      (n <= 3)    { classes.push('top'); }
+        else if (n <= 6)    { classes.push('middle'); }
+        else                { classes.push('bottom'); }
+
+        if      (n % 3 === 1)   { classes.push('left'); }
+        else if (n % 3 === 2)   { classes.push('center'); }
+        else                    { classes.push('right'); }
+
+        return classes.join(' ');
+    }
+
+    const numberButtons = range(1, 9);
+
+    let controlPanel = root.append('div').attr('class', 'control-panel');
+
+    controlPanel.append('div').attr('class', 'candidates')
+        .selectAll('.btn-candidate')
+            .data(numberButtons)
+            .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
+                return selection.append('button')
+                    .attr('class', getCssClass)
+                    .attr('type', 'button')
+                    .text(n => n.toString());
+            });
+
+    controlPanel.append('div').attr('class', 'values')
+        .selectAll('.btn-value')
+            .data(numberButtons)
+            .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
+                return selection.append('button')
+                    .attr('class', getCssClass)
+                    .attr('type', 'button')
+                    .text(n => n.toString());
+            });
+
+    controlPanel.append('button').attr('class', 'btn-clear').attr('type', 'button').text('DEL')
 }

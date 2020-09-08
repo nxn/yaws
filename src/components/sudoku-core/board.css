@@ -69,8 +69,9 @@
 
     --yaws-candidate-font-family:   'Roboto Mono', monospace;
 
-    --yaws-control-panel-button-color:  #333;
-    --yaws-control-panel-button-width:  calc(1.5rem * var(--yaws-scale));
+    --yaws-control-panel-button-color:      #333;
+    --yaws-control-panel-button-bg-color:   #eaeaea;
+    --yaws-control-panel-button-width:      calc(1.5rem * var(--yaws-scale));
 
     --yaws-control-panel-button-width-min: 2.25rem;
     --yaws-control-panel-button-width-max: 3.5rem;
@@ -86,7 +87,6 @@
 
     --yaws-control-panel-button-value-font-family:      'Cabin Condensed', sans-serif;
     --yaws-control-panel-button-value-font-size:        calc(1.3125rem * var(--yaws-scale));
-    --yaws-control-panel-button-value-bg-color:         #eaeaea;
 
     --yaws-control-panel-button-candidate-font-family: 'Roboto Mono', monospace;
     --yaws-control-panel-button-candidate-font-size:    calc(var(--yaws-control-panel-button-value-font-size)/2);
@@ -317,25 +317,29 @@
 .yaws .control-panel .values      { grid-area: values }
 .yaws .control-panel .btn-clear   { grid-area: clear }
 
-.yaws  .control-panel .touch-button {
-    box-sizing:     border-box;
-    width:          var(--yaws-control-panel-button-width);
-    height:         var(--yaws-control-panel-button-height);
-    border:         var(--yaws-control-panel-button-border);
-    border-radius:  var(--yaws-control-panel-button-border-radius);
-    color:          var(--yaws-control-panel-button-color);
-    line-height:    var(--yaws-control-panel-button-line-height);
+.yaws  .control-panel button {
+    box-sizing:         border-box;
+    width:              var(--yaws-control-panel-button-width);
+    height:             var(--yaws-control-panel-button-height);
+    border:             var(--yaws-control-panel-button-border);
+    border-radius:      var(--yaws-control-panel-button-border-radius);
+    color:              var(--yaws-control-panel-button-color);
+    background-color:   var(--yaws-control-panel-button-bg-color);
+    line-height:        var(--yaws-control-panel-button-line-height);
+    display:            inline-flex;
+    align-items:        center;
+    justify-content:    center;
 }
 
-.yaws .control-panel .candidates .touch-button {
-    padding: 0 10%;
-background-color:   var(--yaws-control-panel-button-value-bg-color);
-    font-size:      var(--yaws-control-panel-button-candidate-font-size);
-    font-family:    var(--yaws-control-panel-button-candidate-font-family);
+.yaws .control-panel .candidates button {
+    padding:            10%;
+    font-size:          var(--yaws-control-panel-button-candidate-font-size);
+    font-family:        var(--yaws-control-panel-button-candidate-font-family);
+    line-height:        calc(var(--yaws-control-panel-button-line-height)/3);
 }
 
-.yaws .control-panel .values .touch-button {
-    background-color:   var(--yaws-control-panel-button-value-bg-color);
+.yaws .control-panel .values button {
+    
     font-family:        var(--yaws-control-panel-button-value-font-family);
     font-size:          var(--yaws-control-panel-button-value-font-size);
 }
@@ -347,12 +351,12 @@ background-color:   var(--yaws-control-panel-button-value-bg-color);
     background-color:   var(--yaws-control-panel-button-clear-bg-color);
 }
 
-.yaws .control-panel .candidates .left      { text-align:   left; }
-.yaws .control-panel .candidates .center    { text-align:   center; }
-.yaws .control-panel .candidates .right     { text-align:   right; }
-.yaws .control-panel .candidates .top       { line-height:  calc(var(--yaws-control-panel-button-line-height)*0.5); }
-.yaws .control-panel .candidates .middle    { line-height:  var(--yaws-control-panel-button-line-height); }
-.yaws .control-panel .candidates .bottom    { line-height:  calc(var(--yaws-control-panel-button-line-height)*1.5); }
+.yaws .control-panel .candidates .left      { justify-content:  left; }
+.yaws .control-panel .candidates .center    { justify-content:  center; }
+.yaws .control-panel .candidates .right     { justify-content:  right; }
+.yaws .control-panel .candidates .top       { align-items:      flex-start; }
+.yaws .control-panel .candidates .middle    { align-items:      center; }
+.yaws .control-panel .candidates .bottom    { align-items:      flex-end; }
 
 @media (orientation: landscape) {
     .yaws {
