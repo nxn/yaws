@@ -25,16 +25,10 @@ module.exports = {
     disableHostCheck: true,
   },
   module: {
-    rules: [{ // Main app/root TypeScript loader instance
-      test: /\.tsx?$/,
-      /* Code within the /src/components/workers directory should be compiled using a separate ts-loader instance so 
-      that the compiler uses the correct tsconfig.json file*/
-      exclude: [workers, /node_modules/],
-      loader: 'ts-loader',
-      options: {
-        instance: "root",
-        configFile: path.resolve(__dirname, 'tsconfig.json')
-      }
+    rules: [{
+      test: /\.(js|jsx|tsx|ts)$/,
+      loaders: 'babel-loader',
+      exclude: [workers, /node_modules/]
     },{ // Web Worker TypeScript loader instance
       test: workers,
       loader: 'ts-loader',
@@ -71,7 +65,7 @@ module.exports = {
   },
   resolve: {
     mainFields: ['browser', 'module', 'main'],
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
       '@components': path.resolve(__dirname, 'src/components/'),
       '@lib'       : path.resolve(__dirname, 'src/lib/'),

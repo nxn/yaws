@@ -1,6 +1,6 @@
-import { IBoard }                   from '@components/sudoku-core/interfaces';
-import { init as boardViewInit }    from '@components/sudoku-core/view';
-import { init as toolViewInit }     from '@components/tool-panels/tools';
+import { IBoard }                   from '@components/sudoku/interfaces';
+import { init as boardViewInit }    from '@components/sudoku/view';
+//import { init as toolViewInit }     from '@components/tool-panels/tools';
 import { IStorageCollection }       from '@components/storage/interfaces';
 import './page.css';
 

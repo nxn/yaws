@@ -1,8 +1,8 @@
 import { IBoard, ICell, ICellCandidate, ICursor } from './interfaces';
 import { select, selectAll, Selection, event } from "d3-selection";
 import { range } from "@components/utilities/misc";
-import './board.css';
-import icons from './icons.svg';
+import './view/board.css';
+import icons from './view/images/icons.svg';
 
 let refresh: (...args:any) => void = () => undefined;
 

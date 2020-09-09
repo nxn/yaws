@@ -1,9 +1,9 @@
 import config                                   from './config';
 import * as page                                from '@components/page/page';
 import { storage, proxies }                     from '@components/storage/storage';
-import { create as createBoard }                from '@components/sudoku-core/board';
-import { createManager as createStateManager }  from '@components/sudoku-core/gamestate';
-import { createKeyboardController }             from '@components/sudoku-core/keyboard';
+import { create as createBoard }                from '@components/sudoku/board';
+import { createManager as createStateManager }  from '@components/sudoku/gamestate';
+import { createKeyboardController }             from '@components/sudoku/keyboard';
 import { waffleIron }                           from '@components/web-workers/waffle-iron';
 
 function init() {
