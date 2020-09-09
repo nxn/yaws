@@ -1,15 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <title>Aw Yaws - Yet Another Web Sudoku</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+        <meta name="description" content="YAWS is a personal project to create a modern and functional web-based sudoku
+        game using standard browser technologies.">
+        
         <link rel="preload" href="<%= require('@components/sudoku-core/fonts/cabincondensed-bold-digits.woff2').default %>" 
             as="font" type="font/woff2" crossorigin>
         <link rel="preload" href="<%= require('@components/sudoku-core/fonts/robotomono-bold-digits.woff2').default %>" 
             as="font" type="font/woff2" crossorigin>
-        <link rel="preload" href="<%= require('@components/sudoku-core/icons.svg').default %>" as="image" type="image/svg+xml">
+        <link rel="preload" href="<%= require('@components/sudoku-core/icons.svg').default %>" as="image" 
+            type="image/svg+xml" crossorigin>
     </head>
     <body>
         <div id="page">
@@ -45,8 +48,8 @@
                     <p>
                         The objective is to fill the 9×9 grid with digits so that each column, each row, and each of the
                         nine 3×3 subgrids contain all of the digits from 1 to 9. For more information regarding Sudoku,
-                        feel free to <a href="https://en.wikipedia.org/wiki/Sudoku" target="_blank">visit the wikipedia 
-                        article.</a>
+                        feel free to <a href="https://en.wikipedia.org/wiki/Sudoku" target="_blank" rel="noreferrer">
+                        visit the wikipedia article.</a>
                     </p>
                 </section>
 
@@ -93,20 +96,21 @@
                     <p>
                         <strong>YAWS</strong> is a personal project to create a modern and functional web-based sudoku
                         game using standard browser technologies. It is able to solve and generate challenging puzzles 
-                        in a consistant manner via the use of <a href="https://webassembly.org/">Web Assembly</a> for
-                        its core code. The user interface was created using standard HTML5, CSS, and JavaScript 
-                        techniques.
+                        in a consistant manner via the use of <a href="https://webassembly.org/" target="_blank"
+                        rel="noreferrer">Web Assembly</a> for its core code. The user interface was created using 
+                        standard HTML5, CSS, and JavaScript techniques.
                     </p>
                     <p>
                         Its source code is freely available at the following repositories: 
                     </p>
                     <ul>
                         <li>
-                            User Interface: <a href="https://github.com/nxn/yaws">https://github.com/nxn/yaws</a>
+                            User Interface: <a href="https://github.com/nxn/yaws" target="_blank" rel="noopener">
+                            https://github.com/nxn/yaws</a>
                         </li>
                         <li>
-                            Rust puzzle generator and solver: <a href="https://github.com/nxn/waffle-iron">
-                                https://github.com/nxn/waffle-iron</a>
+                            Rust puzzle generator and solver: <a href="https://github.com/nxn/waffle-iron" 
+                            target="_blank" rel="noopener">https://github.com/nxn/waffle-iron</a>
                         </li>
                     </ul>
                 </section>
