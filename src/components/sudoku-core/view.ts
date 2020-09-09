@@ -185,13 +185,12 @@ function initControlPanel(root: Selection<any, unknown, HTMLElement, any>, curso
 
     let controlPanel = root.append('div').attr('class', 'control-panel');
 
-    controlPanel.append('div').attr('class', 'values').selectAll('.btn-value')
+    controlPanel.append('div').attr('class', 'values').selectAll('button')
         .data(numberButtons)
         .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
             return selection.append('button')
                 .attr('class', getCssClass)
                 .attr('type', 'button')
-                .text(n => n.toString())
                 .on('click', (n: number) => {
                     if (cursor.cell.value && cursor.cell.value === n) {
                         cursor.clear();
@@ -200,16 +199,16 @@ function initControlPanel(root: Selection<any, unknown, HTMLElement, any>, curso
                         cursor.cell.value = n;
                     }
                     refresh(false);
-                });
+                })
+                .append('span').text(n => n.toString());
         });
 
-    controlPanel.append('div').attr('class', 'candidates').selectAll('.btn-candidate')
+    controlPanel.append('div').attr('class', 'notes').selectAll('button')
         .data(numberButtons)
         .join(function(selection:Selection<any, any, HTMLDivElement, any>) {
             return selection.append('button')
                 .attr('class', getCssClass)
                 .attr('type', 'button')
-                .text(n => n.toString())
                 .on('click', (n: number) => {
                     if (cursor.cell.value) return;
 
@@ -218,7 +217,8 @@ function initControlPanel(root: Selection<any, unknown, HTMLElement, any>, curso
                     
                     candidate.selected = !candidate.selected;
                     refresh(false);
-                });
+                })
+                .append('span').text(n => n.toString());
         });
 
     controlPanel.append('button')
@@ -228,6 +228,7 @@ function initControlPanel(root: Selection<any, unknown, HTMLElement, any>, curso
             cursor.clear();
             refresh(false);
         })
+        .append('span')
         .append('svg').attr('class', 'icon')
         .append('use').attr('href', `${icons}#yaws-icon-x`);
 }
