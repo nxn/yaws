@@ -156,9 +156,9 @@ function getCandidateClasses(candidate: ICellCandidate) {
     return classes.join(' ');
 }
 
-function hideCursor() {
+/*function hideCursor() {
     selectAll(`.cursor`).classed('cursor', false);
-}
+}*/
 
 function setHighlight(cell: ICell): void {
     selectAll('.highlight').classed('highlight', false);

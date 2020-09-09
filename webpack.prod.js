@@ -17,11 +17,11 @@ module.exports = {
   mode: 'production',
   target: 'web',
   module: {
-    rules: [{
+    rules: [{ // Main JS/TS loader via babel -> tsc
       test: /\.(js|jsx|tsx|ts)$/,
       loaders: 'babel-loader',
       exclude: [workers, /node_modules/]
-    },{ // Web Worker TypeScript loader instance
+    },{ // Web Worker TypeScript loader instance (requires separate tsconfig)
       test: workers,
       loader: 'ts-loader',
       options: {
