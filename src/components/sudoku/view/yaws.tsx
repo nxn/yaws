@@ -19,7 +19,7 @@ export function init(board: IBoard, parent: string) {
     scaleToViewport();
     window.addEventListener('resize', scaleToViewport);
 
-    let render = () => inferno(<Yaws board={board} />, document.getElementById(parent));
+    const render = () => inferno(<Yaws board={board} />, document.getElementById(parent));
     render();
     return render;
 }

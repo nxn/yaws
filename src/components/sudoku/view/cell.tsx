@@ -1,7 +1,7 @@
 import { ICell, ICellCandidate } from "../interfaces";
 import { Candidate } from "./candidate";
 
-type TProps = { model: ICell };
+type TProps = { model: ICell, cursor: boolean };
 
 const createCandidate = (candidate: ICellCandidate) => (
     <Candidate model={candidate} />
@@ -15,6 +15,10 @@ export const Cell = (props: TProps) => {
         props.model.box.name,
         props.model.isStatic ? 'static' : 'editable'
     ];
+
+    if (props.cursor) {
+        classes.push('cursor');
+    }
 
     return (
         <div id={props.model.id} className={ classes.join(' ') }>
