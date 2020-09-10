@@ -11,7 +11,7 @@
       "target": "ESNext",
       "module": "ESNext",
       "outDir": "dist",
-      "types": ["d3-selection", "inferno"],
+      "types": ["inferno"],
       "moduleResolution": "node",
       "sourceMap": true,
       "jsx": "preserve",
