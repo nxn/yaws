@@ -1,8 +1,18 @@
+import { linkEvent } from 'inferno';
+
 import { ICellCandidate } from "../interfaces";
 
-type TProps = { model: ICellCandidate };
+export interface ICandidateController {
+    toggleSelect: (model: ICellCandidate) => void;
+    setCellValue: (model: ICellCandidate) => void;
+}
 
-export const Candidate = (props: TProps) => {
+type CandidateProperties = {
+    model: ICellCandidate,
+    controller: ICandidateController
+};
+
+export const Candidate = (props: CandidateProperties) => {
     let classes = ['candidate'];
 
     if (props.model.selected) {
@@ -22,8 +32,16 @@ export const Candidate = (props: TProps) => {
     }
 
     return (
-        <div className={ classes.join(' ') }>
+        <div className={ classes.join(' ') } 
+            onClick={ linkEvent(props.model, props.controller.toggleSelect) } 
+            onDblClick={ linkEvent(props.model, props.controller.setCellValue) } 
+            onTouchEnd={ preventTouchEvents }>
+
             { props.model.value }
         </div>
     );
 };
+
+function preventTouchEvents(event: TouchEvent) {
+    event.preventDefault();
+}

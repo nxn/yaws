@@ -3,24 +3,33 @@ import { render as inferno } from 'inferno';
 import { IBoard }   from '../interfaces';
 import { Board }    from './board';
 import { Controls } from './controls';
+import { YawsController, createYawsController } from './controller';
 
 import './board.css';
 
-type TProps = { board: IBoard };
+type YawsProperties = { 
+    model:      IBoard,
+    controller: YawsController
+};
 
-export const Yaws = (props: TProps) => (
+export const Yaws = (props: YawsProperties) => (
     <div className="yaws">
-        <Board model={props.board} />
-        <Controls board={props.board} />
+        <Board model={props.model} controller={props.controller} />
+        <Controls board={props.model} />
     </div>
 );
 
-export function init(board: IBoard, parent: string) {
+export function init(board: IBoard, containerId: string) {
+    const container = document.getElementById(containerId);
+
     scaleToViewport();
     window.addEventListener('resize', scaleToViewport);
 
-    const render = () => inferno(<Yaws board={board} />, document.getElementById(parent));
+    let render = () => { };
+    const controller = createYawsController(board, () => render());
+    render = () => inferno(<Yaws model={board} controller={controller} />, container);
     render();
+
     return render;
 }
 

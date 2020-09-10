@@ -1,13 +1,20 @@
+import { linkEvent } from 'inferno';
+
 import { ICell, ICellCandidate } from "../interfaces";
-import { Candidate } from "./candidate";
+import { Candidate, ICandidateController } from "./candidate";
 
-type TProps = { model: ICell, cursor: boolean };
+export interface ICellController extends ICandidateController {
+    clearCellValue: (cell: ICell) => void;
+    setCursor: (cell: ICell) => void;
+}
 
-const createCandidate = (candidate: ICellCandidate) => (
-    <Candidate model={candidate} />
-);
+type CellProperties = { 
+    model:      ICell,
+    controller: ICellController,
+    cursor:     boolean
+};
 
-export const Cell = (props: TProps) => {
+export const Cell = (props: CellProperties) => {
     let classes = [
         'cell',
         props.model.row.name,
@@ -21,13 +28,22 @@ export const Cell = (props: TProps) => {
     }
 
     return (
-        <div id={props.model.id} className={ classes.join(' ') }>
-            <div className="value">
+        <div id={props.model.id} className={ classes.join(' ') }
+            onClick={ linkEvent(props.model, props.controller.setCursor) }
+            onTouchEnd={ linkEvent(props.model, props.controller.setCursor) }>
+
+            <div className={ props.model.isValid ? "value" : "invalid value" }
+                onDblClick={ linkEvent(props.model, props.controller.clearCellValue) }>
                 { props.model.value > 0 ? props.model.value : "" }
             </div>
-            <div className="notes">
-                { props.model.candidates.map(createCandidate) }
+
+            <div className={ props.model.value === 0 ? "notes" : "notes hidden" }>
+                { props.model.candidates.map(candidate => createCandidate(candidate, props)) }
             </div>
         </div>
     );
 };
+
+const createCandidate = (candidate: ICellCandidate, props: CellProperties) => (
+    <Candidate model={candidate} controller={props.controller} />
+);
