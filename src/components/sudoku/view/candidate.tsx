@@ -1,39 +1,42 @@
 import { linkEvent } from 'inferno';
 
-import { ICandidate } from "../interfaces";
+import { IBoard, ICandidate } from "../interfaces";
 import { ICandidateController } from "./controller";
 
 type CandidateProperties = {
-    model: ICandidate,
-    controller: ICandidateController
+    model:      IBoard,
+    controller: ICandidateController,
+    context:    ICandidate
 };
 
 export const Candidate = (props: CandidateProperties) => {
-    let classes = ['candidate'];
+    let candidate = props.context;
+    let eventContext = {
+        model: props.model,
+        target: candidate
+    }
 
-    if (props.model.isSelected) {
+    let classes = ['candidate'];
+    if (candidate.isSelected) {
         classes.push('selected');
     }
-
-    if (!props.model.isValid) {
+    if (!candidate.isValid) {
         classes.push('invalid');
     }
-
-    if (props.model.value % 3 === 0) {
+    if (candidate.value % 3 === 0) {
         classes.push('last-column');
     }
-
-    if (props.model.value > 6) {
+    if (candidate.value > 6) {
         classes.push('last-row');
     }
 
     return (
         <div className={ classes.join(' ') } 
-            onClick={ linkEvent(props.model, props.controller.toggleCandidate) } 
-            onDblClick={ linkEvent(props.model, props.controller.setCellValue) } 
+            onClick={ linkEvent(eventContext, props.controller.toggleCandidate) } 
+            onDblClick={ linkEvent(eventContext, props.controller.setCellValue) } 
             onTouchEnd={ preventTouchEvents }>
 
-            { props.model.value }
+            { candidate.value }
         </div>
     );
 };

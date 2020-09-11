@@ -1,45 +1,46 @@
 import { linkEvent } from 'inferno';
 
-import { ICell, ICandidate } from "../interfaces";
-import { Candidate } from "./candidate";
-import { ICellController } from "./controller";
+import { IBoard, ICell }    from "../interfaces";
+import { ICellController }              from "./controller";
+import { Candidate }                    from "./candidate";
 
 type CellProperties = { 
-    model:      ICell,
+    model:      IBoard,
     controller: ICellController,
-    cursor:     boolean
+    context:    ICell
 };
 
 export const Cell = (props: CellProperties) => {
+    let cell = props.context;
+    let eventContext = { model: props.model, target: cell };
+
     let classes = [
         'cell',
-        props.model.row.name,
-        props.model.column.name,
-        props.model.box.name,
-        props.model.isStatic ? 'static' : 'editable'
+        cell.row.name,
+        cell.column.name,
+        cell.box.name,
+        cell.isStatic ? 'static' : 'editable'
     ];
 
-    if (props.cursor) {
+    if (cell === props.model.cursor.cell) {
         classes.push('cursor');
     }
 
     return (
         <div id={props.model.id} className={ classes.join(' ') }
-            onClick={ linkEvent(props.model, props.controller.setCursor) }
-            onTouchEnd={ linkEvent(props.model, props.controller.setCursor) }>
+            onClick={ linkEvent(eventContext, props.controller.setCursor) }
+            onTouchEnd={ linkEvent(eventContext, props.controller.setCursor) }>
 
-            <div className={ props.model.isValid ? "value" : "invalid value" }
-                onDblClick={ linkEvent(props.model, props.controller.clearCellValue) }>
-                { props.model.value > 0 ? props.model.value : "" }
+            <div className={ cell.isValid ? "value" : "invalid value" }
+                onDblClick={ linkEvent(eventContext, props.controller.clearCellValue) }>
+                { cell.value > 0 ? cell.value : "" }
             </div>
 
-            <div className={ props.model.value === 0 ? "notes" : "notes hidden" }>
-                { props.model.candidates.map(candidate => createCandidate(candidate, props)) }
-            </div>
+            <div className={ props.context.value === 0 ? "notes" : "notes hidden" }>{
+                cell.candidates.map(
+                    candidate => <Candidate model={props.model} controller={props.controller} context={candidate} />
+                )
+            }</div>
         </div>
     );
 };
-
-const createCandidate = (candidate: ICandidate, props: CellProperties) => (
-    <Candidate model={candidate} controller={props.controller} />
-);

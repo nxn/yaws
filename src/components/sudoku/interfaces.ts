@@ -38,7 +38,7 @@ export interface ICell extends IModel {
 export interface ICandidate extends IModel {
     type:       ModelType.Candidate;
     value:      number;
-    cell:       ICell;
+    //cell:       ICell;
     isValid:    boolean;
     isSelected: boolean;
 }

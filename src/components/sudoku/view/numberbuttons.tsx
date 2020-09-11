@@ -1,10 +1,10 @@
-import { ICursor } from '../interfaces';
-import { range } from '@components/utilities/misc';
+import { IBoard } from '../interfaces';
 import { ICursorController } from './controller';
+import { range } from '@components/utilities/misc';
 
 type TProps = { 
-    className: string, 
-    model: ICursor,
+    className:  string, 
+    model:      IBoard,
     controller: ICursorController
 };
 
