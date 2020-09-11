@@ -30,7 +30,7 @@ const Controller: ICellController & ICursorController = {
         candidate.isSelected = !candidate.isSelected;
     },
     
-    setCellValue: (context: { model: IBoard, target: ICandidate | ICursor, value?: number }) => {
+    setCellValue: (context: { model: IBoard, target: (ICandidate | ICursor), value?: number }) => {
         if (context.target.type === ModelType.Candidate) {
             // Hack: the only reason this works is because the first click of the double-click event updates the cursor 
             // prior to the value being set. This event should probably propagate down to the cell before being handled.
@@ -40,7 +40,13 @@ const Controller: ICellController & ICursorController = {
         
         if (!context.value) { return; }
     
-        context.target.cell.value = context.value;
+        // if there is already a set value in the cursor cell and the new one is the same, clear the value instead.
+        if (context.target.cell.value && context.target.cell.value === context.value) {
+            context.target.clear();
+        }
+        else {
+            context.target.cell.value = context.value;
+        }
     },
     
     clearCellValue: (context: { model: IBoard, target: ICell }) => {

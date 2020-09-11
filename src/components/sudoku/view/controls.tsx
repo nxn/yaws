@@ -2,7 +2,7 @@ import { linkEvent } from 'inferno';
 
 import { IBoard } from '../interfaces';
 import { ICursorController } from './controller';
-import { NumberButtons } from './numberbuttons';
+import { ValueButtons, NoteButtons } from './buttons';
 
 import icons from './images/icons.svg';
 
@@ -18,8 +18,8 @@ export const Controls = (props: ControlProperties) => {
     }
     return (
         <div className="control-panel">
-            <NumberButtons model={props.model} controller={props.controller} className="values" />
-            <NumberButtons model={props.model} controller={props.controller} className="notes" />
+            <ValueButtons   model={props.model} controller={props.controller} />
+            <NoteButtons    model={props.model} controller={props.controller} />
             <button className="btn-clear" onClick={ linkEvent(eventContext, props.controller.clearCursor)}>
                 <span>
                     <svg class="icon">
