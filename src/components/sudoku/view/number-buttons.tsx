@@ -1,7 +1,12 @@
-import { IBoard } from '../interfaces';
+import { ICursor } from '../interfaces';
 import { range } from '@components/utilities/misc';
+import { ICursorController } from './controller';
 
-type TProps = { className: string, board: IBoard };
+type TProps = { 
+    className: string, 
+    model: ICursor,
+    controller: ICursorController
+};
 
 const createButton = (number: number) => {
     let classes = [];

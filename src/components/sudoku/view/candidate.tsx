@@ -1,21 +1,17 @@
 import { linkEvent } from 'inferno';
 
-import { ICellCandidate } from "../interfaces";
-
-export interface ICandidateController {
-    toggleSelect: (model: ICellCandidate) => void;
-    setCellValue: (model: ICellCandidate) => void;
-}
+import { ICandidate } from "../interfaces";
+import { ICandidateController } from "./controller";
 
 type CandidateProperties = {
-    model: ICellCandidate,
+    model: ICandidate,
     controller: ICandidateController
 };
 
 export const Candidate = (props: CandidateProperties) => {
     let classes = ['candidate'];
 
-    if (props.model.selected) {
+    if (props.model.isSelected) {
         classes.push('selected');
     }
 
@@ -33,7 +29,7 @@ export const Candidate = (props: CandidateProperties) => {
 
     return (
         <div className={ classes.join(' ') } 
-            onClick={ linkEvent(props.model, props.controller.toggleSelect) } 
+            onClick={ linkEvent(props.model, props.controller.toggleCandidate) } 
             onDblClick={ linkEvent(props.model, props.controller.setCellValue) } 
             onTouchEnd={ preventTouchEvents }>
 

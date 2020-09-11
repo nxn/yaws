@@ -1,12 +1,8 @@
 import { linkEvent } from 'inferno';
 
-import { ICell, ICellCandidate } from "../interfaces";
-import { Candidate, ICandidateController } from "./candidate";
-
-export interface ICellController extends ICandidateController {
-    clearCellValue: (cell: ICell) => void;
-    setCursor: (cell: ICell) => void;
-}
+import { ICell, ICandidate } from "../interfaces";
+import { Candidate } from "./candidate";
+import { ICellController } from "./controller";
 
 type CellProperties = { 
     model:      ICell,
@@ -44,6 +40,6 @@ export const Cell = (props: CellProperties) => {
     );
 };
 
-const createCandidate = (candidate: ICellCandidate, props: CellProperties) => (
+const createCandidate = (candidate: ICandidate, props: CellProperties) => (
     <Candidate model={candidate} controller={props.controller} />
 );

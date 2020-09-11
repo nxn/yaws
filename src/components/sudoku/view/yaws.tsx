@@ -7,7 +7,7 @@ import { YawsController, createYawsController } from './controller';
 
 import './board.css';
 
-type YawsProperties = { 
+type YawsProperties = {
     model:      IBoard,
     controller: YawsController
 };
@@ -15,7 +15,7 @@ type YawsProperties = {
 export const Yaws = (props: YawsProperties) => (
     <div className="yaws">
         <Board model={props.model} controller={props.controller} />
-        <Controls board={props.model} />
+        <Controls model={props.model.cursor} controller={props.controller} />
     </div>
 );
 
