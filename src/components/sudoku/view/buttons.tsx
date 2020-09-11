@@ -1,8 +1,8 @@
 import { linkEvent } from 'inferno';
 
-import { IBoard, ICursor } from '../interfaces';
-import { ICursorController } from './controller';
-import { range } from '@components/utilities/misc';
+import { IBoard, ICursor }      from '../interfaces';
+import { ICursorController }    from './controller';
+import { range }                from '@components/utilities/misc';
 
 type ButtonProperties = {
     model:      IBoard,

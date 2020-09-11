@@ -1,8 +1,8 @@
 import { linkEvent } from 'inferno';
 
-import { IBoard } from '../interfaces';
-import { ICursorController } from './controller';
-import { ValueButtons, NoteButtons } from './buttons';
+import { IBoard }                       from '../interfaces';
+import { ICursorController }            from './controller';
+import { ValueButtons, NoteButtons }    from './buttons';
 
 import icons from './images/icons.svg';
 

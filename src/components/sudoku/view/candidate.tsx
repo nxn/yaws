@@ -1,6 +1,6 @@
 import { linkEvent } from 'inferno';
 
-import { IBoard, ICandidate } from "../interfaces";
+import { IBoard, ICandidate }   from "../interfaces";
 import { ICandidateController } from "./controller";
 
 type CandidateProperties = {

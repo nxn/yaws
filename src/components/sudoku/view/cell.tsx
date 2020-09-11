@@ -1,8 +1,8 @@
 import { linkEvent } from 'inferno';
 
 import { IBoard, ICell }    from "../interfaces";
-import { ICellController }              from "./controller";
-import { Candidate }                    from "./candidate";
+import { ICellController }  from "./controller";
+import { Candidate }        from "./candidate";
 
 type CellProperties = { 
     model:      IBoard,
