@@ -1,31 +1,35 @@
-import { IBoard, ISet, ICell, ICursor, ICellData } from './interfaces';
+import { IBoard, ISet, ICell, ICursor, ModelType } from './interfaces';
 import { constants as gc } from './board';
 
 type TCellSelector = (set: ISet) => ICell;
 
+class Cursor implements ICursor {
+    readonly type = ModelType.Cursor;
+
+    constructor(private board: IBoard) {
+        // Start the cursor in the middle of the board
+        this.current = board.cells[board.cells.length >> 1];
+    }
+
+    private current: ICell;
+    get cell() { return this.current; }
+    set cell(cell: ICell) { this.current = cell }
+
+    columnLeft()    { return this.current = columnLeft(this.current, this.board) }
+    columnRight()   { return this.current = columnRight(this.current, this.board) }
+    rowUp()         { return this.current = rowUp(this.current, this.board) }
+    rowDown()       { return this.current = rowDown(this.current, this.board) }
+    boxLeft()       { return this.current = boxLeft(this.current, this.board) }
+    boxRight()      { return this.current = boxRight(this.current, this.board) }
+    boxUp()         { return this.current = boxUp(this.current, this.board) }
+    boxDown()       { return this.current = boxDown(this.current, this.board) }
+    previousError() { return this.current = previousError(this.current, this.board) }
+    nextError()     { return this.current = nextError(this.current, this.board) }
+    clear()         { return this.current = clear(this.current) }
+}
+
 export function create(board: IBoard): ICursor {
-    // Start the cursor in the middle of the board
-    let current = board.cells[board.cells.length >> 1];
-
-    const cursor: ICursor = Object.create(null,
-        { cell:             { get:   () => current
-                            , set:   (cell: ICell) => current = cell }
-        , columnLeft:       { value: () => current = columnLeft(current, board) }
-        , columnRight:      { value: () => current = columnRight(current, board) }
-        , rowUp:            { value: () => current = rowUp(current, board) }
-        , rowDown:          { value: () => current = rowDown(current, board) }
-        , boxLeft:          { value: () => current = boxLeft(current, board) }
-        , boxRight:         { value: () => current = boxRight(current, board) }
-        , boxUp:            { value: () => current = boxUp(current, board) }
-        , boxDown:          { value: () => current = boxDown(current, board) }
-        , previousError:    { value: () => current = previousError(current, board) }
-        , nextError:        { value: () => current = nextError(current, board) }
-        , clear:            { value: () => clear(current) }
-        }
-    );
-
-    Object.freeze(cursor);
-    return cursor;
+    return new Cursor(board);
 }
 
 function offset(position: number) {
@@ -71,7 +75,7 @@ function clear(cell: ICell): ICell {
     }
     else {
         // Otherwise clear the candidates
-        cell.candidates.forEach(c => c.selected = false);
+        cell.candidates.forEach(c => c.isSelected = false);
     }
     return cell;
 }

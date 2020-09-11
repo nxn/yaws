@@ -1,19 +1,52 @@
-import { IBoard  }                  from './interfaces';
+import { IBoard, ICursor, ISet, ICell, ModelType }from './interfaces';
 import { create as createSet }      from './set';
 import { create as createCell }     from './cell';
 import { create as createCursor }   from './cursor';
 
 let boardCount = 1;
 
-export const constants = Object.create(null,
+export const constants = Object.freeze(Object.create(null,
     { rowCount      : { value: 9 }
     , columnCount   : { value: 9 }
     , boxCount      : { value: 9 }
     , boxColumnCount: { value: 3 }
     , boxRowCount   : { value: 3 }
     }
-);
-Object.freeze(constants);
+));
+
+class Board implements IBoard {
+    readonly type = ModelType.Board;
+
+    constructor(
+        readonly id:        string, 
+        readonly cells:     ICell[], 
+        readonly rows:      ISet[], 
+        readonly columns:   ISet[], 
+        readonly boxes:     ISet[]
+    ) { }
+
+    private loaded = false;
+    get isLoaded() { return this.loaded } 
+    set isLoaded(value: boolean) {
+        if (typeof value === 'boolean') {
+            this.loaded = value;
+        }
+    }
+
+    private _cursor: ICursor;
+    get cursor() { return this._cursor };
+    set cursor(cursor: ICursor) { this._cursor = cursor };
+
+    clear(): IBoard {
+        this.cells.forEach(c => c.clear());
+        return this;        
+    };
+
+    reset(): IBoard {
+        this.cells.forEach(c => !c.isStatic && c.clear());
+        return this;
+    };
+}
 
 export function create(id = `g${boardCount}`): IBoard {
     boardCount++;
@@ -23,28 +56,12 @@ export function create(id = `g${boardCount}`): IBoard {
     const columns = new Array(constants.columnCount);
     const boxes   = new Array(constants.boxCount);
 
+    const board = new Board(id, cells, rows, columns, boxes);
+
     const length = Math.max(
         constants.rowCount, 
         constants.columnCount, 
         constants.boxCount
-    );
-
-    let loaded = false;
-
-    // Create API object
-    const board: IBoard = Object.create(null,
-        { id:           { get: () => id }
-        , cells:        { get: () => cells }
-        , rows:         { get: () => rows }
-        , columns:      { get: () => columns }
-        , boxes:        { get: () => boxes }
-        , cursor:       { get: () => cursor }
-        , isLoaded:     { get: () => loaded
-                        , set: f  => { if (typeof f === 'boolean') loaded = f }
-                        }
-        , clear:        { value: () => clear(board) }
-        , reset:        { value: () => reset(board) }
-        }
     );
 
     // initialize row/col/box sets
@@ -68,19 +85,8 @@ export function create(id = `g${boardCount}`): IBoard {
         box.cells.push(c);
         board.cells[cIndex] = c;
     }
-    
-    const cursor = createCursor(board);
 
-    Object.freeze(board);
-    return board;
-}
+    board.cursor = createCursor(board);
 
-function clear(board: IBoard): IBoard {
-    board.cells.forEach(c => c.clear());
-    return board;
-}
-
-function reset(board: IBoard): IBoard {
-    board.cells.forEach(c => !c.isStatic && c.clear());
     return board;
 }

@@ -1,7 +1,11 @@
 export type TSudokuPuzzle = string | number[];
 
+export enum ModelType   { Board, Cursor, Cell, Candidate, Set };
+export interface IModel { type: ModelType; }
+
 //#region Set
-export interface ISet {
+export interface ISet extends IModel {
+    type:       ModelType.Set;
     id:         string;
     name:       string;
     index:      number;
@@ -16,7 +20,8 @@ export interface ISetValidationResult {
 //#endregion
 
 //#region Cell
-export interface ICell {
+export interface ICell extends IModel {
+    type:           ModelType.Cell;
     id:             string;
     name:           string;
     index:          number;
@@ -24,22 +29,24 @@ export interface ICell {
     row:            ISet;
     column:         ISet;
     box:            ISet;
-    candidates:     ICellCandidate[];
+    candidates:     ICandidate[];
     isStatic:       boolean;
     isValid:        boolean;
     clear:          () => void;
 }
 
-export interface ICellCandidate {
+export interface ICandidate extends IModel {
+    type:       ModelType.Candidate;
     value:      number;
     cell:       ICell;
     isValid:    boolean;
-    selected:   boolean;
+    isSelected: boolean;
 }
 //#endregion
 
 //#region Cursor
-export interface ICursor {
+export interface ICursor extends IModel {
+    type:           ModelType.Cursor;
     cell:           ICell;
     columnLeft:     () => ICell;
     columnRight:    () => ICell;
@@ -56,7 +63,8 @@ export interface ICursor {
 //#endregion
 
 //#region Board
-export interface IBoard {
+export interface IBoard extends IModel {
+    type:       ModelType.Board;
     id:         string;
     cells:      ICell[];
     rows:       ISet[];
@@ -64,23 +72,23 @@ export interface IBoard {
     boxes:      ISet[];
     cursor:     ICursor;
     isLoaded:   boolean;
-    clear:      () => void;
-    reset:      () => void;
+    clear:      () => IBoard;
+    reset:      () => IBoard;
 }
 //#endregion
 
-//#region Game State
-export interface IGameState {
+//#region State Manager
+export interface IStateManager {
     getString:      () => string;
-    loadString:     (puzzle: string) => void;
+    loadString:     (puzzle: string) => IBoard;
     getTypedArray:  () => Uint8Array;
-    loadTypedArray: (array: Uint8Array) => void;
+    loadTypedArray: (array: Uint8Array) => IBoard;
     getLink:        (includeProgress: boolean, location: ILocation) => string;
-    loadLink:       (link: string) => void;
+    loadLink:       (link: string) => IBoard;
     getData:        (ignoreHiddenCandidates?: boolean) => ICellData[];
-    loadData:       (data: ICellData[]) => void;
+    loadData:       (data: ICellData[]) => IBoard;
     getBinary:      (ignoreHiddenCandidates?: boolean) => Uint8Array;
-    loadBinary:     (buffer: ArrayBuffer) => void;
+    loadBinary:     (buffer: ArrayBuffer) => IBoard;
 }
 
 export interface ICellData {
@@ -125,8 +133,3 @@ export interface IKeyPress {
     preventDefault: () => void;
 }
 //#endregion
-
-//#region Misc
-
-//#endregion
-
