@@ -1,19 +1,19 @@
-import { IKeyboardController, IKeyPress, ICell, KeyboardActions, IBoard } from "./interfaces";
+import { IBoardController, IKeyboardController, IKeyPress, KeyboardActions, IBoard } from "./interfaces";
 
 const rxNumberInput = /(?:Digit|Numpad)([1-9])/i;
 
-const actionMap: { [key: string]: (board: IBoard) => ICell } = {
-    [KeyboardActions.left]:         b => b.cursor.columnLeft(),
-    [KeyboardActions.right]:        b => b.cursor.columnRight(),
-    [KeyboardActions.up]:           b => b.cursor.rowUp(),
-    [KeyboardActions.down]:         b => b.cursor.rowDown(),
-    [KeyboardActions.boxLeft]:      b => b.cursor.boxLeft(),
-    [KeyboardActions.boxRight]:     b => b.cursor.boxRight(),
-    [KeyboardActions.boxUp]:        b => b.cursor.boxUp(),
-    [KeyboardActions.boxDown]:      b => b.cursor.boxDown(),
-    [KeyboardActions.nextError]:    b => b.cursor.nextError(),
-    [KeyboardActions.prevError]:    b => b.cursor.previousError(),
-    [KeyboardActions.clearCell]:    b => b.cursor.clear()
+const actionMap: { [key: string]: (board: IBoard, controller: IBoardController) => void } = {
+    [KeyboardActions.left]:         (b,c) => c.columnLeft(b),
+    [KeyboardActions.right]:        (b,c) => c.columnRight(b),
+    [KeyboardActions.up]:           (b,c) => c.rowUp(b),
+    [KeyboardActions.down]:         (b,c) => c.rowDown(b),
+    [KeyboardActions.boxLeft]:      (b,c) => c.boxLeft(b),
+    [KeyboardActions.boxRight]:     (b,c) => c.boxRight(b),
+    [KeyboardActions.boxUp]:        (b,c) => c.boxUp(b),
+    [KeyboardActions.boxDown]:      (b,c) => c.boxDown(b),
+    [KeyboardActions.nextError]:    (b,c) => c.nextError(b),
+    [KeyboardActions.prevError]:    (b,c) => c.previousError(b),
+    [KeyboardActions.clearCell]:    (b,c) => c.clear(b.cursor)
 };
 
 export const defaultMap: { [key: string]: KeyboardActions[] } = {
@@ -48,6 +48,7 @@ export const defaultMap: { [key: string]: KeyboardActions[] } = {
 class KeyboardController implements IKeyboardController {
     constructor(
         readonly board: IBoard,
+        readonly controller: IBoardController,
         readonly bindings = defaultMap
     ) { }
 
@@ -56,10 +57,8 @@ class KeyboardController implements IKeyboardController {
     };
 
     onKey(keyPress: IKeyPress) {
-        const cell = this.board.cursor.cell;
-    
         if (keyPress.code.match(rxNumberInput)) {
-            this.digitHandler(cell, keyPress);
+            this.digitHandler(keyPress);
             return;
         }
     
@@ -70,11 +69,11 @@ class KeyboardController implements IKeyboardController {
     
         keyPress.preventDefault();
         for (let action of actions) {
-            actionMap[action](this.board);
+            actionMap[action](this.board, this.controller);
         }
     }
     
-    private digitHandler(cell: ICell, keyPress: IKeyPress): void {
+    private digitHandler(keyPress: IKeyPress): void {
         let match = keyPress.code.match(rxNumberInput);
         if (!match || match.length !== 2) {
             return;
@@ -89,27 +88,28 @@ class KeyboardController implements IKeyboardController {
         // case for other reasons, of course, but this will have to do for the time being.
         if (num !== parseInt(keyPress.key)) {
             keyPress.preventDefault();
-            cell.value = num;
+            this.controller.setCellValue(this.board.cursor, num);
             return;
         }
         
         if (num > 0 && num < 10) {
             keyPress.preventDefault();
-            if (cell.value > 0) {
+            if (this.board.cursor.value > 0) {
                 // If cell already has a value set, update it
-                cell.value = num;
+                this.controller.setCellValue(this.board.cursor, num);
             }
             else {
                 // Otherwise flip the candidate selection
-                let candidate = cell.candidates.find(c => c.value === num);
-                candidate.isSelected = !candidate.isSelected;
+                this.controller.toggleCandidate(this.board.cursor, num);
             }
         }
     }
 }
 
-export function create(board: IBoard, map = defaultMap) {
-    return new KeyboardController(board, map);
+export function create(board: IBoard, controller: IBoardController, map = defaultMap) {
+    let kc = new KeyboardController(board, controller, map);
+    document.addEventListener('keydown', event => { kc.onKey(event); });
+    return kc;
 }
 
 

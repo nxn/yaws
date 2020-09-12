@@ -1,7 +1,6 @@
-import { curry }            from 'ramda';
-import { IBoard, ICell }    from '../interfaces';
-import { IBoardController } from './controller';
-import { Cell }             from './cell';
+import { curry } from 'ramda';
+import { Cell } from './cell';
+import { IBoardController, IBoard, ICell } from '../interfaces';
 
 type BoardProperties = { 
     model:      IBoard,
@@ -9,7 +8,7 @@ type BoardProperties = {
 };
 
 export const Board = (props: BoardProperties) => {
-    let setCursor = curry(props.controller.moveCursor)(props.model);
+    let setCursor = curry(props.controller.setCursor)(props.model);
 
     return (
         <div id={props.model.id} className="board">{
@@ -19,7 +18,7 @@ export const Board = (props: BoardProperties) => {
                     controller  = { props.controller } 
                     onClick     = { setCursor }
                     onTouchEnd  = { setCursor }
-                    cursor      = { cell === props.model.cursor.cell } />
+                    cursor      = { cell === props.model.cursor } />
             )
         }</div>
     );

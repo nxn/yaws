@@ -6,36 +6,36 @@ import { create as createStateManager }         from '@components/sudoku/statema
 import { create as createKeyboardController }   from '@components/sudoku/keyboard';
 import { waffleIron }                           from '@components/web-workers/waffle-iron';
 
+import * as view from '@components/sudoku/view/yaws';
+
 function init() {
     const board     = createBoard();
     const state     = createStateManager(board);
-    const keyboard  = createKeyboardController(board);
-    const refresh   = page.init(board, null, config.parentSelector);
     const puzzleStore = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
 
-    document.addEventListener('keydown', event => {
-        keyboard.onKey(event);
-        refresh.board();
-    });
+    const controller = view.init(board, 'sudoku');
+
+    createKeyboardController(board, controller);
     
     // check if URL contains puzzle
     if (false) {
         state.loadLink(location.toString())
-        refresh.board();
+        controller.refresh();
     }
     else if (!puzzleStore.empty) {
         state.loadBinary(puzzleStore.mostRecent.buffer)
-        refresh.board();
+        controller.refresh();
     }
     else {
         waffleIron.generate(
             { samples: 15, iterations: 29, removals: 2}
         ).then(response => {
             state.loadTypedArray(response.puzzle);
-            refresh.board();
+            controller.refresh();
         });
     }
 
+    page.init();
     //window["wi"] = waffleIron;
     //wi.generate().then(function(r) { return wi.solve({ puzzle: r.puzzle }); }).then(function(r) { console.log(r) });
 };

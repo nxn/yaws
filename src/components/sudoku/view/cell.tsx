@@ -1,8 +1,7 @@
-import { linkEvent }        from 'inferno';
-import { curry }            from 'ramda';
-import { ICell }            from "../interfaces";
-import { ICellController }  from "./controller";
-import { Candidate }        from "./candidate";
+import { linkEvent }    from 'inferno';
+import { curry }        from 'ramda';
+import { Candidate }    from "./candidate";
+import { ICell, ICellController } from "../interfaces";
 
 type CellProperties = { 
     model:      ICell,
@@ -37,7 +36,7 @@ export const Cell = (props: CellProperties) => {
             onTouchEnd  = { linkEvent(cell, props.onTouchEnd) }>
 
             <div className = { cell.isValid ? "value" : "invalid value" }
-                onDblClick = { linkEvent(cell, props.controller.clearCell) }>
+                onDblClick = { linkEvent(cell, props.controller.clear) }>
                 { cell.value > 0 ? cell.value : "" }
             </div>
 

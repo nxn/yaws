@@ -1,7 +1,6 @@
-import { IBoard, ICursor, ISet, ICell, ModelType }from './interfaces';
+import { IBoard, ISet, ICell, ModelType }from './interfaces';
 import { create as createSet }      from './set';
 import { create as createCell }     from './cell';
-import { create as createCursor }   from './cursor';
 
 let boardCount = 1;
 
@@ -33,9 +32,9 @@ class Board implements IBoard {
         }
     }
 
-    private _cursor: ICursor;
+    private _cursor: ICell;
     get cursor() { return this._cursor };
-    set cursor(cursor: ICursor) { this._cursor = cursor };
+    set cursor(cell: ICell) { this._cursor = cell };
 
     clear(): IBoard {
         this.cells.forEach(c => c.clear());
@@ -86,7 +85,8 @@ export function create(id = `g${boardCount}`): IBoard {
         board.cells[cIndex] = c;
     }
 
-    board.cursor = createCursor(board);
+    // Default cursor to middle of grid
+    board.cursor = board.cells[board.cells.length >> 1];
 
     return board;
 }

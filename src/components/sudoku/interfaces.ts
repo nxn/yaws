@@ -44,24 +44,6 @@ export interface ICandidate extends IModel {
 }
 //#endregion
 
-//#region Cursor
-export interface ICursor extends IModel {
-    type:           ModelType.Cursor;
-    cell:           ICell;
-    columnLeft:     () => ICell;
-    columnRight:    () => ICell;
-    rowUp:          () => ICell;
-    rowDown:        () => ICell;
-    boxLeft:        () => ICell;
-    boxRight:       () => ICell;
-    boxUp:          () => ICell;
-    boxDown:        () => ICell;
-    previousError:  () => ICell;
-    nextError:      () => ICell;
-    clear:          () => ICell;
-}
-//#endregion
-
 //#region Board
 export interface IBoard extends IModel {
     type:       ModelType.Board;
@@ -70,7 +52,7 @@ export interface IBoard extends IModel {
     rows:       ISet[];
     columns:    ISet[];
     boxes:      ISet[];
-    cursor:     ICursor;
+    cursor:     ICell;
     isLoaded:   boolean;
     clear:      () => IBoard;
     reset:      () => IBoard;
@@ -100,6 +82,32 @@ export interface ICellData {
 export interface ILocation {
     origin: string;
     pathname: string;
+}
+//#endregion
+
+//#region Controller
+export interface ICellController {
+    setCellValue:       (cell: ICell, value: number) => void;
+    toggleCandidate:    (cell: ICell, value: number) => void;
+    clear:              (cell: ICell) => void;
+}
+
+export interface ICursorController {
+    setCursor:      (board: IBoard, cell: ICell) => void;
+    columnLeft:     (board: IBoard) => void;
+    columnRight:    (board: IBoard) => void;
+    rowUp:          (board: IBoard) => void;
+    rowDown:        (board: IBoard) => void;
+    boxLeft:        (board: IBoard) => void;
+    boxRight:       (board: IBoard) => void;
+    boxUp:          (board: IBoard) => void;
+    boxDown:        (board: IBoard) => void;
+    previousError:  (board: IBoard) => void;
+    nextError:      (board: IBoard) => void;
+}
+
+export interface IBoardController extends ICellController, ICursorController {
+    refresh: () => void;
 }
 //#endregion
 
