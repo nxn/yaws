@@ -112,7 +112,7 @@ const Controller: ICellController & ICursorController = {
         board.cursor = offset(board.cursor.column.index).by(+gc.boxColumnCount).in(board.columns).select(
             col => col.cells[board.cursor.row.index]
         );
-    },
+    }
 }
 
 export function create(refresh: () => void): IBoardController {
