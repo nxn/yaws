@@ -13,40 +13,6 @@ export const constants = Object.freeze(Object.create(null,
     }
 ));
 
-class Board implements IBoard {
-    readonly type = ModelType.Board;
-
-    constructor(
-        readonly id:        string, 
-        readonly cells:     ICell[], 
-        readonly rows:      ISet[], 
-        readonly columns:   ISet[], 
-        readonly boxes:     ISet[]
-    ) { }
-
-    private loaded = false;
-    get isLoaded() { return this.loaded } 
-    set isLoaded(value: boolean) {
-        if (typeof value === 'boolean') {
-            this.loaded = value;
-        }
-    }
-
-    private _cursor: ICell;
-    get cursor() { return this._cursor };
-    set cursor(cell: ICell) { this._cursor = cell };
-
-    clear(): IBoard {
-        this.cells.forEach(c => c.clear());
-        return this;        
-    };
-
-    reset(): IBoard {
-        this.cells.forEach(c => !c.isStatic && c.clear());
-        return this;
-    };
-}
-
 export function create(id = `g${boardCount}`): IBoard {
     boardCount++;
     
@@ -89,4 +55,38 @@ export function create(id = `g${boardCount}`): IBoard {
     board.cursor = board.cells[board.cells.length >> 1];
 
     return board;
+}
+
+class Board implements IBoard {
+    readonly type = ModelType.Board;
+
+    constructor(
+        readonly id:        string, 
+        readonly cells:     ICell[], 
+        readonly rows:      ISet[], 
+        readonly columns:   ISet[], 
+        readonly boxes:     ISet[]
+    ) { }
+
+    private loaded = false;
+    get isLoaded() { return this.loaded } 
+    set isLoaded(value: boolean) {
+        if (typeof value === 'boolean') {
+            this.loaded = value;
+        }
+    }
+
+    private _cursor: ICell;
+    get cursor() { return this._cursor };
+    set cursor(cell: ICell) { this._cursor = cell };
+
+    clear(): IBoard {
+        this.cells.forEach(c => c.clear());
+        return this;        
+    };
+
+    reset(): IBoard {
+        this.cells.forEach(c => !c.isStatic && c.clear());
+        return this;
+    };
 }

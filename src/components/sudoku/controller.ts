@@ -2,6 +2,19 @@ import { compose }              from 'ramda';
 import { constants as gc }      from './board';
 import { IBoard, IBoardController, ICell, ICellController, ICursorController, ISet } from './interfaces';
 
+export function create(refresh: () => void): IBoardController {
+    let controller = Object.create(null);
+
+    for (let key of Object.keys(Controller)) {
+        let member = (Controller as any)[key];
+        if (typeof member === "function") {
+            controller[key] = compose(refresh, member);
+        }
+    }
+
+    return controller;
+}
+
 const Controller: ICellController & ICursorController = {
     toggleCandidate: (cell: ICell, value: number) => {
         let candidate = cell.candidates[value - 1];
@@ -113,19 +126,6 @@ const Controller: ICellController & ICursorController = {
             col => col.cells[board.cursor.row.index]
         );
     }
-}
-
-export function create(refresh: () => void): IBoardController {
-    let controller = Object.create(null);
-
-    for (let key of Object.keys(Controller)) {
-        let member = (Controller as any)[key];
-        if (typeof member === "function") {
-            controller[key] = compose(refresh, member);
-        }
-    }
-
-    return controller;
 }
 
 type TCellSelector = (set: ISet) => ICell;

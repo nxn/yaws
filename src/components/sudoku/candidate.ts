@@ -1,5 +1,9 @@
 import { ICandidate, ICell, ModelType } from './interfaces';
 
+export function create(value: number, cell: ICell): ICandidate {
+    return new Candidate(value, cell);
+}
+
 class Candidate implements ICandidate {
     readonly type = ModelType.Candidate;
 
@@ -29,8 +33,4 @@ class Candidate implements ICandidate {
         }
     }
 
-}
-
-export function create(value: number, cell: ICell): ICandidate {
-    return new Candidate(value, cell);
 }

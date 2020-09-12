@@ -2,6 +2,10 @@
 import { IBoard, ICell, ICellData, ILocation, IStateManager } from './interfaces';
 import { deflateRaw as compress, inflateRaw as expand } from '@lib/pako/pako';
 
+export function create(board: IBoard) {
+    return new StateManager(board);
+}
+
 const cellConstants = Object.freeze(Object.create(null,
     { byteLength:       { value: 2 }
     , bitLength:        { value: 14 }
@@ -204,8 +208,4 @@ class StateManager implements IStateManager {
         cell.value = v >> 1;
         cell.isStatic = isStatic;
     }
-}
-
-export function create(board: IBoard) {
-    return new StateManager(board);
 }

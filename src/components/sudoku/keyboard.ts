@@ -2,19 +2,9 @@ import { IBoardController, IKeyboardHandler, IKeyPress, KeyboardActions, IBoard 
 
 const rxNumberInput = /(?:Digit|Numpad)([1-9])/i;
 
-const actionMap: { [key: string]: (board: IBoard, controller: IBoardController) => void } = {
-    [KeyboardActions.left]:         (b,c) => c.columnLeft(b),
-    [KeyboardActions.right]:        (b,c) => c.columnRight(b),
-    [KeyboardActions.up]:           (b,c) => c.rowUp(b),
-    [KeyboardActions.down]:         (b,c) => c.rowDown(b),
-    [KeyboardActions.boxLeft]:      (b,c) => c.boxLeft(b),
-    [KeyboardActions.boxRight]:     (b,c) => c.boxRight(b),
-    [KeyboardActions.boxUp]:        (b,c) => c.boxUp(b),
-    [KeyboardActions.boxDown]:      (b,c) => c.boxDown(b),
-    [KeyboardActions.nextError]:    (b,c) => c.nextError(b),
-    [KeyboardActions.prevError]:    (b,c) => c.previousError(b),
-    [KeyboardActions.clearCell]:    (b,c) => c.clear(b.cursor)
-};
+export function create(board: IBoard, controller: IBoardController, map = defaultMap) {
+    return new KeyboardHandler(board, controller, map);
+}
 
 export const defaultMap: { [key: string]: KeyboardActions[] } = {
     // Standard
@@ -43,6 +33,20 @@ export const defaultMap: { [key: string]: KeyboardActions[] } = {
     'delete'      : [KeyboardActions.clearCell],
     'x'           : [KeyboardActions.clearCell], 
     'shift+x'     : [KeyboardActions.clearCell],
+};
+
+const actionMap: { [key: string]: (board: IBoard, controller: IBoardController) => void } = {
+    [KeyboardActions.left]:         (b,c) => c.columnLeft(b),
+    [KeyboardActions.right]:        (b,c) => c.columnRight(b),
+    [KeyboardActions.up]:           (b,c) => c.rowUp(b),
+    [KeyboardActions.down]:         (b,c) => c.rowDown(b),
+    [KeyboardActions.boxLeft]:      (b,c) => c.boxLeft(b),
+    [KeyboardActions.boxRight]:     (b,c) => c.boxRight(b),
+    [KeyboardActions.boxUp]:        (b,c) => c.boxUp(b),
+    [KeyboardActions.boxDown]:      (b,c) => c.boxDown(b),
+    [KeyboardActions.nextError]:    (b,c) => c.nextError(b),
+    [KeyboardActions.prevError]:    (b,c) => c.previousError(b),
+    [KeyboardActions.clearCell]:    (b,c) => c.clear(b.cursor)
 };
 
 class KeyboardHandler implements IKeyboardHandler {
@@ -105,9 +109,3 @@ class KeyboardHandler implements IKeyboardHandler {
         }
     }
 }
-
-export function create(board: IBoard, controller: IBoardController, map = defaultMap) {
-    return new KeyboardHandler(board, controller, map);
-}
-
-

@@ -1,25 +1,5 @@
 import { IBoard, ISet, ICell, ISetValidationResult, ModelType } from './interfaces';
 
-/* Data structure for validating uniqueness of cell members in a group such as a row, column, or box.
- *
- * Despite being named a set, it is not intended to prohibit non-distinct values from existing within it. Instead,
- * duplicate values should trigger an invalid state along with a reference to all non-unique cells.
- * */
-class Set implements ISet {
-    readonly type = ModelType.Set;
-
-    constructor(
-        readonly id:    string,
-        readonly name:  string,
-        readonly index: number,
-        readonly cells: ICell[]
-    ) { }
-
-    validate(): ISetValidationResult {
-        return validate(this);
-    }
-}
-
 export function create(board: IBoard, name: string, index: number): ISet {
     const id = `${board.id}-${name}`;
     const cells:ICell[] = [];
@@ -75,3 +55,22 @@ export function validateAll(...args: any[]): ISetValidationResult {
     return { valid : valid, errors : Array.from(errors.values()) };
 }
 
+/* Data structure for validating uniqueness of cell members in a group such as a row, column, or box.
+ *
+ * Despite being named a set, it is not intended to prohibit non-distinct values from existing within it. Instead,
+ * duplicate values should trigger an invalid state along with a reference to all non-unique cells.
+ * */
+class Set implements ISet {
+    readonly type = ModelType.Set;
+
+    constructor(
+        readonly id:    string,
+        readonly name:  string,
+        readonly index: number,
+        readonly cells: ICell[]
+    ) { }
+
+    validate(): ISetValidationResult {
+        return validate(this);
+    }
+}

@@ -5,6 +5,22 @@ export const constants = Object.freeze({
     candidateCount: 9
 });
 
+export function create(board: IBoard, index: number, row: ISet, col: ISet, box: ISet, isStatic = false): ICell {
+    const id         = `${board.id}-${row.name}${col.name}`;
+    const name       = `${row.name}${col.name}`;
+    const candidates = new Array(constants.candidateCount);
+
+    const cell = new Cell(id, name, index, row, col, box, candidates);
+
+    cell.isStatic = isStatic;
+
+    for (let i = 0; i < candidates.length; i++) {
+        candidates[i] = createCandidate(i+1, cell);
+    }
+
+    return cell;
+}
+
 class Cell implements ICell {
     readonly type = ModelType.Cell;
 
@@ -52,20 +68,3 @@ class Cell implements ICell {
         this.candidates.forEach(c => c.isSelected = false);
     };
 }
-
-export function create(board: IBoard, index: number, row: ISet, col: ISet, box: ISet, isStatic = false): ICell {
-    const id         = `${board.id}-${row.name}${col.name}`;
-    const name       = `${row.name}${col.name}`;
-    const candidates = new Array(constants.candidateCount);
-
-    const cell = new Cell(id, name, index, row, col, box, candidates);
-
-    cell.isStatic = isStatic;
-
-    for (let i = 0; i < candidates.length; i++) {
-        candidates[i] = createCandidate(i+1, cell);
-    }
-
-    return cell;
-}
-
