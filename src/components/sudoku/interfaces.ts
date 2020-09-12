@@ -127,7 +127,7 @@ export enum KeyboardActions {
     getLink     = "Get Link"
 }
 
-export interface IKeyboardController {
+export interface IKeyboardHandler {
     map:    { [key: string]: KeyboardActions[] }
     onKey:  (key: IKeyPress) => void;
 }

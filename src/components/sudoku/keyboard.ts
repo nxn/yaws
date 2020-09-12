@@ -1,4 +1,4 @@
-import { IBoardController, IKeyboardController, IKeyPress, KeyboardActions, IBoard } from "./interfaces";
+import { IBoardController, IKeyboardHandler, IKeyPress, KeyboardActions, IBoard } from "./interfaces";
 
 const rxNumberInput = /(?:Digit|Numpad)([1-9])/i;
 
@@ -45,7 +45,7 @@ export const defaultMap: { [key: string]: KeyboardActions[] } = {
     'shift+x'     : [KeyboardActions.clearCell],
 };
 
-class KeyboardController implements IKeyboardController {
+class KeyboardHandler implements IKeyboardHandler {
     constructor(
         readonly board: IBoard,
         readonly controller: IBoardController,
@@ -107,7 +107,7 @@ class KeyboardController implements IKeyboardController {
 }
 
 export function create(board: IBoard, controller: IBoardController, map = defaultMap) {
-    return new KeyboardController(board, controller, map);
+    return new KeyboardHandler(board, controller, map);
 }
 
 
