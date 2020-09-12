@@ -1,25 +1,65 @@
-import { curry } from 'ramda';
+import { Component, linkEvent } from 'inferno';
+
 import { Cell } from './cell';
-import { IBoardController, IBoard, ICell } from '../interfaces';
+import { IBoardController, IBoard, BoardEvents, ICell } from '../interfaces';
 
 type BoardProperties = { 
     model:      IBoard,
     controller: IBoardController
 };
 
-export const Board = (props: BoardProperties) => {
-    let setCursor = curry(props.controller.setCursor)(props.model);
+type BoardState = {
+    highlightedColumn:  number,
+    highlightedRow:     number
+};
 
-    return (
-        <div id={props.model.id} className="board">{
-            props.model.cells.map((cell: ICell) => 
-                <Cell 
-                    model       = { cell } 
-                    controller  = { props.controller } 
-                    onClick     = { setCursor }
-                    onTouchEnd  = { setCursor }
-                    cursor      = { cell === props.model.cursor } />
-            )
-        }</div>
-    );
+export class Board extends Component<BoardProperties, BoardState> {
+    constructor(props: BoardProperties) {
+        super(props);
+        this.state = { 
+            highlightedColumn:  props.model.cursor.column.index, 
+            highlightedRow:     props.model.cursor.row.index,
+        };
+        props.controller.on(BoardEvents.CursorMoved, this.setHighlight);
+    }
+
+    setCursor = (cell: ICell) => {
+        this.props.controller.setCursor(this.props.model, cell);
+    }
+
+    setHighlight = (cell: ICell) => {
+        this.setState({ 
+            highlightedColumn:  cell.column.index, 
+            highlightedRow:     cell.row.index 
+        });
+    }
+
+    isHighlighted(cell: ICell) {
+        return cell.row.index    === this.state.highlightedRow 
+            || cell.column.index === this.state.highlightedColumn;
+    }
+
+    isCursor(cell: ICell) {
+        return cell === this.props.model.cursor
+    }
+
+    render() {
+        return (
+            <div id={this.props.model.id} 
+                className="board"
+                onmouseleave={ linkEvent(this.props.model.cursor, this.setHighlight) }>{
+                this.props.model.cells.map((cell: ICell) => 
+                    <Cell 
+                        key             = { cell.index }
+                        model           = { cell } 
+                        controller      = { this.props.controller } 
+                        onClick         = { this.setCursor }
+                        onTouchEnd      = { this.setCursor }
+                        onmouseenter    = { this.setHighlight }
+                        highlight       = { this.isHighlighted(cell) }
+                        cursor          = { this.isCursor(cell) } />
+                )
+            }</div>
+        );
+    }
 }

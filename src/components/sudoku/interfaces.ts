@@ -38,7 +38,6 @@ export interface ICell extends IModel {
 export interface ICandidate extends IModel {
     type:       ModelType.Candidate;
     value:      number;
-    //cell:       ICell;
     isValid:    boolean;
     isSelected: boolean;
 }
@@ -106,7 +105,17 @@ export interface ICursorController {
     nextError:      (board: IBoard) => void;
 }
 
-export interface IBoardController extends ICellController, ICursorController { }
+export interface IBoardController extends ICellController, ICursorController {
+    on: (eventName: string, listener: (...args:any[]) => any) => void;
+}
+
+export enum BoardEvents {
+    CursorMoved             = "cursorMoved",
+    CellValueChanged        = "cellValueCleared",
+    CellCandidatesChanged   = "cellCandidatesChanged",
+    CellChanged             = "cellChanged",
+    StateChange             = "stateChange"
+}
 //#endregion
 
 //#region Keyboard

@@ -9,16 +9,14 @@ import { storage, proxies }                 from '@components/storage/storage';
 import { waffleIron }                       from '@components/web-workers/waffle-iron';
 
 function init() {
-    let render = () => {};
-
     const board         = createBoard();
-    const controller    = createBoardController(() => render());
+    const controller    = createBoardController();
     const keyboard      = createKeyboardHandler(board, controller);
     const state         = createStateManager(board);
     const puzzleStore   = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
 
     initPage();
-    render = initView(board, controller, 'sudoku');
+    const render = initView(board, controller, 'sudoku');
     render();
     document.addEventListener(
         'keydown', event => { keyboard.onKey(event); }
