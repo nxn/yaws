@@ -42,11 +42,11 @@ class BoardController extends ControllerBase implements IBoardController {
         });
 
         this.on(BoardEvents.CellChanged, (cell: ICell) => {
-            this.fire(BoardEvents.StateChange, cell);
+            this.fire(BoardEvents.StateChanged, cell);
         });
 
         this.on(BoardEvents.CursorMoved, (cell: ICell) => {
-            this.fire(BoardEvents.StateChange, cell);
+            this.fire(BoardEvents.StateChanged, cell);
         });
     }
 
@@ -92,7 +92,7 @@ class BoardController extends ControllerBase implements IBoardController {
         if (board.cursor === cell) {
             return;
         }
-        
+
         board.cursor = cell;
         this.fire(BoardEvents.CursorMoved, board.cursor);
     };

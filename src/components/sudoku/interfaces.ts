@@ -111,10 +111,10 @@ export interface IBoardController extends ICellController, ICursorController {
 
 export enum BoardEvents {
     CursorMoved             = "cursorMoved",
-    CellValueChanged        = "cellValueCleared",
+    CellValueChanged        = "cellValueChanged",
     CellCandidatesChanged   = "cellCandidatesChanged",
     CellChanged             = "cellChanged",
-    StateChange             = "stateChange"
+    StateChanged            = "stateChanged"
 }
 //#endregion
 

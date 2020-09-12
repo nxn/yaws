@@ -23,7 +23,7 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
     window.addEventListener('resize', scaleToViewport);
 
     const render = () => inferno(<Yaws model={board} controller={controller} />, container);
-    controller.on(BoardEvents.StateChange, render);
+    controller.on(BoardEvents.StateChanged, render);
 
     return render;
 }
