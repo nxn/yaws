@@ -1,16 +1,26 @@
+import { curry }            from 'ramda';
 import { IBoard, ICell }    from '../interfaces';
-import { ICellController }  from './controller';
+import { IBoardController } from './controller';
 import { Cell }             from './cell';
 
 type BoardProperties = { 
     model:      IBoard,
-    controller: ICellController
+    controller: IBoardController
 };
 
-export const Board = (props: BoardProperties) => (
-    <div id={props.model.id} className="board">{
-        props.model.cells.map(
-            (cell: ICell) => <Cell model={props.model} controller={props.controller} context={cell} />
-        )
-    }</div>
-);
+export const Board = (props: BoardProperties) => {
+    let setCursor = curry(props.controller.moveCursor)(props.model);
+
+    return (
+        <div id={props.model.id} className="board">{
+            props.model.cells.map((cell: ICell) => 
+                <Cell 
+                    model       = { cell } 
+                    controller  = { props.controller } 
+                    onClick     = { setCursor }
+                    onTouchEnd  = { setCursor }
+                    cursor      = { cell === props.model.cursor.cell } />
+            )
+        }</div>
+    );
+}

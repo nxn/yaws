@@ -1,23 +1,11 @@
-import { linkEvent } from 'inferno';
-
-import { IBoard, ICursor }      from '../interfaces';
-import { ICursorController }    from './controller';
-import { range }                from '@components/utilities/misc';
+import { linkEvent }    from 'inferno';
+import { range }        from '@components/utilities/misc';
 
 type ButtonProperties = {
-    model:      IBoard,
-    controller: ICursorController
+    onClick:    (value: number) => void
 };
 
-type ClickHandler = (context: { model: IBoard, target: ICursor, value: number }) => void;
-
-const createButton = (number: number, props: ButtonProperties, handler: ClickHandler) => {
-    let eventContext = {
-        model:  props.model,
-        target: props.model.cursor,
-        value:  number
-    };
-
+const createButton = (number: number, props: ButtonProperties) => {
     let classes = [];
 
     if      (number <= 3)   { classes.push('top'); }
@@ -29,16 +17,16 @@ const createButton = (number: number, props: ButtonProperties, handler: ClickHan
     else                        { classes.push('right'); }
 
     return (
-        <button className={classes.join(' ')} onClick={ linkEvent(eventContext, handler) }>
+        <button className={classes.join(' ')} onClick={ linkEvent(number, props.onClick) }>
             <span>{number}</span>
         </button>
     );
 }
 
-export const ValueButtons = (props: ButtonProperties) => Buttons(props, props.controller.setCellValue,    "values");
-export const NoteButtons  = (props: ButtonProperties) => Buttons(props, props.controller.toggleCandidate, "notes");
-const Buttons = (props: ButtonProperties, handler: ClickHandler, className = "") => (
+export const ValueButtons = (props: ButtonProperties) => Buttons(props, "values");
+export const NoteButtons  = (props: ButtonProperties) => Buttons(props, "notes");
+const Buttons = (props: ButtonProperties, className = "") => (
     <div className={className}>
-        { range(1,9).map(n => createButton(n, props, handler)) }
+        { range(1,9).map(n => createButton(n, props)) }
     </div>
 );

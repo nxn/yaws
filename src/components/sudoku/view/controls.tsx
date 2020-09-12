@@ -1,26 +1,24 @@
-import { linkEvent } from 'inferno';
-
+import { linkEvent }                    from 'inferno';
+import { curry }                        from 'ramda';
 import { IBoard }                       from '../interfaces';
-import { ICursorController }            from './controller';
+import { ICellController }              from './controller';
 import { ValueButtons, NoteButtons }    from './buttons';
-
 import icons from './images/icons.svg';
 
 type ControlProperties = { 
     model:      IBoard,
-    controller: ICursorController
+    controller: ICellController
 };
 
 export const Controls = (props: ControlProperties) => {
-    let eventContext = {
-        model: props.model,
-        target: props.model.cursor
-    }
+    let setCellValue = curry(props.controller.setCellValue)(props.model.cursor.cell);
+    let toggleCandidate = curry(props.controller.toggleCandidate)(props.model.cursor.cell);
+
     return (
         <div className="control-panel">
-            <ValueButtons   model={props.model} controller={props.controller} />
-            <NoteButtons    model={props.model} controller={props.controller} />
-            <button className="btn-clear" onClick={ linkEvent(eventContext, props.controller.clearCursor)}>
+            <ValueButtons onClick={ setCellValue } />
+            <NoteButtons  onClick={ toggleCandidate } />
+            <button className="btn-clear" onClick={ linkEvent(props.model.cursor.cell, props.controller.clearCell)}>
                 <span>
                     <svg class="icon">
                         <use xlinkHref={ icons + '#yaws-icon-x' }></use>

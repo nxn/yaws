@@ -25,21 +25,6 @@ export function range(start?: number, end?: number): number[] {
     return arr;
 }
 
-export function curry(fn: (..._: any[]) => any) {
-    return function partial(...xs: any[]) {
-        if (xs.length >= fn.length) {
-            return fn(...xs);
-        }
-        return (...ys: any[]) => partial(...xs.concat(ys));
-    }
-}
-export function pipe(...fns: Function[]) {
-    return (x:any) => fns.reduce((y, f) => f(y), x);
-}
-export function compose(...fns: Function[]) {
-    return (x:any) => fns.reduceRight((y, f) => f(y), x);
-}
-
 export function createLogger(config?: { debug?: boolean }): () => void {
     return () => {
         if (config.debug && console && console.log) {

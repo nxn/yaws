@@ -1,15 +1,13 @@
-import { render as inferno } from 'inferno';
-
-import { IBoard }   from '../interfaces';
-import { create as createController, ICellController, ICursorController } from './controller';
-import { Board }    from './board';
-import { Controls } from './controls';
-
+import { render as inferno }    from 'inferno';
+import { IBoard }               from '../interfaces';
+import { Board }                from './board';
+import { Controls }             from './controls';
+import { create as createController, IBoardController } from './controller';
 import './board.css';
 
 type YawsProperties = {
     model:      IBoard,
-    controller: ICellController & ICursorController
+    controller: IBoardController
 };
 
 export const Yaws = (props: YawsProperties) => (
