@@ -124,8 +124,6 @@ export function create(refresh: () => void): IBoardController {
             controller[key] = compose(refresh, member);
         }
     }
-    
-    controller.refresh = refresh;
 
     return controller;
 }

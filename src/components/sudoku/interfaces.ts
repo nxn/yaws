@@ -1,6 +1,6 @@
 export type TSudokuPuzzle = string | number[];
 
-export enum ModelType   { Board, Cursor, Cell, Candidate, Set };
+export enum ModelType   { Board, Cell, Candidate, Set };
 export interface IModel { type: ModelType; }
 
 //#region Set
@@ -106,9 +106,7 @@ export interface ICursorController {
     nextError:      (board: IBoard) => void;
 }
 
-export interface IBoardController extends ICellController, ICursorController {
-    refresh: () => void;
-}
+export interface IBoardController extends ICellController, ICursorController { }
 //#endregion
 
 //#region Keyboard

@@ -1,8 +1,7 @@
-import { render as inferno }    from 'inferno';
-import { Board }                from './board';
-import { Controls }             from './controls';
-import { create as createController }   from '../controller';
-import { IBoard, IBoardController }     from '../interfaces';
+import { render as inferno }        from 'inferno';
+import { Board }                    from './board';
+import { Controls }                 from './controls';
+import { IBoard, IBoardController } from '../interfaces';
 import './board.css';
 
 type YawsProperties = {
@@ -17,18 +16,13 @@ export const Yaws = (props: YawsProperties) => (
     </div>
 );
 
-export function init(board: IBoard, containerId: string) {
+export function init(board: IBoard, controller: IBoardController, containerId: string) {
     const container = document.getElementById(containerId);
 
     scaleToViewport();
     window.addEventListener('resize', scaleToViewport);
 
-    let render = () => { };
-    const controller = createController(() => render());
-    render = () => inferno(<Yaws model={board} controller={controller} />, container);
-    render();
-
-    return controller;
+    return () => inferno(<Yaws model={board} controller={controller} />, container);
 }
 
 function scaleToViewport() {
