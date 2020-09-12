@@ -9,16 +9,20 @@ import { init as initPage }                     from '@components/page/page';
 import { waffleIron }                           from '@components/web-workers/waffle-iron';
 
 function init() {
-    const board = createBoard();
-    const state = createStateManager(board);
-    const puzzleStore = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
-
     let render = () => {};
-    const controller = createController(() => render());
+
+    const board         = createBoard();
+    const controller    = createController(() => render());
+    const keyboard      = createKeyboardController(board, controller);
+    const state         = createStateManager(board);
+    const puzzleStore   = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
+
     render = initView(board, controller, 'sudoku');
-    createKeyboardController(board, controller);
     initPage();
     render();
+    document.addEventListener(
+        'keydown', event => { keyboard.onKey(event); }
+    );
 
     // check if URL contains puzzle
     if (false) {

@@ -107,9 +107,7 @@ class KeyboardController implements IKeyboardController {
 }
 
 export function create(board: IBoard, controller: IBoardController, map = defaultMap) {
-    let kc = new KeyboardController(board, controller, map);
-    document.addEventListener('keydown', event => { kc.onKey(event); });
-    return kc;
+    return new KeyboardController(board, controller, map);
 }
 
 
