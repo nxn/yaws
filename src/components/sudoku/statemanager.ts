@@ -1,4 +1,3 @@
-
 import { IBoard, ICell, ICellData, ILocation, IStateManager } from './interfaces';
 import { deflateRaw as compress, inflateRaw as expand } from '@lib/pako/pako';
 
