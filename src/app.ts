@@ -1,11 +1,11 @@
 import config                               from './config';
-import { storage, proxies }                 from '@components/storage/storage';
 import { create as createBoard }            from '@components/sudoku/board';
 import { create as createStateManager }     from '@components/sudoku/statemanager';
 import { create as createBoardController }  from '@components/sudoku/controller';
 import { create as createKeyboardHandler }  from '@components/sudoku/keyboard';
 import { init as initView }                 from '@components/sudoku/view/yaws';
 import { init as initPage }                 from '@components/page/page';
+import { storage, proxies }                 from '@components/storage/storage';
 import { waffleIron }                       from '@components/web-workers/waffle-iron';
 
 function init() {
