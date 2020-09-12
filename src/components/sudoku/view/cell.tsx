@@ -8,7 +8,7 @@ type CellProperties = {
     controller:     ICellController,
     onClick:        (cell: ICell) => void,
     onTouchEnd:     (cell: ICell) => void,
-    onmouseenter:   (cell: ICell) => void,    
+    onMouseMove:    (cell: ICell) => void,    
     cursor?:        boolean,
     highlight?:     boolean,
 };
@@ -36,11 +36,11 @@ export const Cell = (props: CellProperties) => {
     let toggleCandidate = curry(props.controller.toggleCandidate)(cell);
 
     return (
-        <div id             = { props.model.id } 
-            className       = { classes.join(' ') }
-            onmouseenter    = { linkEvent(cell, props.onmouseenter) }
-            onClick         = { linkEvent(cell, props.onClick) }
-            onTouchEnd      = { linkEvent(cell, props.onTouchEnd) }>
+        <div id         = { props.model.id } 
+            className   = { classes.join(' ') }
+            onMouseMove = { linkEvent(cell, props.onMouseMove) }
+            onClick     = { linkEvent(cell, props.onClick) }
+            onTouchEnd  = { linkEvent(cell, props.onTouchEnd) }>
 
             <div className = { cell.isValid ? "value" : "invalid value" }
                 onDblClick = { linkEvent(cell, props.controller.clear) }>

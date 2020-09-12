@@ -106,7 +106,18 @@ export interface ICursorController {
 }
 
 export interface IBoardController extends ICellController, ICursorController {
-    on: (eventName: string, listener: (...args:any[]) => any) => void;
+    on:     (eventName: string, listener: (...args:any[]) => any) => void;
+    detach: (eventName: string, listener: (...args:any[]) => any) => void;
+}
+//#endregion
+
+//#region Events
+export interface IEventManager {
+    on:         (eventName: string, listener: (...args: any[]) => any) => void;
+    fire:       (eventName: string, ...eventArgs: any[]) => void;
+    detach:     (eventName: string, listener: (...args: any[]) => any) => boolean;
+    detachAll:  (eventName: string) => boolean;
+    clear:      () => void;
 }
 
 export enum BoardEvents {

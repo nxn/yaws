@@ -50,14 +50,14 @@ export class Board extends Component<BoardProperties, BoardState> {
                 onmouseleave={ linkEvent(this.props.model.cursor, this.setHighlight) }>{
                 this.props.model.cells.map((cell: ICell) => 
                     <Cell 
-                        key             = { cell.index }
-                        model           = { cell } 
-                        controller      = { this.props.controller } 
-                        onClick         = { this.setCursor }
-                        onTouchEnd      = { this.setCursor }
-                        onmouseenter    = { this.setHighlight }
-                        highlight       = { this.isHighlighted(cell) }
-                        cursor          = { this.isCursor(cell) } />
+                        key         = { cell.index }
+                        model       = { cell } 
+                        controller  = { this.props.controller } 
+                        onClick     = { this.setCursor }
+                        onTouchEnd  = { this.setCursor }
+                        onMouseMove = { this.setHighlight }
+                        highlight   = { this.isHighlighted(cell) }
+                        cursor      = { this.isCursor(cell) } />
                 )
             }</div>
         );
