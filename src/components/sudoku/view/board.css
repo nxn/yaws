@@ -20,6 +20,7 @@
 
 :root {
     --yaws-scale: 1;
+    --yaws-transition-duration: 250ms;
 
     --yaws-board-spacer-color:          #666;
     --yaws-board-border:                calc(0.1875rem * var(--yaws-scale)) solid #222;
@@ -110,7 +111,7 @@
     --yaws-control-panel-button-note-font-family:   'Roboto Mono', monospace;
     --yaws-control-panel-button-note-font-size:     calc(var(--yaws-control-panel-button-value-font-size)/2);
     --yaws-control-panel-button-clear-color:        #eaeaea;
-    --yaws-control-panel-button-clear-bg-color:     #222;
+    --yaws-control-panel-button-clear-bg-color:     #444;
     --yaws-control-panel-button-clear-border-color: #222;
 }
 
@@ -154,8 +155,8 @@
     margin-right:   var(--yaws-cell-spacer-size);
     margin-bottom:  var(--yaws-cell-spacer-size);
 
-    transition:         background-color 250ms ease;
-    transition-delay:   100ms;
+    transition:         background-color var(--yaws-transition-duration) ease;
+    /*transition-delay:   100ms;*/
 }
 
 /* Apply board inner radius to corner cells -- alternate way of doing this involves settings 
@@ -227,7 +228,7 @@
     border-bottom:  var(--yaws-candidate-border);
 
     transition-property:        color, border;
-    transition-duration:        250ms;
+    transition-duration:        var(--yaws-transition-duration);
     transition-timing-function: ease;
 }
 
@@ -256,7 +257,7 @@
 .yaws .board .highlight.cell
 {
     background-color:   var(--yaws-cell-highlight-bg-color);
-    transition:         background-color 250ms ease;
+    transition:         background-color var(--yaws-transition-duration) ease;
 }
 .yaws .board .cursor.cell
 {
