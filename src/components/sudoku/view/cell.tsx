@@ -6,8 +6,8 @@ import { createPointerDoubleClickHandler } from '../pointer';
 type CellProperties = { 
     model:          ICell,
     controller:     ICellController,
-    onpointerdown:  (cell: ICell, event?: PointerEvent) => void,
-    onpointermove:    (cell: ICell, event?: MouseEvent) => void,    
+    onClick:        (cell: ICell) => void,
+    onMouseMove:    (cell: ICell) => void,    
     cursor?:        boolean,
     highlight?:     boolean,
 };
@@ -50,10 +50,10 @@ export class Cell extends Component<CellProperties, any>{
         }
 
         return (
-            <div id             = { this.props.model.id } 
-                className       = { classes.join(' ') }
-                onpointermove   = { linkEvent(cell, this.props.onpointermove) }
-                onpointerdown   = { linkEvent(cell, this.props.onpointerdown) }>
+            <div id         = { this.props.model.id } 
+                className   = { classes.join(' ') }
+                onMouseMove = { linkEvent(cell, this.props.onMouseMove) }
+                onClick     = { linkEvent(cell, this.props.onClick) }>
 
                 <div className={ cell.isValid ? "value" : "invalid value" } onpointerdown={ this.valuePointerDown }>
                     { cell.value > 0 ? cell.value : "" }

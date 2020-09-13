@@ -23,7 +23,7 @@ export class Board extends Component<BoardProperties, BoardState> {
         props.controller.on(BoardEvents.StateChanged, this.setHighlight);
     }
 
-    setCursor = (cell: ICell, event: PointerEvent) => {
+    setCursor = (cell: ICell) => {
         this.props.controller.setCursor(this.props.model, cell);
     }
 
@@ -55,13 +55,13 @@ export class Board extends Component<BoardProperties, BoardState> {
                 onmouseleave={ linkEvent(this.props.model.cursor, this.setHighlight) }>{
                 this.props.model.cells.map((cell: ICell) => 
                     <Cell 
-                        key             = { cell.index }
-                        model           = { cell } 
-                        controller      = { this.props.controller } 
-                        onpointerdown   = { this.setCursor }
-                        onpointermove   = { this.setHighlight }
-                        highlight       = { this.isHighlighted(cell) }
-                        cursor          = { this.isCursor(cell) } />
+                        key         = { cell.index }
+                        model       = { cell } 
+                        controller  = { this.props.controller } 
+                        onClick     = { this.setCursor }
+                        onMouseMove = { this.setHighlight }
+                        highlight   = { this.isHighlighted(cell) }
+                        cursor      = { this.isCursor(cell) } />
                 )
             }</div>
         );
