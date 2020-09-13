@@ -1,5 +1,4 @@
 import { Component, linkEvent } from 'inferno';
-
 import { Cell } from './cell';
 import { IBoardController, IBoard, BoardEvents, ICell } from '../interfaces';
 

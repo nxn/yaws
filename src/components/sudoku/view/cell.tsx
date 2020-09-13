@@ -1,5 +1,5 @@
-import { Component, linkEvent }    from 'inferno';
-import { Candidate }    from "./candidate";
+import { Component, linkEvent } from 'inferno';
+import { Candidate } from "./candidate";
 import { ICell, ICellController } from "../interfaces";
 import { createPointerDoubleClickHandler } from '../pointer';
 
