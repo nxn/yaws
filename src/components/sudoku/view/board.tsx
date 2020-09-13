@@ -23,14 +23,19 @@ export class Board extends Component<BoardProperties, BoardState> {
         props.controller.on(BoardEvents.StateChanged, this.setHighlight);
     }
 
-    setCursor = (cell: ICell) => {
+    setCursor = (cell: ICell, event: PointerEvent) => {
         this.props.controller.setCursor(this.props.model, cell);
     }
 
     setHighlight = (cell: ICell) => {
-        this.setState({ 
-            highlightedColumn:  cell.column.index, 
-            highlightedRow:     cell.row.index 
+        // No change, return early
+        if (this.state.highlightedColumn === cell.column.index && this.state.highlightedRow === cell.row.index) {
+            return;
+        }
+        // Update state
+        this.setState({
+            highlightedColumn: cell.column.index,
+            highlightedRow: cell.row.index
         });
     }
 
@@ -50,14 +55,13 @@ export class Board extends Component<BoardProperties, BoardState> {
                 onmouseleave={ linkEvent(this.props.model.cursor, this.setHighlight) }>{
                 this.props.model.cells.map((cell: ICell) => 
                     <Cell 
-                        key         = { cell.index }
-                        model       = { cell } 
-                        controller  = { this.props.controller } 
-                        onClick     = { this.setCursor }
-                        onTouchEnd  = { this.setCursor }
-                        onMouseMove = { this.setHighlight }
-                        highlight   = { this.isHighlighted(cell) }
-                        cursor      = { this.isCursor(cell) } />
+                        key             = { cell.index }
+                        model           = { cell } 
+                        controller      = { this.props.controller } 
+                        onpointerdown   = { this.setCursor }
+                        onpointermove   = { this.setHighlight }
+                        highlight       = { this.isHighlighted(cell) }
+                        cursor          = { this.isCursor(cell) } />
                 )
             }</div>
         );

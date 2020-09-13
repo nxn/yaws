@@ -2,9 +2,8 @@ import { linkEvent }    from 'inferno';
 import { ICandidate }   from "../interfaces";
 
 type CandidateProperties = {
-    model:      ICandidate,
-    onClick:    (value: number) => void;
-    onDblClick: (value: number) => void;
+    model:          ICandidate,
+    onpointerdown:  (value: number, event: PointerEvent) => any;
 };
 
 export const Candidate = (props: CandidateProperties) => {
@@ -25,15 +24,8 @@ export const Candidate = (props: CandidateProperties) => {
     }
 
     return (
-        <div className  = { classes.join(' ') }
-            onTouchEnd  = { preventTouchEvents }
-            onClick     = { linkEvent(candidate.value, props.onClick) } 
-            onDblClick  = { linkEvent(candidate.value, props.onDblClick) }>
+        <div className={ classes.join(' ') } onpointerdown={ linkEvent(props.model.value, props.onpointerdown) }>
             { candidate.value }
         </div>
     );
 };
-
-function preventTouchEvents(event: TouchEvent) {
-    event.preventDefault();
-}

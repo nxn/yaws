@@ -1,61 +1,73 @@
-import { linkEvent }    from 'inferno';
-import { curry }        from 'ramda';
+import { Component, linkEvent }    from 'inferno';
 import { Candidate }    from "./candidate";
 import { ICell, ICellController } from "../interfaces";
+import { createPointerDoubleClickHandler } from '../pointer';
 
 type CellProperties = { 
     model:          ICell,
     controller:     ICellController,
-    onClick:        (cell: ICell) => void,
-    onTouchEnd:     (cell: ICell) => void,
-    onMouseMove:    (cell: ICell) => void,    
+    onpointerdown:  (cell: ICell, event?: PointerEvent) => void,
+    onpointermove:    (cell: ICell, event?: MouseEvent) => void,    
     cursor?:        boolean,
     highlight?:     boolean,
 };
 
-export const Cell = (props: CellProperties) => {
-    let cell = props.model;
+export class Cell extends Component<CellProperties, any>{
+    private candidatePointerDown:   (data: number, event: PointerEvent) => any;
+    private valuePointerDown:       (event: PointerEvent) => any;
 
-    let classes = [
-        'cell',
-        cell.row.name,
-        cell.column.name,
-        cell.box.name,
-        cell.isStatic ? 'static' : 'editable'
-    ];
+    constructor(props: CellProperties) {
+        super(props);
 
-    if (props.cursor) {
-        classes.push('cursor');
+        this.candidatePointerDown = createPointerDoubleClickHandler(
+            (value: number) => props.controller.toggleCandidate(props.model, value),
+            (value: number) => props.controller.setCellValue(props.model, value)
+        );
+
+        this.valuePointerDown = createPointerDoubleClickHandler(
+            () => { }, // No action for single click
+            () => props.controller.clear(props.model)
+        );
     }
 
-    if (props.highlight) {
-        classes.push('highlight');
-    }
+    render() {
+        let cell = this.props.model;
 
-    let setCellValue    = curry(props.controller.setCellValue)(cell);
-    let toggleCandidate = curry(props.controller.toggleCandidate)(cell);
+        let classes = [
+            'cell',
+            cell.row.name,
+            cell.column.name,
+            cell.box.name,
+            cell.isStatic ? 'static' : 'editable'
+        ];
 
-    return (
-        <div id         = { props.model.id } 
-            className   = { classes.join(' ') }
-            onMouseMove = { linkEvent(cell, props.onMouseMove) }
-            onClick     = { linkEvent(cell, props.onClick) }
-            onTouchEnd  = { linkEvent(cell, props.onTouchEnd) }>
+        if (this.props.cursor) {
+            classes.push('cursor');
+        }
 
-            <div className = { cell.isValid ? "value" : "invalid value" }
-                onDblClick = { linkEvent(cell, props.controller.clear) }>
-                { cell.value > 0 ? cell.value : "" }
+        if (this.props.highlight) {
+            classes.push('highlight');
+        }
+
+        return (
+            <div id             = { this.props.model.id } 
+                className       = { classes.join(' ') }
+                onpointermove   = { linkEvent(cell, this.props.onpointermove) }
+                onpointerdown   = { linkEvent(cell, this.props.onpointerdown) }>
+
+                <div className={ cell.isValid ? "value" : "invalid value" } onpointerdown={ this.valuePointerDown }>
+                    { cell.value > 0 ? cell.value : "" }
+                </div>
+
+                <div className={ cell.value === 0 ? "notes" : "notes hidden" }>{
+                    cell.candidates.map(candidate => 
+                        <Candidate
+                            key             = { candidate.value }
+                            model           = { candidate }
+                            onpointerdown   = { this.candidatePointerDown } />
+                    )
+                }</div>
             </div>
-
-            <div className={ cell.value === 0 ? "notes" : "notes hidden" }>{
-                cell.candidates.map(candidate => 
-                    <Candidate
-                        key         = { candidate.value }
-                        model       = { candidate }
-                        onClick     = { toggleCandidate }
-                        onDblClick  = { setCellValue } />
-                )
-            }</div>
-        </div>
-    );
+        );
+    }
 };
