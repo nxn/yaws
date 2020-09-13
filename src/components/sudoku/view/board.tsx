@@ -20,7 +20,7 @@ export class Board extends Component<BoardProperties, BoardState> {
             highlightedColumn:  props.model.cursor.column.index, 
             highlightedRow:     props.model.cursor.row.index,
         };
-        props.controller.on(BoardEvents.CursorMoved, this.setHighlight);
+        props.controller.on(BoardEvents.StateChanged, this.setHighlight);
     }
 
     setCursor = (cell: ICell) => {
