@@ -25,10 +25,10 @@ export const Candidate = (props: CandidateProperties) => {
     }
 
     return (
-        <div className  = { classes.join(' ') } 
+        <div className  = { classes.join(' ') }
+            onTouchEnd  = { preventTouchEvents }
             onClick     = { linkEvent(candidate.value, props.onClick) } 
-            onDblClick  = { linkEvent(candidate.value, props.onDblClick) } 
-            onTouchEnd  = { preventTouchEvents }>
+            onDblClick  = { linkEvent(candidate.value, props.onDblClick) }>
             { candidate.value }
         </div>
     );
