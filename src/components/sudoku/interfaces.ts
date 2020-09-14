@@ -85,13 +85,13 @@ export interface ILocation {
 //#endregion
 
 //#region Controller
-export interface ICellController {
-    setCellValue:       (cell: ICell, value: number) => void;
-    toggleCandidate:    (cell: ICell, value: number) => void;
-    clear:              (cell: ICell) => void;
+export interface ICellController extends IControllerEvents {
+    setCellValue:       (board: IBoard, cell: ICell, value: number) => void;
+    toggleCandidate:    (board: IBoard, cell: ICell, value: number) => void;
+    clear:              (board: IBoard, cell: ICell) => void;
 }
 
-export interface ICursorController {
+export interface ICursorController extends IControllerEvents {
     setCursor:      (board: IBoard, cell: ICell) => void;
     columnLeft:     (board: IBoard) => void;
     columnRight:    (board: IBoard) => void;
@@ -105,27 +105,32 @@ export interface ICursorController {
     nextError:      (board: IBoard) => void;
 }
 
-export interface IBoardController extends ICellController, ICursorController {
+export interface IBoardController extends ICellController, ICursorController, IControllerEvents { }
+
+export interface IControllerEvents {
     on:     (eventName: string, listener: (...args:any[]) => any) => void;
     detach: (eventName: string, listener: (...args:any[]) => any) => void;
 }
 //#endregion
 
 //#region Events
+export enum CellEvents {
+    CellValueChanged        = "cellValueChanged",
+    CellCandidatesChanged   = "cellCandidatesChanged",
+    CellChanged             = "cellChanged",
+}
+
+export enum BoardEvents {
+    CursorMoved             = "cursorMoved",
+    StateChanged            = "stateChanged"
+}
+
 export interface IEventManager {
     on:         (eventName: string, listener: (...args: any[]) => any) => void;
     fire:       (eventName: string, ...eventArgs: any[]) => void;
     detach:     (eventName: string, listener: (...args: any[]) => any) => boolean;
     detachAll:  (eventName: string) => boolean;
     clear:      () => void;
-}
-
-export enum BoardEvents {
-    CursorMoved             = "cursorMoved",
-    CellValueChanged        = "cellValueChanged",
-    CellCandidatesChanged   = "cellCandidatesChanged",
-    CellChanged             = "cellChanged",
-    StateChanged            = "stateChanged"
 }
 //#endregion
 

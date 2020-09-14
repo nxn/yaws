@@ -1,12 +1,12 @@
 import { linkEvent }    from 'inferno';
 import { ICandidate }   from "../interfaces";
 
-type CandidateProperties = {
+type CellCandidateProperties = {
     model:          ICandidate,
     onpointerdown:  (value: number, event: PointerEvent) => any;
 };
 
-export const Candidate = (props: CandidateProperties) => {
+export const CellCandidate = (props: CellCandidateProperties) => {
     let candidate = props.model;
 
     let classes = ['candidate'];

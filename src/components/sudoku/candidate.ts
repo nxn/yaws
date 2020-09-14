@@ -32,5 +32,4 @@ class Candidate implements ICandidate {
             this.selected = value && !this.cell.isStatic
         }
     }
-
 }

@@ -1,4 +1,4 @@
-import { Component, linkEvent } from 'inferno';
+import { Component } from 'inferno';
 import { Cell } from './cell';
 import { IBoardController, IBoard, BoardEvents, ICell } from '../interfaces';
 
@@ -19,7 +19,10 @@ export class Board extends Component<BoardProperties, BoardState> {
             highlightedColumn:  props.model.cursor.column.index, 
             highlightedRow:     props.model.cursor.row.index,
         };
-        props.controller.on(BoardEvents.StateChanged, this.setHighlight);
+    }
+
+    componentDidMount() {
+        this.props.controller.on(BoardEvents.CursorMoved, this.setHighlight);
     }
 
     setCursor = (cell: ICell) => {
@@ -38,6 +41,10 @@ export class Board extends Component<BoardProperties, BoardState> {
         });
     }
 
+    resetHighlight = () => {
+        this.setHighlight(this.props.model.cursor);
+    }
+
     isHighlighted(cell: ICell) {
         return cell.row.index    === this.state.highlightedRow 
             || cell.column.index === this.state.highlightedColumn;
@@ -51,16 +58,16 @@ export class Board extends Component<BoardProperties, BoardState> {
         return (
             <div id={this.props.model.id} 
                 className="board"
-                onmouseleave={ linkEvent(this.props.model.cursor, this.setHighlight) }>{
+                onmouseleave={ this.resetHighlight }>{
                 this.props.model.cells.map((cell: ICell) => 
                     <Cell 
                         key         = { cell.index }
                         model       = { cell } 
-                        controller  = { this.props.controller } 
+                        controller  = { this.props.controller }
+                        board       = { this.props.model }
                         onClick     = { this.setCursor }
                         onMouseMove = { this.setHighlight }
-                        highlight   = { this.isHighlighted(cell) }
-                        cursor      = { this.isCursor(cell) } />
+                        highlight   = { this.isHighlighted(cell) } />
                 )
             }</div>
         );

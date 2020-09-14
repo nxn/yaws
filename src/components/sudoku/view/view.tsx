@@ -1,18 +1,18 @@
 import { render as inferno } from 'inferno';
 import { Board } from './board';
 import { Controls } from './controls';
-import { IBoard, IBoardController, BoardEvents } from '../interfaces';
+import { IBoard, IBoardController } from '../interfaces';
 import './board.css';
 
-type YawsProperties = {
+type ViewProperties = {
     model:      IBoard,
     controller: IBoardController
 };
 
-export const Yaws = (props: YawsProperties) => (
+export const Yaws = (props: ViewProperties) => (
     <div className="yaws">
         <Board      model={props.model} controller={props.controller} />
-        <Controls   model={props.model} controller={props.controller} />
+        <Controls   board={props.model} controller={props.controller} />
     </div>
 );
 
@@ -22,10 +22,7 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
     scaleToViewport();
     window.addEventListener('resize', scaleToViewport);
 
-    const render = () => inferno(<Yaws model={board} controller={controller} />, container);
-    controller.on(BoardEvents.StateChanged, render);
-
-    return render;
+    return () => inferno(<Yaws model={board} controller={controller} />, container);
 }
 
 function scaleToViewport() {

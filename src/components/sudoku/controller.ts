@@ -1,6 +1,6 @@
 import { constants as gc } from './board';
 import { create as createEventManager } from './events';
-import { BoardEvents, IBoard, IBoardController, ICell, IEventManager, ISet } from './interfaces';
+import { BoardEvents, CellEvents, IBoard, IBoardController, ICell, IEventManager, ISet } from './interfaces';
 
 export function create(): IBoardController {
     return new BoardController(createEventManager());
@@ -10,15 +10,15 @@ type TCellSelector = (set: ISet) => ICell;
 
 class BoardController implements IBoardController {
     constructor(private events: IEventManager) {
-        this.events.on(BoardEvents.CellValueChanged, (cell: ICell) => {
-            this.events.fire(BoardEvents.CellChanged, cell);
+        this.events.on(CellEvents.CellValueChanged, (cell: ICell) => {
+            this.events.fire(CellEvents.CellChanged, cell);
         });
 
-        this.events.on(BoardEvents.CellCandidatesChanged, (cell: ICell) => {
-            this.events.fire(BoardEvents.CellChanged, cell);
+        this.events.on(CellEvents.CellCandidatesChanged, (cell: ICell) => {
+            this.events.fire(CellEvents.CellChanged, cell);
         });
 
-        this.events.on(BoardEvents.CellChanged, (cell: ICell) => {
+        this.events.on(CellEvents.CellChanged, (cell: ICell) => {
             this.events.fire(BoardEvents.StateChanged, cell);
         });
 
@@ -35,27 +35,39 @@ class BoardController implements IBoardController {
         return this.events.detach(eventName, listener);
     }
 
-    toggleCandidate = (cell: ICell, value: number) => {
+    toggleCandidate = (board: IBoard, cell: ICell, value: number) => {
+        if (board.cursor !== cell) {
+            this.setCursor(board, cell);
+        }
+
         let candidate = cell.candidates[value - 1];
         candidate.isSelected = !candidate.isSelected;
-        this.events.fire(BoardEvents.CellCandidatesChanged, cell);
+        this.events.fire(CellEvents.CellCandidatesChanged, cell);
     };
     
-    setCellValue = (cell: ICell, value: number) => {
+    setCellValue = (board: IBoard, cell: ICell, value: number) => {
+        if (board.cursor !== cell) {
+            this.setCursor(board, cell);
+        }
+
         let previous = cell.value;
         // if there is already a set value in the cursor cell and the new one is the same, clear the value instead.
         cell.value = cell.value > 0 && cell.value === value ? 0 : value;
 
         if (cell.value !== previous) {
-            this.events.fire(BoardEvents.CellValueChanged, cell);
+            this.events.fire(CellEvents.CellValueChanged, cell);
         }
     };
     
-    clear = (cell: ICell) => {
+    clear = (board: IBoard, cell: ICell) => {
+        if (board.cursor !== cell) {
+            this.setCursor(board, cell);
+        }
+
         if (cell.value > 0) {
             // If the cell has a value clear it
             cell.value = 0;
-            this.events.fire(BoardEvents.CellValueChanged, cell);
+            this.events.fire(CellEvents.CellValueChanged, cell);
         }
         else {
             let hadSelections = false;
@@ -68,18 +80,19 @@ class BoardController implements IBoardController {
             });
 
             if (hadSelections) {
-                this.events.fire(BoardEvents.CellCandidatesChanged, cell);
+                this.events.fire(CellEvents.CellCandidatesChanged, cell);
             }
         }
     };
 
-    setCursor = (board: IBoard, cell: ICell) => {
-        if (board.cursor === cell) {
+    setCursor = (board: IBoard, to: ICell) => {
+        if (board.cursor === to) {
             return;
         }
 
-        board.cursor = cell;
-        this.events.fire(BoardEvents.CursorMoved, board.cursor);
+        let from = board.cursor;
+        board.cursor = to;
+        this.events.fire(BoardEvents.CursorMoved, to, from);
     };
 
     previousError = (board: IBoard) => {

@@ -1,14 +1,15 @@
 import { Component, linkEvent } from 'inferno';
-import { Candidate } from "./candidate";
-import { ICell, ICellController } from "../interfaces";
+import { CellValue } from "./cell-value";
+import { CellCandidate } from "./cell-candidate";
+import { IBoard, ICell, ICellController, CellEvents, BoardEvents } from "../interfaces";
 import { createPointerDoubleClickHandler } from '../pointer';
 
 type CellProperties = { 
     model:          ICell,
+    board:          IBoard,
     controller:     ICellController,
     onClick:        (cell: ICell) => void,
-    onMouseMove:    (cell: ICell) => void,    
-    cursor?:        boolean,
+    onMouseMove:    (cell: ICell) => void,
     highlight?:     boolean,
 };
 
@@ -20,17 +21,32 @@ export class Cell extends Component<CellProperties, any>{
         super(props);
 
         this.candidatePointerDown = createPointerDoubleClickHandler(
-            (value: number) => props.controller.toggleCandidate(props.model, value),
-            (value: number) => props.controller.setCellValue(props.model, value)
+            (value: number) => props.controller.toggleCandidate(props.board, props.model, value),
+            (value: number) => props.controller.setCellValue(props.board, props.model, value)
         );
 
         this.valuePointerDown = createPointerDoubleClickHandler(
             () => { }, // No action for single click
-            () => props.controller.clear(props.model)
+            () => props.controller.clear(props.board, props.model)
         );
     }
 
+    componentDidMount() {
+        this.props.controller.on(BoardEvents.CursorMoved, (to: ICell, from: ICell) => {
+            if (this.props.model === to || this.props.model === from) {
+                this.setState(this.state);
+            }
+        });
+        
+        this.props.controller.on(CellEvents.CellChanged, (cell: ICell) => {
+            if (this.props.model === cell) {
+                this.setState(this.state);
+            }
+        });
+    }
+
     render() {
+        console.log('cell render');
         let cell = this.props.model;
 
         let classes = [
@@ -41,7 +57,7 @@ export class Cell extends Component<CellProperties, any>{
             cell.isStatic ? 'static' : 'editable'
         ];
 
-        if (this.props.cursor) {
+        if (cell === this.props.board.cursor) {
             classes.push('cursor');
         }
 
@@ -55,13 +71,10 @@ export class Cell extends Component<CellProperties, any>{
                 onMouseMove = { linkEvent(cell, this.props.onMouseMove) }
                 onClick     = { linkEvent(cell, this.props.onClick) }>
 
-                <div className={ cell.isValid ? "value" : "invalid value" } onpointerdown={ this.valuePointerDown }>
-                    { cell.value > 0 ? cell.value : "" }
-                </div>
-
+                <CellValue model={cell} onpointerdown={this.valuePointerDown} />
                 <div className={ cell.value === 0 ? "notes" : "notes hidden" }>{
                     cell.candidates.map(candidate => 
-                        <Candidate
+                        <CellCandidate
                             key             = { candidate.value }
                             model           = { candidate }
                             onpointerdown   = { this.candidatePointerDown } />
