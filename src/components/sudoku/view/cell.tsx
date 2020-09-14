@@ -37,7 +37,7 @@ export class Cell extends Component<CellProperties, any>{
                 this.setState(this.state);
             }
         });
-        
+
         this.props.controller.on(CellEvents.CellChanged, (cell: ICell) => {
             if (this.props.model === cell) {
                 this.setState(this.state);
@@ -46,7 +46,6 @@ export class Cell extends Component<CellProperties, any>{
     }
 
     render() {
-        console.log('cell render');
         let cell = this.props.model;
 
         let classes = [

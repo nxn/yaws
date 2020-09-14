@@ -46,7 +46,7 @@ const actionMap: { [key: string]: (board: IBoard, controller: IBoardController) 
     [KeyboardActions.boxDown]:      (b,c) => c.boxDown(b),
     [KeyboardActions.nextError]:    (b,c) => c.nextError(b),
     [KeyboardActions.prevError]:    (b,c) => c.previousError(b),
-    [KeyboardActions.clearCell]:    (b,c) => c.clear(b.cursor)
+    [KeyboardActions.clearCell]:    (b,c) => c.clear(b, b.cursor)
 };
 
 class KeyboardHandler implements IKeyboardHandler {
@@ -92,7 +92,7 @@ class KeyboardHandler implements IKeyboardHandler {
         // case for other reasons, of course, but this will have to do for the time being.
         if (num !== parseInt(keyPress.key)) {
             keyPress.preventDefault();
-            this.controller.setCellValue(this.board.cursor, num);
+            this.controller.setCellValue(this.board, this.board.cursor, num);
             return;
         }
         
@@ -100,11 +100,11 @@ class KeyboardHandler implements IKeyboardHandler {
             keyPress.preventDefault();
             if (this.board.cursor.value > 0) {
                 // If cell already has a value set, update it
-                this.controller.setCellValue(this.board.cursor, num);
+                this.controller.setCellValue(this.board, this.board.cursor, num);
             }
             else {
                 // Otherwise flip the candidate selection
-                this.controller.toggleCandidate(this.board.cursor, num);
+                this.controller.toggleCandidate(this.board, this.board.cursor, num);
             }
         }
     }
