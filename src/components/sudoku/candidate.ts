@@ -1,7 +1,9 @@
-import { ICandidate, ICell, ModelType } from './interfaces';
+import { ICandidate, ICell, IEventStore, IEventManager, ModelType } from './interfaces';
+import { CandidateEvents } from "./events";
 
-export function create(value: number, cell: ICell): ICandidate {
-    return new Candidate(value, cell);
+export function create(events: IEventStore, value: number, cell: ICell): ICandidate {
+    const candidateEvents = events.get(ModelType.Candidate);
+    return new Candidate(value, cell, candidateEvents);
 }
 
 class Candidate implements ICandidate {
@@ -9,14 +11,15 @@ class Candidate implements ICandidate {
 
     constructor(
         readonly value: number,
-        readonly cell: ICell
+        readonly cell: ICell,
+        readonly events: IEventManager
     ) { }
     
-    get isValid(): boolean {
-        if (!this.isSelected) { return true; }
+    isValid(): boolean {
+        if (!this.isSelected()) { return true; }
 
         const cell = this.cell;
-        const selectedValue = (c:ICell) => c.value === this.value;
+        const selectedValue = (c:ICell) => c.getValue() === this.value;
     
         return !cell.row.cells.find(selectedValue)
             && !cell.column.cells.find(selectedValue)
@@ -24,12 +27,18 @@ class Candidate implements ICandidate {
     }
 
     private selected = false;
-    get isSelected() {
-        return !this.cell.isStatic && this.selected;
+    isSelected() {
+        return !this.cell.isStatic() && this.selected;
     };
-    set isSelected(value: boolean) {
-        if (typeof value === "boolean") {
-            this.selected = value && !this.cell.isStatic
+    setSelected(value: boolean, silent = false) {
+        if (typeof value !== "boolean") {
+            return;
+        }
+        let previous = this.selected;
+        this.selected = value && !this.cell.isStatic()
+
+        if ((previous !== this.selected) && !silent) {
+            this.events.fire(CandidateEvents.SelectedChanged, this, this.value, this.selected);
         }
     }
 }

@@ -27,12 +27,12 @@ class StateManager implements IStateManager {
             this.loadCellData(cell, { v: value, s: value !== 0, c: [] });
         }
     
-        this.board.isLoaded = true;
+        this.board.setLoaded(true);
         return this.board;
     }
     
     getTypedArray(): Uint8Array {
-        return Uint8Array.from(this.board.cells.map(c => c.isStatic ? c.value : 0));
+        return Uint8Array.from(this.board.cells.map(c => c.isStatic() ? c.getValue() : 0));
     }
     
     getData(ignoreHiddenCandidates?: boolean): ICellData[] {
@@ -47,12 +47,12 @@ class StateManager implements IStateManager {
         const iter = data[Symbol.iterator]();
         this.board.cells.forEach(cell => this.loadCellData(cell, iter.next().value));
     
-        this.board.isLoaded = true;
+        this.board.setLoaded(true);
         return this.board;
     }
     
     getString(): string {
-        return this.board.cells.map(c => c.isStatic ? c.value : 0).join('');
+        return this.board.cells.map(c => c.isStatic ? c.getValue() : 0).join('');
     }
     
     loadString(puzzle: string): IBoard {
@@ -71,7 +71,7 @@ class StateManager implements IStateManager {
             this.loadCellData(cell, { v: v, s: v !== 0, c: [] });
         });
     
-        this.board.isLoaded = true;
+        this.board.setLoaded(true);
         return this.board;
     }
     
@@ -104,7 +104,7 @@ class StateManager implements IStateManager {
             this.loadCellBinary(cells[i], view16[i]);
         }
     
-        this.board.isLoaded = true;
+        this.board.setLoaded(true);
         return this.board;
     }
     
@@ -146,11 +146,11 @@ class StateManager implements IStateManager {
     }
     
     private getCellData(cell: ICell, ignoreHiddenCandidates: boolean): ICellData {
-        const skip = cell.value > 0 && ignoreHiddenCandidates;
+        const skip = cell.getValue() > 0 && ignoreHiddenCandidates;
     
-        return { v: cell.value
-               , s: cell.isStatic
-               , c: cell.candidates.filter(c => c.isSelected && !skip).map(c => c.value)
+        return { v: cell.getValue()
+               , s: cell.isStatic()
+               , c: cell.candidates.filter(c => c.isSelected() && !skip).map(c => c.value)
                };
     }
     
@@ -160,36 +160,36 @@ class StateManager implements IStateManager {
         }
     
         // Set cell as non-static so we can update its values
-        cell.isStatic = false;
+        cell.setStatic(false, true);
     
         if (data.v >= 0 && data.v < 10) {
-            cell.value = data.v;
+            cell.setValue(data.v, true);
         }
     
         if (Array.isArray(data.c)) {
-            cell.candidates.forEach(c => c.isSelected = data.c.indexOf(c.value) >= 0);
+            cell.candidates.forEach(c => c.setSelected(data.c.indexOf(c.value) >= 0, true));
         }
     
         if (typeof data.s === 'boolean') {
-            cell.isStatic = data.s;
+            cell.setStatic(data.s, true);
         }
     }
     
     private getCellBinary(cell: ICell, ignoreHiddenCandidates: boolean): number {
-        let v = cell.value;
+        let v = cell.getValue();
     
         const skip = v > 0 && ignoreHiddenCandidates;
-        v = v << 1 | (cell.isStatic ? 1 : 0);
+        v = v << 1 | (cell.isStatic() ? 1 : 0);
     
         for (let i = cell.candidates.length - 1; i >= 0; i--) {
-            v = v << 1 | (cell.candidates[i].isSelected && !skip ? 1: 0);
+            v = v << 1 | (cell.candidates[i].isSelected() && !skip ? 1: 0);
         }
     
         return v;
     }
     
     private loadCellBinary(cell: ICell, v: number): void {
-        cell.isStatic = false;
+        cell.setStatic(false, true);
     
         // Cell values are only valid if they're in the 0 to 16383 range (4 bits for value, 1 isStatic bit, 9 bits to mark
         // whether each candidate is selected).
@@ -198,13 +198,13 @@ class StateManager implements IStateManager {
         }
     
         for (let i = 0; i < cell.candidates.length; i++) {
-            cell.candidates[i].isSelected = !!(v&1);
+            cell.candidates[i].setSelected(!!(v&1), true);
             v = v >> 1;
         }
     
         const isStatic = !!(v&1);
     
-        cell.value = v >> 1;
-        cell.isStatic = isStatic;
+        cell.setValue(v >> 1, true);
+        cell.setStatic(isStatic, true);
     }
 }

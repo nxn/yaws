@@ -1,10 +1,13 @@
-import { IBoard, ISet, ICell, ISetValidationResult, ModelType } from './interfaces';
+import { IEventStore, IEventManager, IBoard, ISet, ICell, ISetValidationResult, ModelType } from './interfaces';
 
-export function create(board: IBoard, name: string, index: number): ISet {
+export enum SetEvents { };
+
+export function create(events: IEventStore, board: IBoard, name: string, index: number): ISet {
+    const setEvents = events.get(ModelType.Set);
     const id = `${board.id}-${name}`;
     const cells:ICell[] = [];
 
-    return new Set(id, name, index, cells);
+    return new Set(id, name, index, cells, setEvents);
 }
 
 export function validate(set: ISet): ISetValidationResult {
@@ -12,17 +15,17 @@ export function validate(set: ISet): ISetValidationResult {
     const values: Map<number, ICell[]> = new Map();
     
     for (const cell of set.cells) {
-        if (cell.value === 0) {
+        if (cell.getValue() === 0) {
             continue;
         }
         
-        if (values.has(cell.value)) {
+        if (values.has(cell.getValue())) {
             result.valid = false;
         } else {
-            values.set(cell.value, []);
+            values.set(cell.getValue(), []);
         }
 
-        values.get(cell.value).push(cell);
+        values.get(cell.getValue()).push(cell);
     }
 
     for (const v of values.values()) {
@@ -64,10 +67,11 @@ class Set implements ISet {
     readonly type = ModelType.Set;
 
     constructor(
-        readonly id:    string,
-        readonly name:  string,
-        readonly index: number,
-        readonly cells: ICell[]
+        readonly id:        string,
+        readonly name:      string,
+        readonly index:     number,
+        readonly cells:     ICell[],
+        readonly events:    IEventManager
     ) { }
 
     validate(): ISetValidationResult {

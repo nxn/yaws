@@ -1,6 +1,7 @@
 import { Component } from 'inferno';
 import { Cell } from './cell';
-import { IBoardController, IBoard, BoardEvents, ICell } from '../interfaces';
+import { IBoardController, IBoard, ICell } from '../interfaces';
+import { BoardEvents } from '../events';
 
 type BoardProperties = { 
     model:      IBoard,
@@ -16,25 +17,36 @@ export class Board extends Component<BoardProperties, BoardState> {
     constructor(props: BoardProperties) {
         super(props);
         this.state = { 
-            highlightedColumn:  props.model.cursor.column.index, 
-            highlightedRow:     props.model.cursor.row.index,
+            highlightedColumn:  props.model.getCursor().column.index, 
+            highlightedRow:     props.model.getCursor().row.index
         };
     }
 
     componentDidMount() {
-        this.props.controller.on(BoardEvents.CursorMoved, this.setHighlight);
+        this.props.model.events.on(BoardEvents.CursorMoved, this.updateHighlightState);
+        //this.props.model.events.on(BoardEvents.Loaded, this.update);
+    }
+    componentWillUnmount() {
+        this.props.model.events.detach(BoardEvents.CursorMoved, this.updateHighlightState);
     }
 
-    setCursor = (cell: ICell) => {
-        this.props.controller.setCursor(this.props.model, cell);
+    shouldComponentUpdate(_: BoardProperties, nextState: BoardState) {
+        if (this.state.highlightedColumn !== nextState.highlightedColumn) {
+            return true;
+        }
+        if (this.state.highlightedRow !== nextState.highlightedRow) {
+            return true;
+        }
+
+        return false;
     }
 
+    updateHighlightState = (_: IBoard, cell: ICell) => { this.setHighlight(cell); }
     setHighlight = (cell: ICell) => {
-        // No change, return early
         if (this.state.highlightedColumn === cell.column.index && this.state.highlightedRow === cell.row.index) {
             return;
         }
-        // Update state
+
         this.setState({
             highlightedColumn: cell.column.index,
             highlightedRow: cell.row.index
@@ -42,7 +54,7 @@ export class Board extends Component<BoardProperties, BoardState> {
     }
 
     resetHighlight = () => {
-        this.setHighlight(this.props.model.cursor);
+        this.setHighlight(this.props.model.getCursor());
     }
 
     isHighlighted(cell: ICell) {
@@ -50,8 +62,8 @@ export class Board extends Component<BoardProperties, BoardState> {
             || cell.column.index === this.state.highlightedColumn;
     }
 
-    isCursor(cell: ICell) {
-        return cell === this.props.model.cursor
+    setCursor = (cell: ICell) => {
+        this.props.controller.setCursor(this.props.model, cell);
     }
 
     render() {

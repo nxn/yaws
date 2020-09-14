@@ -1,117 +1,74 @@
 import { constants as gc } from './board';
-import { create as createEventManager } from './events';
-import { BoardEvents, CellEvents, IBoard, IBoardController, ICell, IEventManager, ISet } from './interfaces';
+import { IBoard, IBoardController, ICell, ICandidate, ISet } from './interfaces';
 
 export function create(): IBoardController {
-    return new BoardController(createEventManager());
+    return new BoardController();
 }
 
 type TCellSelector = (set: ISet) => ICell;
 
 class BoardController implements IBoardController {
-    constructor(private events: IEventManager) {
-        this.events.on(CellEvents.CellValueChanged, (cell: ICell) => {
-            this.events.fire(CellEvents.CellChanged, cell);
-        });
+    constructor( ) { }
 
-        this.events.on(CellEvents.CellCandidatesChanged, (cell: ICell) => {
-            this.events.fire(CellEvents.CellChanged, cell);
-        });
-
-        this.events.on(CellEvents.CellChanged, (cell: ICell) => {
-            this.events.fire(BoardEvents.StateChanged, cell);
-        });
-
-        this.events.on(BoardEvents.CursorMoved, (cell: ICell) => {
-            this.events.fire(BoardEvents.StateChanged, cell);
-        });
-    }
-
-    on(eventName: string, listener: (...eventArgs:any[]) => any) {
-        return this.events.on(eventName, listener);
-    }
-
-    detach(eventName: string, listener: (...eventArgs:any[]) => any) {
-        return this.events.detach(eventName, listener);
-    }
-
-    toggleCandidate = (board: IBoard, cell: ICell, value: number) => {
-        if (board.cursor !== cell) {
+    toggleCandidate = (board: IBoard, cell: ICell, candidate: ICandidate | number) => {
+        if (board.getCursor() !== cell) {
             this.setCursor(board, cell);
         }
 
-        let candidate = cell.candidates[value - 1];
-        candidate.isSelected = !candidate.isSelected;
-        this.events.fire(CellEvents.CellCandidatesChanged, cell);
+        let model = typeof candidate === "number"
+            ? cell.candidates[candidate - 1]
+            : candidate;
+
+        model.setSelected(!model.isSelected());
     };
     
     setCellValue = (board: IBoard, cell: ICell, value: number) => {
-        if (board.cursor !== cell) {
+        if (board.getCursor() !== cell) {
             this.setCursor(board, cell);
         }
 
-        let previous = cell.value;
         // if there is already a set value in the cursor cell and the new one is the same, clear the value instead.
-        cell.value = cell.value > 0 && cell.value === value ? 0 : value;
-
-        if (cell.value !== previous) {
-            this.events.fire(CellEvents.CellValueChanged, cell);
-        }
+        cell.setValue(cell.getValue() > 0 && cell.getValue() === value ? 0 : value);
     };
     
     clear = (board: IBoard, cell: ICell) => {
-        if (board.cursor !== cell) {
+        if (board.getCursor() !== cell) {
             this.setCursor(board, cell);
         }
 
-        if (cell.value > 0) {
+        if (cell.getValue() > 0) {
             // If the cell has a value clear it
-            cell.value = 0;
-            this.events.fire(CellEvents.CellValueChanged, cell);
+            cell.setValue(0);
         }
         else {
-            let hadSelections = false;
             // If it doesn't, proceed to clearing the candidates/notes
-            cell.candidates.forEach(c => {
-                if (c.isSelected) {
-                    hadSelections = true;
-                }
-                c.isSelected = false;
-            });
-
-            if (hadSelections) {
-                this.events.fire(CellEvents.CellCandidatesChanged, cell);
-            }
+            cell.candidates.forEach(c => { c.setSelected(false); });
         }
     };
 
-    setCursor = (board: IBoard, to: ICell) => {
-        if (board.cursor === to) {
+    setCursor = (board: IBoard, cell: ICell) => {
+        if (board.getCursor() === cell) {
             return;
         }
 
-        let from = board.cursor;
-        board.cursor = to;
-        this.events.fire(BoardEvents.CursorMoved, to, from);
+        board.setCursor(cell);
     };
 
     previousError = (board: IBoard) => {
         // Starting from the previous index, return the first invalid cell occurence
-        for (let i = board.cursor.index - 1; i >= 0; i--) {
+        for (let i = board.getCursor().index - 1; i >= 0; i--) {
             let cell = board.cells[i];
             if (!cell.isStatic && !cell.isValid) {
-                board.cursor = cell;
-                this.events.fire(BoardEvents.CursorMoved, board.cursor);
+                board.setCursor(cell);
                 return;
             }
         }
     
         // Loop around and repeat from the end of the array
-        for (let i = board.cells.length - 1; i > board.cursor.index; i--) {
+        for (let i = board.cells.length - 1; i > board.getCursor().index; i--) {
             let cell = board.cells[i];
             if (!cell.isStatic && !cell.isValid) {
-                board.cursor = cell;
-                this.events.fire(BoardEvents.CursorMoved, board.cursor);
+                board.setCursor(cell);
                 return;
             }
         }
@@ -119,80 +76,78 @@ class BoardController implements IBoardController {
     
     nextError = (board: IBoard) => {
         // Starting from the next index, return the first invalid cell occurence
-        for (let i = board.cursor.index + 1; i < board.cells.length; i++) {
+        for (let i = board.getCursor().index + 1; i < board.cells.length; i++) {
             let cell = board.cells[i];
             if (!cell.isStatic && !cell.isValid) {
-                board.cursor = cell;
-                this.events.fire(BoardEvents.CursorMoved, board.cursor);
+                board.setCursor(cell);
                 return;
             }
         }
     
         // Loop around and repeat from the beginning of the array 
-        for (let i = 0; i < board.cursor.index; i++) {
+        for (let i = 0; i < board.getCursor().index; i++) {
             let cell = board.cells[i];
             if (!cell.isStatic && !cell.isValid) {
-                board.cursor = cell;
-                this.events.fire(BoardEvents.CursorMoved, board.cursor);
+                board.setCursor(cell);
                 return;
             }
         }
     };
     
     rowUp = (board: IBoard) => {
-        board.cursor = this.offset(board.cursor.row.index).by(-1).in(board.rows).select(
-            row => row.cells[board.cursor.column.index]
+        const cursor = this.offset(board.getCursor().row.index).by(-1).in(board.rows).select(
+            row => row.cells[board.getCursor().column.index]
         );
-        this.events.fire(BoardEvents.CursorMoved, board.cursor);
+        board.setCursor(cursor);
     };
     
     columnLeft = (board: IBoard) => {
-        board.cursor = this.offset(board.cursor.column.index).by(-1).in(board.columns).select(
-            col => col.cells[board.cursor.row.index]
+        const cursor = this.offset(board.getCursor().column.index).by(-1).in(board.columns).select(
+            col => col.cells[board.getCursor().row.index]
         );
-        this.events.fire(BoardEvents.CursorMoved, board.cursor);
+        board.setCursor(cursor);
     };
     
     rowDown = (board: IBoard) => {
-        board.cursor = this.offset(board.cursor.row.index).by(+1).in(board.rows).select(
-            row => row.cells[board.cursor.column.index]
+        const cursor = this.offset(board.getCursor().row.index).by(+1).in(board.rows).select(
+            row => row.cells[board.getCursor().column.index]
         );
-        this.events.fire(BoardEvents.CursorMoved, board.cursor);
+        board.setCursor(cursor)
     };
     
     columnRight = (board: IBoard) => {
-        board.cursor = this.offset(board.cursor.column.index).by(+1).in(board.columns).select(
-            col => col.cells[board.cursor.row.index]
+        const cursor = this.offset(board.getCursor().column.index).by(+1).in(board.columns).select(
+            col => col.cells[board.getCursor().row.index]
         );
-        this.events.fire(BoardEvents.CursorMoved, board.cursor);
+        board.setCursor(cursor);
     };
     
     boxUp = (board: IBoard) => {
-        board.cursor = this.offset(board.cursor.row.index).by(-gc.boxRowCount).in(board.rows).select(
-            row => row.cells[board.cursor.column.index]
+        const cursor = this.offset(board.getCursor().row.index).by(-gc.boxRowCount).in(board.rows).select(
+            row => row.cells[board.getCursor().column.index]
         );
-        this.events.fire(BoardEvents.CursorMoved, board.cursor);
+        board.setCursor(cursor);
     };
     
     boxLeft = (board: IBoard) => {
-        board.cursor = this.offset(board.cursor.column.index).by(-gc.boxColumnCount).in(board.columns).select(
-            col => col.cells[board.cursor.row.index]
+        const cursor = this.offset(board.getCursor().column.index).by(-gc.boxColumnCount).in(board.columns).select(
+            col => col.cells[board.getCursor().row.index]
         );
-        this.events.fire(BoardEvents.CursorMoved, board.cursor);
+        board.setCursor(cursor);
     };
     
     boxDown = (board: IBoard) => {
-        board.cursor = this.offset(board.cursor.row.index).by(+gc.boxRowCount).in(board.rows).select(
-            row => row.cells[board.cursor.column.index]
+        const cursor = this.offset(board.getCursor().row.index).by(+gc.boxRowCount).in(board.rows).select(
+            row => row.cells[board.getCursor().column.index]
         );
-        this.events.fire(BoardEvents.CursorMoved, board.cursor);
+        board.setCursor(cursor);
     };
     
     boxRight = (board: IBoard) => {
-        board.cursor = this.offset(board.cursor.column.index).by(+gc.boxColumnCount).in(board.columns).select(
-            col => col.cells[board.cursor.row.index]
+        const cursor = this.offset(board.getCursor().column.index).by(+gc.boxColumnCount).in(board.columns).select(
+            col => col.cells[board.getCursor().row.index]
         );
-        this.events.fire(BoardEvents.CursorMoved, board.cursor);
+        board.setCursor(cursor);
     }
 
     private offset(position: number) {

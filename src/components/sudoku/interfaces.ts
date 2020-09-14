@@ -1,7 +1,16 @@
 export type TSudokuPuzzle = string | number[];
 
-export enum ModelType   { Board, Cell, Candidate, Set };
-export interface IModel { type: ModelType; }
+export enum ModelType   { 
+    Board       = "Board",
+    Cell        = "Cell",
+    Candidate   = "Candidate",
+    Set         = "Set"
+};
+
+export interface IModel { 
+    type:   ModelType;
+    events: IEventManager;
+}
 
 //#region Set
 export interface ISet extends IModel {
@@ -25,36 +34,41 @@ export interface ICell extends IModel {
     id:             string;
     name:           string;
     index:          number;
-    value:          number;
     row:            ISet;
     column:         ISet;
     box:            ISet;
     candidates:     ICandidate[];
-    isStatic:       boolean;
-    isValid:        boolean;
-    clear:          () => void;
+    getValue:       () => number;
+    setValue:       (value: number, silent?: boolean) => void;
+    isStatic:       () => boolean;
+    setStatic:      (value: boolean, silent?: boolean) => void;
+    isValid:        () => boolean;
+    clear:          (silent: boolean) => void;
 }
 
 export interface ICandidate extends IModel {
-    type:       ModelType.Candidate;
-    value:      number;
-    isValid:    boolean;
-    isSelected: boolean;
+    type:           ModelType.Candidate;
+    value:          number;
+    isValid:        () => boolean;
+    isSelected:     () => boolean;
+    setSelected:    (value: boolean, silent?: boolean) => void;
 }
 //#endregion
 
 //#region Board
 export interface IBoard extends IModel {
-    type:       ModelType.Board;
-    id:         string;
-    cells:      ICell[];
-    rows:       ISet[];
-    columns:    ISet[];
-    boxes:      ISet[];
-    cursor:     ICell;
-    isLoaded:   boolean;
-    clear:      () => IBoard;
-    reset:      () => IBoard;
+    type:           ModelType.Board;
+    id:             string;
+    cells:          ICell[];
+    rows:           ISet[];
+    columns:        ISet[];
+    boxes:          ISet[];
+    getCursor:      () => ICell;
+    setCursor:      (to: ICell, silent?: boolean) => void;
+    isLoaded:       () => boolean;
+    setLoaded:      (value: boolean, silent?: boolean) => void;
+    clear:          (silent: boolean) => IBoard;
+    reset:          (silent: boolean) => IBoard;
 }
 //#endregion
 
@@ -85,13 +99,16 @@ export interface ILocation {
 //#endregion
 
 //#region Controller
-export interface ICellController extends IControllerEvents {
+export interface ICandidateController {
+    toggleCandidate:    (board: IBoard, cell: ICell, candidate: ICandidate | number) => void;
+}
+
+export interface ICellController extends ICandidateController {
     setCellValue:       (board: IBoard, cell: ICell, value: number) => void;
-    toggleCandidate:    (board: IBoard, cell: ICell, value: number) => void;
     clear:              (board: IBoard, cell: ICell) => void;
 }
 
-export interface ICursorController extends IControllerEvents {
+export interface ICursorController {
     setCursor:      (board: IBoard, cell: ICell) => void;
     columnLeft:     (board: IBoard) => void;
     columnRight:    (board: IBoard) => void;
@@ -105,32 +122,23 @@ export interface ICursorController extends IControllerEvents {
     nextError:      (board: IBoard) => void;
 }
 
-export interface IBoardController extends ICellController, ICursorController, IControllerEvents { }
-
-export interface IControllerEvents {
-    on:     (eventName: string, listener: (...args:any[]) => any) => void;
-    detach: (eventName: string, listener: (...args:any[]) => any) => void;
-}
+export interface IBoardController extends ICellController, ICursorController { }
 //#endregion
 
 //#region Events
-export enum CellEvents {
-    CellValueChanged        = "cellValueChanged",
-    CellCandidatesChanged   = "cellCandidatesChanged",
-    CellChanged             = "cellChanged",
-}
-
-export enum BoardEvents {
-    CursorMoved             = "cursorMoved",
-    StateChanged            = "stateChanged"
-}
-
 export interface IEventManager {
     on:         (eventName: string, listener: (...args: any[]) => any) => void;
     fire:       (eventName: string, ...eventArgs: any[]) => void;
     detach:     (eventName: string, listener: (...args: any[]) => any) => boolean;
     detachAll:  (eventName: string) => boolean;
     clear:      () => void;
+    stop:       () => void;
+    start:      () => void;
+    isStopped:  () => boolean;
+}
+
+export interface IEventStore {
+    get: (modelType: ModelType) => IEventManager;
 }
 //#endregion
 

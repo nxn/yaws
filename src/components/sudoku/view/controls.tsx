@@ -14,15 +14,15 @@ export class Controls extends Component<ControlProperties, any> {
     }
 
     setCellValue = (value: number) => {
-        this.props.controller.setCellValue(this.props.board, this.props.board.cursor, value);
+        this.props.controller.setCellValue(this.props.board, this.props.board.getCursor(), value);
     }
 
     toggleCandidate = (value: number) => {
-        this.props.controller.toggleCandidate(this.props.board, this.props.board.cursor, value);
+        this.props.controller.toggleCandidate(this.props.board, this.props.board.getCursor(), value);
     }
 
     clear = () => {
-        this.props.controller.clear(this.props.board, this.props.board.cursor);
+        this.props.controller.clear(this.props.board, this.props.board.getCursor());
     }
 
     render() {

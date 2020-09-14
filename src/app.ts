@@ -1,4 +1,5 @@
 import config                               from './config';
+import { createStore as createEventStore }  from '@components/sudoku/events';
 import { create as createBoard }            from '@components/sudoku/board';
 import { create as createStateManager }     from '@components/sudoku/statemanager';
 import { create as createBoardController }  from '@components/sudoku/controller';
@@ -9,7 +10,8 @@ import { storage, proxies }                 from '@components/storage/storage';
 import { waffleIron }                       from '@components/web-workers/waffle-iron';
 
 function init() {
-    const board         = createBoard();
+    const eventStore    = createEventStore();
+    const board         = createBoard(eventStore);
     const controller    = createBoardController();
     const keyboard      = createKeyboardHandler(board, controller);
     const state         = createStateManager(board);
@@ -17,7 +19,8 @@ function init() {
 
     initPage();
     const render = initView(board, controller, 'sudoku');
-    render();
+    //render();
+
     document.addEventListener(
         'keydown', event => { keyboard.onKey(event); }
     );
