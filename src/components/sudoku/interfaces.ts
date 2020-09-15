@@ -39,10 +39,11 @@ export interface ICell extends IModel {
     box:            ISet;
     candidates:     ICandidate[];
     getValue:       () => number;
-    setValue:       (value: number, silent?: boolean) => void;
+    setValue:       (value: number, silent?: boolean, validate?: boolean) => void;
     isStatic:       () => boolean;
     setStatic:      (value: boolean, silent?: boolean) => void;
     isValid:        () => boolean;
+    setValid:       (value: boolean, silent?: boolean) => void;
     clear:          (silent: boolean) => void;
 }
 

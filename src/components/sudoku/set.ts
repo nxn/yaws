@@ -15,17 +15,17 @@ export function validate(set: ISet): ISetValidationResult {
     const values: Map<number, ICell[]> = new Map();
     
     for (const cell of set.cells) {
-        if (cell.getValue() === 0) {
+        let value = cell.getValue();
+        if (value === 0) {
             continue;
         }
         
-        if (values.has(cell.getValue())) {
-            result.valid = false;
-        } else {
-            values.set(cell.getValue(), []);
+        let existing = values.get(value);
+        if (existing === undefined) {
+            existing = [];
+            values.set(value, existing)
         }
-
-        values.get(cell.getValue()).push(cell);
+        existing.push(cell);
     }
 
     for (const v of values.values()) {
@@ -37,23 +37,17 @@ export function validate(set: ISet): ISetValidationResult {
     return result;
 }
 
-export function validateAll(...args: any[]): ISetValidationResult {
-    /* flatten arguments to allow array inputs and/or standard rest params
-     * */
-    const sets = args.reduce((acc, val) => acc.concat(val), []);
-    
+export function validateAll(...sets: ISet[]): ISetValidationResult {
     let valid = true;
     const errors: Map<string, ICell> = new Map();
-    
-    const check = function(set: ISet) {
+
+    for (let set of sets) {
         let result = set.validate();
         if (!result.valid) {
             valid = false;
             result.errors.forEach(c => errors.set(c.id, c));
         }
-    };  
-
-    sets.forEach(check);
+    }
     
     return { valid : valid, errors : Array.from(errors.values()) };
 }

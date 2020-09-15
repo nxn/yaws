@@ -42,13 +42,15 @@ export class Cell extends Component<CellProperties, CellState>{
     componentDidMount() {
         this.props.board.events.on(BoardEvents.CursorMoved, this.updateCursorState);
         this.props.model.events.on(CellEvents.ValueChanged, this.updateValueState);
+        this.props.model.events.on(CellEvents.ValidityChanged, this.updateValueState);
         this.props.model.events.on(CellEvents.StaticChanged, this.updateStaticState);
     }
 
     componentWillUnmount() {
         this.props.board.events.detach(BoardEvents.CursorMoved, this.updateCursorState);
-        this.props.model.events.on(CellEvents.ValueChanged, this.updateValueState);
-        this.props.model.events.on(CellEvents.StaticChanged, this.updateStaticState);
+        this.props.model.events.detach(CellEvents.ValueChanged, this.updateValueState);
+        this.props.model.events.detach(CellEvents.ValidityChanged, this.updateValueState);
+        this.props.model.events.detach(CellEvents.StaticChanged, this.updateStaticState);
     }
 
     updateCursorState = (_: IBoard, to: ICell, from: ICell) => {

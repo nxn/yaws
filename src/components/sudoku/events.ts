@@ -15,6 +15,7 @@ export enum BoardEvents {
 export enum CellEvents {
     ValueChanged    = "ValueChanged",
     StaticChanged   = "StaticChanged",
+    ValidityChanged = "ValidityChanged",
     Cleared         = "Cleared",
 }
 
@@ -31,9 +32,21 @@ export function createStore() {
 }
 
 const StateChangeEvents: { [key: string]: string[] } = {
-    [ModelType.Board]:      [BoardEvents.CursorMoved, BoardEvents.Loaded, BoardEvents.Reset, BoardEvents.Cleared],
-    [ModelType.Cell]:       [CellEvents.ValueChanged, CellEvents.StaticChanged, CellEvents.Cleared],
-    [ModelType.Candidate]:  [CandidateEvents.SelectedChanged]
+    [ModelType.Board]: [
+        BoardEvents.CursorMoved, 
+        BoardEvents.Loaded, 
+        BoardEvents.Reset, 
+        BoardEvents.Cleared
+    ],
+    [ModelType.Cell]: [
+        CellEvents.ValueChanged, 
+        CellEvents.ValidityChanged, 
+        CellEvents.StaticChanged, 
+        CellEvents.Cleared
+    ],
+    [ModelType.Candidate]: [
+        CandidateEvents.SelectedChanged
+    ]
 };
 
 class EventStore implements IEventStore {
