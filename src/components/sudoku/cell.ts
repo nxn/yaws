@@ -62,15 +62,14 @@ class Cell implements ICell {
         if (this.value === 0) { return true; }
         return this.valid;
     }
-    setValid(value: boolean, silent = false) {
-        if (typeof value !== "boolean") {
+    setValid(valid: boolean, silent = false) {
+        if (typeof valid !== "boolean" || this.valid === valid) {
             return;
         }
 
-        let previous = this.valid;
-        this.valid = value;
+        this.valid = valid;
 
-        if (this.valid !== previous && !silent) {
+        if (!silent) {
             this.events.fire(CellEvents.ValidityChanged, this, this.valid);
         }
     }
@@ -99,17 +98,6 @@ class Cell implements ICell {
         }
     };
 
-    private countCellValues(cells: ICell[]) {
-        return cells.reduce(
-            (map: { [key: number]: number}, c) => {
-                let v = c.getValue();
-                if (v === 0) { return map; }
-                map[v] = (map[v] || 0)+1;
-                return map;
-            }, {}
-        );
-    }
-
     private validate() {
         // In addition to checking each individual cell in this cell's Row, Column, and Box for duplicates, it is also 
         // necessary to verify the validity of the cross sets of each of those cells as well. Without this check it
@@ -134,7 +122,7 @@ class Cell implements ICell {
         let localKey: keyof typeof cell;
         for (localKey in meta) {
             const localCells = this[localKey].cells
-            
+
             // aggregate cell values into { value: count } lookup object
             const counts = localCells.reduce(
                 (counts: { [key: number]: number}, cell) => {
