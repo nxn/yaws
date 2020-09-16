@@ -158,6 +158,10 @@ section li {
     text-align: center;
 }
 
+#performance {
+    text-align: center;
+}
+
 @media (min-width: 40rem) {
     #header, .content-grid {
         margin: 2rem var(--page-margin);

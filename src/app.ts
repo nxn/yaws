@@ -31,14 +31,46 @@ function init() {
         state.loadBinary(puzzleStore.mostRecent.buffer)
     }
     else {
+        const generateStart = 'generate start';
+        performance.mark(generateStart);
+
         waffleIron.generate(
             { samples: 15, iterations: 29, removals: 2}
         ).then(response => {
+            const generateEnd = 'generate end';
+            performance.mark(generateEnd);
+            performance.measure("Generate", generateStart, generateEnd);
+
+            const loadStart = 'load start';
+            performance.mark(loadStart);
+
             state.loadTypedArray(response.puzzle);
+
+            const loadEnd = 'load end';
+            performance.mark(loadEnd);
+            performance.measure("Load", loadStart, loadEnd);
+
+            const measurements = performance.getEntriesByType("measure");
+            performance.clearMarks();
+            performance.clearMeasures();
+
+            const el = document.querySelector("#performance");
+            for(const m of measurements) {
+                el.append(`- ${m.name}: ${m.duration} -`);
+            }
         });
     }
 
+    const renderStart = 'render start';
+    performance.mark(renderStart);
+
     render();
+
+    const renderEnd = 'render end';
+    performance.mark(renderEnd);
+    performance.measure("Render", renderStart, renderEnd);
+
+    
 };
 
 init();
