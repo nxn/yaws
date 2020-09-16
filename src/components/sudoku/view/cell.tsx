@@ -15,9 +15,9 @@ type CellProperties = {
 
 type CellState = {
     value:      number,
-    isValid:      boolean,
-    isCursor:     boolean,
-    isStatic:     boolean,
+    isValid:    boolean,
+    isCursor:   boolean,
+    isStatic:   boolean,
 };
 
 export class Cell extends Component<CellProperties, CellState>{
