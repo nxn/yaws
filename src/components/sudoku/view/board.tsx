@@ -24,7 +24,6 @@ export class Board extends Component<BoardProperties, BoardState> {
 
     componentDidMount() {
         this.props.model.events.on(BoardEvents.CursorMoved, this.updateHighlightState);
-        //this.props.model.events.on(BoardEvents.Loaded, this.update);
     }
     componentWillUnmount() {
         this.props.model.events.detach(BoardEvents.CursorMoved, this.updateHighlightState);

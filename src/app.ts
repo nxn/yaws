@@ -19,8 +19,6 @@ function init() {
 
     initPage();
     const render = initView(board, controller, 'sudoku');
-    //render();
-
     document.addEventListener(
         'keydown', event => { keyboard.onKey(event); }
     );
@@ -28,20 +26,19 @@ function init() {
     // check if URL contains puzzle
     if (false) {
         state.loadLink(location.toString())
-        render();
     }
     else if (!puzzleStore.empty) {
         state.loadBinary(puzzleStore.mostRecent.buffer)
-        render();
     }
     else {
         waffleIron.generate(
             { samples: 15, iterations: 29, removals: 2}
         ).then(response => {
             state.loadTypedArray(response.puzzle);
-            render();
         });
     }
+
+    render();
 };
 
 init();

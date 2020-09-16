@@ -18,10 +18,10 @@ class Candidate implements ICandidate {
         readonly cell: ICell,
         readonly events: IEventManager
     ) {
-        this.cell.events.on(CellEvents.ValueChanged, this.onCellValueChanged);
+        this.cell.events.on(CellEvents.ValueChanged, this.validate);
     }
 
-    onCellValueChanged = (cell: ICell, newValue: number, oldValue: number) => {
+    validate = (cell: ICell, newValue: number, oldValue: number) => {
         if (this.cell.isStatic() || !cell.rcb.has(this.cell)) { return; }
 
         if (this.value === newValue) {

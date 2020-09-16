@@ -160,7 +160,7 @@ class StateManager implements IStateManager {
         }
     
         // Set cell as non-static so we can update its values
-        cell.setStatic(false, true);
+        cell.setStatic(false);
     
         if (data.v >= 0 && data.v < 10) {
             cell.setValue(data.v);
@@ -189,7 +189,7 @@ class StateManager implements IStateManager {
     }
     
     private loadCellBinary(cell: ICell, v: number): void {
-        cell.setStatic(false, true);
+        cell.setStatic(false);
     
         // Cell values are only valid if they're in the 0 to 16383 range (4 bits for value, 1 isStatic bit, 9 bits to mark
         // whether each candidate is selected).

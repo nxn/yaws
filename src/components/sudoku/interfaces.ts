@@ -11,22 +11,21 @@ export interface IModel {
     events: IEventManager;
 }
 
-//#region Set
-export interface ISet {
-    id:         string;
-    name:       string;
-    index:      number;
-    cells:      ICell[];
-    validate:   () => ISetValidationResult;
+export interface IBoard extends IModel {
+    type:           ModelType.Board;
+    id:             string;
+    cells:          ICell[];
+    rows:           ISet[];
+    columns:        ISet[];
+    boxes:          ISet[];
+    getCursor:      () => ICell;
+    setCursor:      (to: ICell, silent?: boolean) => void;
+    isLoaded:       () => boolean;
+    setLoaded:      (value: boolean, silent?: boolean) => void;
+    clear:          (silent: boolean) => IBoard;
+    reset:          (silent: boolean) => IBoard;
 }
 
-export interface ISetValidationResult {
-    valid:      boolean;
-    errors?:    ICell[];
-}
-//#endregion
-
-//#region Cell
 export interface ICell extends IModel {
     type:           ModelType.Cell;
     id:             string;
@@ -54,26 +53,20 @@ export interface ICandidate extends IModel {
     isSelected:     () => boolean;
     setSelected:    (value: boolean, silent?: boolean) => void;
 }
-//#endregion
 
-//#region Board
-export interface IBoard extends IModel {
-    type:           ModelType.Board;
-    id:             string;
-    cells:          ICell[];
-    rows:           ISet[];
-    columns:        ISet[];
-    boxes:          ISet[];
-    getCursor:      () => ICell;
-    setCursor:      (to: ICell, silent?: boolean) => void;
-    isLoaded:       () => boolean;
-    setLoaded:      (value: boolean, silent?: boolean) => void;
-    clear:          (silent: boolean) => IBoard;
-    reset:          (silent: boolean) => IBoard;
+export interface ISet {
+    id:         string;
+    name:       string;
+    index:      number;
+    cells:      ICell[];
+    validate:   () => ISetValidationResult;
 }
-//#endregion
 
-//#region State Manager
+export interface ISetValidationResult {
+    valid:      boolean;
+    errors?:    ICell[];
+}
+
 export interface IStateManager {
     getString:      () => string;
     loadString:     (puzzle: string) => IBoard;
@@ -97,9 +90,7 @@ export interface ILocation {
     origin: string;
     pathname: string;
 }
-//#endregion
 
-//#region Controller
 export interface ICandidateController {
     toggleCandidate:    (board: IBoard, cell: ICell, candidate: ICandidate | number) => void;
 }
@@ -124,9 +115,7 @@ export interface ICursorController {
 }
 
 export interface IBoardController extends ICellController, ICursorController { }
-//#endregion
 
-//#region Events
 export interface IEventManager {
     on:         (eventName: string, listener: (...args: any[]) => any) => void;
     fire:       (eventName: string, ...eventArgs: any[]) => void;
@@ -141,9 +130,7 @@ export interface IEventManager {
 export interface IEventStore {
     get: (modelType: ModelType) => IEventManager;
 }
-//#endregion
 
-//#region Keyboard
 export enum KeyboardActions {
     left        = "Left",
     right       = "Right",
@@ -172,4 +159,3 @@ export interface IKeyPress {
     shiftKey: boolean;
     preventDefault: () => void;
 }
-//#endregion

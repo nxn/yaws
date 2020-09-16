@@ -2,7 +2,7 @@ import { Component, linkEvent } from 'inferno';
 import { Candidate } from "./candidate";
 import { IBoard, ICell, ICellController } from "../interfaces";
 import { createPointerDoubleClickHandler } from '../pointer';
-import { BoardEvents, CellEvents } from '../events';
+import { BoardEvents, CommonEvents } from '../events';
 
 type CellProperties = { 
     model:          ICell,
@@ -15,9 +15,9 @@ type CellProperties = {
 
 type CellState = {
     value:      number,
-    valid:      boolean,
-    cursor:     boolean,
-    static:     boolean,
+    isValid:      boolean,
+    isCursor:     boolean,
+    isStatic:     boolean,
 };
 
 export class Cell extends Component<CellProperties, CellState>{
@@ -28,9 +28,9 @@ export class Cell extends Component<CellProperties, CellState>{
 
         this.state = {
             value:      props.model.getValue(),
-            valid:      props.model.isValid(),
-            static:     props.model.isStatic(),
-            cursor:     props.board.getCursor() === props.model
+            isValid:    props.model.isValid(),
+            isStatic:   props.model.isStatic(),
+            isCursor:   props.board.getCursor() === props.model
         }
 
         this.valuePointerDown = createPointerDoubleClickHandler(
@@ -41,16 +41,12 @@ export class Cell extends Component<CellProperties, CellState>{
 
     componentDidMount() {
         this.props.board.events.on(BoardEvents.CursorMoved, this.updateCursorState);
-        this.props.model.events.on(CellEvents.ValueChanged, this.updateValueState);
-        this.props.model.events.on(CellEvents.ValidityChanged, this.updateValueState);
-        this.props.model.events.on(CellEvents.StaticChanged, this.updateStaticState);
+        this.props.model.events.on(CommonEvents.StateChanged, this.updateCellState);
     }
 
     componentWillUnmount() {
         this.props.board.events.detach(BoardEvents.CursorMoved, this.updateCursorState);
-        this.props.model.events.detach(CellEvents.ValueChanged, this.updateValueState);
-        this.props.model.events.detach(CellEvents.ValidityChanged, this.updateValueState);
-        this.props.model.events.detach(CellEvents.StaticChanged, this.updateStaticState);
+        this.props.model.events.detach(CommonEvents.StateChanged, this.updateCellState);
     }
 
     updateCursorState = (_: IBoard, to: ICell, from: ICell) => {
@@ -59,42 +55,29 @@ export class Cell extends Component<CellProperties, CellState>{
         }
 
         const cursor = this.props.model === to;
-        if (this.state.cursor === cursor) {
+        if (this.state.isCursor === cursor) {
             return;
         }
 
-        this.setState(() => ({ cursor: cursor }));
+        this.setState(() => ({ isCursor: cursor }));
     }
 
-    updateValueState = (cell: ICell) => {
-        if (this.props.model !== cell) {
-            return;
-        }
+    updateCellState = (cell: ICell) => {
+        if (this.props.model !== cell) { return; }
 
         const value = cell.getValue();
-        const valid = cell.isValid();
-        if (this.state.value === value && this.state.valid === valid) {
+        const isValid = cell.isValid();
+        const isStatic = cell.isStatic();
+
+        // No changes
+        if (this.state.value === value && this.state.isValid === isValid && this.state.isStatic === isStatic) {
             return;
         }
 
         this.setState(() => ({ 
             value: value, 
-            valid: valid
-        }));
-    }
-
-    updateStaticState = (cell: ICell) => {
-        if (this.props.model !== cell) {
-            return;
-        }
-
-        const isStatic = cell.isStatic();
-        if (this.state.static === isStatic) {
-            return;
-        }
-
-        this.setState(() => ({ 
-            static: isStatic
+            isValid: isValid,
+            isStatic: isStatic,
         }));
     }
 
@@ -102,16 +85,16 @@ export class Cell extends Component<CellProperties, CellState>{
         if (this.props.highlight !== nextProps.highlight) {
             return true;
         }
-        if (this.state.cursor !== nextState.cursor) {
+        if (this.state.isCursor !== nextState.isCursor) {
             return true;
         }
         if (this.state.value !== nextState.value) {
             return true;
         }
-        if (this.state.valid !== nextState.valid) {
+        if (this.state.isValid !== nextState.isValid) {
             return true;
         }
-        if (this.state.static !== nextState.static) {
+        if (this.state.isStatic !== nextState.isStatic) {
             return true;
         }
 
@@ -129,10 +112,10 @@ export class Cell extends Component<CellProperties, CellState>{
             this.props.model.column.name,
             this.props.model.box.name,
 
-            this.state.static ? 'static' : 'editable'
+            this.state.isStatic ? 'static' : 'editable'
         ];
 
-        if (this.state.cursor) {
+        if (this.state.isCursor) {
             classes.push('cursor');
         }
 
@@ -146,7 +129,7 @@ export class Cell extends Component<CellProperties, CellState>{
                 onMouseMove = { linkEvent(this.props.model, this.props.onMouseMove) }
                 onClick     = { linkEvent(this.props.model, this.props.onClick) }>
 
-                <div className={ this.state.valid ? "value" : "invalid value" } onpointerdown={ this.valuePointerDown }>
+                <div className={ this.state.isValid ? "value" : "invalid value" } onpointerdown={ this.valuePointerDown }>
                     { this.state.value > 0 ? this.state.value : "" }
                 </div>
 

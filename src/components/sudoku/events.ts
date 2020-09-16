@@ -62,20 +62,22 @@ class EventStore implements IEventStore {
         for (let event of StateChangeEvents[model]) {
             let manager = this.get(model);
             manager.on(event, (...args: any[]) => {
-                manager.fire(CommonEvents.StateChanged, { event: args });
+                manager.fire(CommonEvents.StateChanged, ...args);
             });
         }
 
         // Bubble StateChanged events up the model hierarchy
-        const candidate   = this.get(ModelType.Candidate);
-        const cell        = this.get(ModelType.Cell);
-        const board       = this.get(ModelType.Board);
-        candidate.on(CommonEvents.StateChanged, (...args: any[]) => {
-            cell.fire(CommonEvents.StateChanged, ...args);
-        });
-        cell.on(CommonEvents.StateChanged, (...args: any[]) => {
-            board.fire(CommonEvents.StateChanged, ...args);
-        });
+        // const candidate   = this.get(ModelType.Candidate);
+        // const cell        = this.get(ModelType.Cell);
+        // const board       = this.get(ModelType.Board);
+        // candidate.on(CommonEvents.StateChanged, (...args: any[]) => {
+        //     cell.fire(CommonEvents.StateChanged, ...args);
+        // });
+        // cell.on(CommonEvents.StateChanged, (...args: any[]) => {
+        //     board.fire(CommonEvents.StateChanged, ...args);
+        // });
+
+        // console.log(this.stores);
     }
 
     get(modelType: string) {
