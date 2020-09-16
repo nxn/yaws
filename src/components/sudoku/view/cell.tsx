@@ -129,22 +129,32 @@ export class Cell extends Component<CellProperties, CellState>{
                 onMouseMove = { linkEvent(this.props.model, this.props.onMouseMove) }
                 onClick     = { linkEvent(this.props.model, this.props.onClick) }>
 
-                <div className={ this.state.isValid ? "value" : "invalid value" } onpointerdown={ this.valuePointerDown }>
-                    { this.state.value > 0 ? this.state.value : "" }
-                </div>
-
-                <div className={ this.state.value === 0 ? "notes" : "notes hidden" }>{
-                    this.props.model.candidates.map(candidate => 
-                        <Candidate
-                            key             = { candidate.value }
-                            model           = { candidate }
-                            controller      = { this.props.controller }
-                            board           = { this.props.board }
-                            cell            = { this.props.model }
-                            onDoubleClick   = { this.setCellValue } />
-                    )
-                }</div>
+                { this.state.value > 0 ? this.renderValue() : this.renderNotes() }
             </div>
+        );
+    }
+
+    renderValue() {
+        return (
+            <div className={ this.state.isValid ? "value" : "invalid value" } onpointerdown={ this.valuePointerDown }>
+                { this.state.value > 0 ? this.state.value : "" }
+            </div>
+        );
+    }
+
+    renderNotes() {
+        return (
+            <div className="notes">{
+                this.props.model.candidates.map(candidate => 
+                    <Candidate
+                        key             = { candidate.value }
+                        model           = { candidate }
+                        controller      = { this.props.controller }
+                        board           = { this.props.board }
+                        cell            = { this.props.model }
+                        onDoubleClick   = { this.setCellValue } />
+                )
+            }</div>
         );
     }
 };

@@ -65,7 +65,7 @@ class EventStore implements IEventStore {
                 manager.fire(CommonEvents.StateChanged, ...args);
             });
         }
-
+        
         // Bubble StateChanged events up the model hierarchy
         // const candidate   = this.get(ModelType.Candidate);
         // const cell        = this.get(ModelType.Cell);
