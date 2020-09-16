@@ -3,8 +3,7 @@ export type TSudokuPuzzle = string | number[];
 export enum ModelType   { 
     Board       = "Board",
     Cell        = "Cell",
-    Candidate   = "Candidate",
-    Set         = "Set"
+    Candidate   = "Candidate"
 };
 
 export interface IModel { 
@@ -13,8 +12,7 @@ export interface IModel {
 }
 
 //#region Set
-export interface ISet extends IModel {
-    type:       ModelType.Set;
+export interface ISet {
     id:         string;
     name:       string;
     index:      number;
@@ -37,6 +35,7 @@ export interface ICell extends IModel {
     row:            ISet;
     column:         ISet;
     box:            ISet;
+    rcb:            Set<ICell>;
     candidates:     ICandidate[];
     getValue:       () => number;
     setValue:       (value: number, silent?: boolean, validate?: boolean) => void;
@@ -51,6 +50,7 @@ export interface ICandidate extends IModel {
     type:           ModelType.Candidate;
     value:          number;
     isValid:        () => boolean;
+    setValid:       (value: boolean, silent?: boolean) => void;
     isSelected:     () => boolean;
     setSelected:    (value: boolean, silent?: boolean) => void;
 }

@@ -1,12 +1,16 @@
 import { IEventStore, IEventManager, IBoard, ISet, ICell, ICandidate, ModelType } from './interfaces';
 import { CellEvents } from './events';
-import { create as createCandidate } from './candidate';
+import { constants, create as createCandidate } from './candidate';
 
-export const constants = Object.freeze({
-    candidateCount: 9
-});
-
-export function create(events: IEventStore, board: IBoard, index: number, row: ISet, col: ISet, box: ISet, isStatic = false): ICell {
+export function create(
+    events: IEventStore, 
+    board: IBoard, 
+    index: number, 
+    row: ISet, 
+    col: ISet, 
+    box: ISet, 
+    isStatic = false
+): ICell {
     const cellEvents = events.get(ModelType.Cell);
 
     const id         = `${board.id}-${row.name}${col.name}`;
@@ -38,6 +42,13 @@ class Cell implements ICell {
         readonly events:        IEventManager
     ) { }
     
+    private _rcb: Set<ICell>;
+    get rcb() {
+        if (this._rcb) { return this._rcb; }
+        this._rcb = new Set([this.row.cells, this.column.cells, this.box.cells].flat());
+        return this._rcb;
+    }
+
     private value = 0;
     getValue() { return this.value; }
     setValue(value: number, silent = false, validate = true) { 
@@ -58,7 +69,7 @@ class Cell implements ICell {
     }
 
     private valid = true;
-    isValid(): boolean {
+    isValid() {
         if (this.value === 0) { return true; }
         return this.valid;
     }

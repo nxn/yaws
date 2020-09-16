@@ -1,13 +1,11 @@
-import { IEventStore, IEventManager, IBoard, ISet, ICell, ISetValidationResult, ModelType } from './interfaces';
+import { IBoard, ISet, ICell, ISetValidationResult } from './interfaces';
 
-export enum SetEvents { };
 
-export function create(events: IEventStore, board: IBoard, name: string, index: number): ISet {
-    const setEvents = events.get(ModelType.Set);
+export function create(board: IBoard, name: string, index: number): ISet {
     const id = `${board.id}-${name}`;
     const cells:ICell[] = [];
 
-    return new Set(id, name, index, cells, setEvents);
+    return new Set(id, name, index, cells);
 }
 
 export function validate(set: ISet): ISetValidationResult {
@@ -58,14 +56,11 @@ export function validateAll(...sets: ISet[]): ISetValidationResult {
  * duplicate values should trigger an invalid state along with a reference to all non-unique cells.
  * */
 class Set implements ISet {
-    readonly type = ModelType.Set;
-
     constructor(
         readonly id:        string,
         readonly name:      string,
         readonly index:     number,
-        readonly cells:     ICell[],
-        readonly events:    IEventManager
+        readonly cells:     ICell[]
     ) { }
 
     validate(): ISetValidationResult {

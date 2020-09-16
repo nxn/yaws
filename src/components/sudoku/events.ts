@@ -9,18 +9,19 @@ export enum BoardEvents {
     Loaded          = "Loaded",
     Solved          = "Solved",
     Cleared         = "Cleared",
-    Reset           = "Reset",
+    Reset           = "Reset"
 }
 
 export enum CellEvents {
     ValueChanged    = "ValueChanged",
     StaticChanged   = "StaticChanged",
     ValidityChanged = "ValidityChanged",
-    Cleared         = "Cleared",
+    Cleared         = "Cleared"
 }
 
 export enum CandidateEvents {
     SelectedChanged = "SelectedChanged",
+    ValidityChanged = "ValidityChanged"
 }
 
 export function createManager() {
@@ -45,7 +46,8 @@ const StateChangeEvents: { [key: string]: string[] } = {
         CellEvents.Cleared
     ],
     [ModelType.Candidate]: [
-        CandidateEvents.SelectedChanged
+        CandidateEvents.SelectedChanged,
+        CandidateEvents.ValidityChanged
     ]
 };
 

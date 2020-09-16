@@ -163,15 +163,15 @@ class StateManager implements IStateManager {
         cell.setStatic(false, true);
     
         if (data.v >= 0 && data.v < 10) {
-            cell.setValue(data.v, true);
+            cell.setValue(data.v);
         }
     
         if (Array.isArray(data.c)) {
-            cell.candidates.forEach(c => c.setSelected(data.c.indexOf(c.value) >= 0, true));
+            cell.candidates.forEach(c => c.setSelected(data.c.indexOf(c.value) >= 0));
         }
     
         if (typeof data.s === 'boolean') {
-            cell.setStatic(data.s, true);
+            cell.setStatic(data.s);
         }
     }
     
@@ -198,13 +198,13 @@ class StateManager implements IStateManager {
         }
     
         for (let i = 0; i < cell.candidates.length; i++) {
-            cell.candidates[i].setSelected(!!(v&1), true);
+            cell.candidates[i].setSelected(!!(v&1));
             v = v >> 1;
         }
     
         const isStatic = !!(v&1);
     
-        cell.setValue(v >> 1, true);
-        cell.setStatic(isStatic, true);
+        cell.setValue(v >> 1);
+        cell.setStatic(isStatic);
     }
 }

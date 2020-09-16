@@ -34,9 +34,9 @@ export function create(events: IEventStore, id = `g${boardCount}`): IBoard {
 
     // initialize row/col/box sets
     for (let i = 0; i < length; i++) {
-        rows[i]    = createSet(events, board, `r${i + 1}`, i);
-        columns[i] = createSet(events, board, `c${i + 1}`, i);
-        boxes[i]   = createSet(events, board, `b${i + 1}`, i);
+        rows[i]    = createSet(board, `r${i + 1}`, i);
+        columns[i] = createSet(board, `c${i + 1}`, i);
+        boxes[i]   = createSet(board, `b${i + 1}`, i);
     }
 
     // initialize cells

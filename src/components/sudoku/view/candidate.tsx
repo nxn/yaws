@@ -35,9 +35,11 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
 
     componentDidMount() {
         this.props.model.events.on(CandidateEvents.SelectedChanged, this.updateCandidateState);
+        this.props.model.events.on(CandidateEvents.ValidityChanged, this.updateCandidateState);
     }
     componentWillUnmount() {
         this.props.model.events.detach(CandidateEvents.SelectedChanged, this.updateCandidateState);
+        this.props.model.events.detach(CandidateEvents.ValidityChanged, this.updateCandidateState);
     }
 
     updateCandidateState = (candidate: ICandidate) => {
