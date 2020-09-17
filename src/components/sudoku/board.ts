@@ -114,4 +114,27 @@ class Board implements IBoard {
         }
         return this;
     };
+
+    validate(silent = false): IBoard {
+        for (const cell of this.cells) {
+            const valueCounts = new Map<number, number>();
+            for (const rcbGroupCell of cell.rcb) {
+                const value = rcbGroupCell.getValue();
+                if (value === 0) { continue; }
+                
+                const count = valueCounts.get(value);
+                if (count) {
+                    valueCounts.set(value, count + 1);
+                } else {
+                    valueCounts.set(value, 1);
+                }
+            }
+            cell.setValid(valueCounts.get(cell.getValue()) <= 1, silent);
+            cell.candidates.forEach(
+                candidate => candidate.setValid(!valueCounts.has(candidate.value), silent)
+            );
+        }
+
+        return this;
+    }
 }

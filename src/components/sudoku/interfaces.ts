@@ -22,6 +22,7 @@ export interface IBoard extends IModel {
     setCursor:      (to: ICell, silent?: boolean) => void;
     isLoaded:       () => boolean;
     setLoaded:      (value: boolean, silent?: boolean) => void;
+    validate:       (silent: boolean) => IBoard;
     clear:          (silent: boolean) => IBoard;
     reset:          (silent: boolean) => IBoard;
 }

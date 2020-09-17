@@ -29,7 +29,7 @@ export function create(
 }
 
 type  CellSets = { "row": ISet, "column": ISet, "box": ISet };
-const CellSetValidationMap: { [P in keyof CellSets]: (keyof CellSets)[] } = {
+const CellSetValidationMap: { [K in keyof CellSets]: (keyof CellSets)[] } = {
     'row':      ['column',  'box'],
     'column':   ['row',     'box'],
     'box':      ['row',     'column']
@@ -140,7 +140,7 @@ class Cell implements ICell {
                 (counts: { [key: number]: number}, cell) => {
                     let value = cell.getValue();
                     if (value === 0) { return counts; }
-                    counts[value] = (counts[value] || 0)+1;
+                    counts[value] = (counts[value] || 0) + 1;
                     return counts;
                 }, {}
             );
