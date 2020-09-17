@@ -25,7 +25,7 @@ export class Board extends Component<BoardProperties, BoardState> {
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.props.model.events.attach(BoardEvents.ReadyStateChanged,   this.updateReadyState)
         this.props.model.events.attach(BoardEvents.CursorMoved,         this.updateHighlightState);
     }

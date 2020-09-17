@@ -40,7 +40,7 @@ export class Cell extends Component<CellProperties, CellState>{
         );
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.props.board.events.attach(BoardEvents.ReadyStateChanged,   this.loadCellState);
         this.props.board.events.attach(BoardEvents.CursorMoved,         this.updateCursorState);
         this.props.model.events.attach(CommonEvents.StateChanged,       this.updateCellState);

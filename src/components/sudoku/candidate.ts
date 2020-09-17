@@ -22,7 +22,14 @@ class Candidate implements ICandidate {
     }
 
     validate = (cell: ICell, newValue: number, oldValue: number) => {
-        if (this.cell.isStatic() || !cell.rcb.has(this.cell)) { return; }
+        // I suspect there might be an issue with view event listeners not being attached soon enough to catch 
+        // validation change events when a cell value is cleared and candidates are re-added to the DOM. To work around
+        // this for the time being the "this.cell === cell" condition is necessary as it will skip marking the candidate
+        // as invalid should its parent cell get set to its value. This way if the cell value gets cleared later the
+        // candidate will no longer automatically be in an invalid state due to its own cell's value.
+        if (this.cell.isStatic() || this.cell === cell || !cell.rcb.has(this.cell)) { 
+            return; 
+        }
 
         if (this.value === newValue) {
             this.setValid(false);
@@ -30,11 +37,14 @@ class Candidate implements ICandidate {
 
         if (this.value === oldValue) {
             let valid = true;
-            for (const cell of this.cell.rcb) {
-                if (cell.getValue() === oldValue) {
+            for (const associatedCell of this.cell.rcb) {
+                if (associatedCell.getValue() === oldValue) {
                     valid = false;
                     break;
                 }
+            }
+            if (this.cell === cell) {
+                console.log(valid);
             }
             this.setValid(valid);
         }

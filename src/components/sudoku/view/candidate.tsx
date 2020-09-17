@@ -34,7 +34,7 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
         );
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.props.board.events.attach(BoardEvents.ReadyStateChanged,   this.loadCandidateState);
         this.props.model.events.attach(CommonEvents.StateChanged,       this.updateCandidateState);
     }
