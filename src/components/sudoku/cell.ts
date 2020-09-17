@@ -3,13 +3,13 @@ import { CellEvents } from './events';
 import { constants, create as createCandidate } from './candidate';
 
 export function create(
-    events: IEventStore, 
-    board: IBoard, 
-    index: number, 
-    row: ISet, 
-    col: ISet, 
-    box: ISet, 
-    isStatic = false
+    events:     IEventStore, 
+    board:      IBoard, 
+    index:      number, 
+    row:        ISet, 
+    col:        ISet, 
+    box:        ISet, 
+    isStatic =  false
 ): ICell {
     const cellEvents = events.get(ModelType.Cell);
 
@@ -27,6 +27,13 @@ export function create(
 
     return cell;
 }
+
+type  CellSets = { "row": ISet, "column": ISet, "box": ISet };
+const CellSetValidationMap: { [P in keyof CellSets]: (keyof CellSets)[] } = {
+    'row':      ['column',  'box'],
+    'column':   ['row',     'box'],
+    'box':      ['row',     'column']
+};
 
 class Cell implements ICell {
     readonly type = ModelType.Cell;
@@ -117,22 +124,16 @@ class Cell implements ICell {
         
         // For example, when validing the cells in this Row, it is necessary to check those cells' Column and Box sets
         // to ensure there aren't any conflicts there; or when validing the cells in this Column, their Row and Box sets
-        // should be looked at as well, and so on. The following code provides a meta table for performing these checks 
-        // when validating.
-        const cell: { "row": ISet, "column": ISet, "box": ISet } = this;
-        const meta: { [P in keyof typeof cell]: (keyof typeof cell)[] } = {
-            'row':      ['column',  'box'],
-            'column':   ['row',     'box'],
-            'box':      ['row',     'column']
-        };
+        // should be looked at as well, and so on. The @CellSetValidationMap table defines the structure of the 
+        // necessary checks.
 
         // TODO: The following can be optimized; in its current state it is performing duplicate checks when sets 
         // overlap (example: when iterating down a column as the local set, the box cross-set will be checked multiple
         // times despite it being exactly the same for the first three cells). Also, as the local set changes from row 
         // to column, the cross-set will be the same as the previous local set.
-        let localKey: keyof typeof cell;
-        for (localKey in meta) {
-            const localCells = this[localKey].cells
+        let localSetKey: keyof CellSets;
+        for (localSetKey in CellSetValidationMap) {
+            const localCells = this[localSetKey].cells
 
             // aggregate cell values into { value: count } lookup object
             const counts = localCells.reduce(
@@ -149,10 +150,10 @@ class Cell implements ICell {
                 if (localCellValue === 0) { continue; }
 
                 let valid = counts[localCellValue] <= 1;
-                for (const crossKey of meta[localKey]) {
+                for (const pivot of CellSetValidationMap[localSetKey]) {
                     if (!valid) { break; }
 
-                    valid = valid && localCell[crossKey].cells.filter(
+                    valid = valid && localCell[pivot].cells.filter(
                         c => c.getValue() === localCellValue
                     ).length <= 1;
                 }
