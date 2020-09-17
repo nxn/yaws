@@ -20,6 +20,8 @@ class StateManager implements IStateManager {
         if (array.length !== this.board.cells.length) {
             return this.board;
         }
+
+        this.board.setReady(false);
     
         for (let i = 0; i < this.board.cells.length; i++) {
             let value = array[i];
@@ -27,7 +29,8 @@ class StateManager implements IStateManager {
             this.loadCellData(cell, { v: value, s: value !== 0, c: [] });
         }
     
-        this.board.setLoaded(true);
+        this.board.validate(true);
+        this.board.setReady(true);
         return this.board;
     }
     
@@ -43,11 +46,14 @@ class StateManager implements IStateManager {
         if (!(Array.isArray(data) && data.length === this.board.cells.length)) {
             return this.board;
         }
+
+        this.board.setReady(false);
     
         const iter = data[Symbol.iterator]();
         this.board.cells.forEach(cell => this.loadCellData(cell, iter.next().value));
     
-        this.board.setLoaded(true);
+        this.board.validate(true);
+        this.board.setReady(true);
         return this.board;
     }
     
@@ -64,6 +70,8 @@ class StateManager implements IStateManager {
         if (!/^\d{81}$/.test(puzzle)) {
             return this.board;
         }
+
+        this.board.setReady(false);
     
         const iter = puzzle[Symbol.iterator]();
         this.board.cells.forEach(cell => {
@@ -71,7 +79,8 @@ class StateManager implements IStateManager {
             this.loadCellData(cell, { v: v, s: v !== 0, c: [] });
         });
     
-        this.board.setLoaded(true);
+        this.board.validate(true);
+        this.board.setReady(true);
         return this.board;
     }
     
@@ -99,12 +108,15 @@ class StateManager implements IStateManager {
         if (cells.length !== view16.length) {
             return this.board;
         }
+
+        this.board.setReady(false);
     
         for (let i = 0; i < view16.length; i++) {
             this.loadCellBinary(cells[i], view16[i]);
         }
     
-        this.board.setLoaded(true);
+        this.board.validate(true);
+        this.board.setReady(true);
         return this.board;
     }
     
@@ -160,18 +172,18 @@ class StateManager implements IStateManager {
         }
     
         // Set cell as non-static so we can update its values
-        cell.setStatic(false);
+        cell.setStatic(false, true);
     
         if (data.v >= 0 && data.v < 10) {
-            cell.setValue(data.v);
+            cell.setValue(data.v, true, false);
         }
     
         if (Array.isArray(data.c)) {
-            cell.candidates.forEach(c => c.setSelected(data.c.indexOf(c.value) >= 0));
+            cell.candidates.forEach(c => c.setSelected(data.c.indexOf(c.value) >= 0, true));
         }
     
         if (typeof data.s === 'boolean') {
-            cell.setStatic(data.s);
+            cell.setStatic(data.s, true);
         }
     }
     
@@ -189,7 +201,7 @@ class StateManager implements IStateManager {
     }
     
     private loadCellBinary(cell: ICell, v: number): void {
-        cell.setStatic(false);
+        cell.setStatic(false, true);
     
         // Cell values are only valid if they're in the 0 to 16383 range (4 bits for value, 1 isStatic bit, 9 bits to mark
         // whether each candidate is selected).
@@ -198,13 +210,13 @@ class StateManager implements IStateManager {
         }
     
         for (let i = 0; i < cell.candidates.length; i++) {
-            cell.candidates[i].setSelected(!!(v&1));
+            cell.candidates[i].setSelected(!!(v&1), true);
             v = v >> 1;
         }
     
         const isStatic = !!(v&1);
     
-        cell.setValue(v >> 1);
-        cell.setStatic(isStatic);
+        cell.setValue(v >> 1, true, false);
+        cell.setStatic(isStatic, true);
     }
 }

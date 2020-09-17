@@ -20,11 +20,11 @@ export interface IBoard extends IModel {
     boxes:          ISet[];
     getCursor:      () => ICell;
     setCursor:      (to: ICell, silent?: boolean) => void;
-    isLoaded:       () => boolean;
-    setLoaded:      (value: boolean, silent?: boolean) => void;
-    validate:       (silent: boolean) => IBoard;
-    clear:          (silent: boolean) => IBoard;
-    reset:          (silent: boolean) => IBoard;
+    isReady:        () => boolean;
+    setReady:       (value: boolean, silent?: boolean) => void;
+    validate:       (silent?: boolean) => IBoard;
+    clear:          (silent?: boolean) => IBoard;
+    reset:          (silent?: boolean) => IBoard;
 }
 
 export interface ICell extends IModel {
@@ -43,7 +43,7 @@ export interface ICell extends IModel {
     setStatic:      (value: boolean, silent?: boolean) => void;
     isValid:        () => boolean;
     setValid:       (value: boolean, silent?: boolean) => void;
-    clear:          (silent: boolean) => void;
+    clear:          (silent?: boolean) => void;
 }
 
 export interface ICandidate extends IModel {
@@ -118,7 +118,7 @@ export interface ICursorController {
 export interface IBoardController extends ICellController, ICursorController { }
 
 export interface IEventManager {
-    on:         (eventName: string, listener: (...args: any[]) => any) => void;
+    attach:         (eventName: string, listener: (...args: any[]) => any) => void;
     fire:       (eventName: string, ...eventArgs: any[]) => void;
     detach:     (eventName: string, listener: (...args: any[]) => any) => boolean;
     detachAll:  (eventName: string) => boolean;

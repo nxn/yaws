@@ -40,13 +40,15 @@ export class Cell extends Component<CellProperties, CellState>{
     }
 
     componentDidMount() {
-        this.props.board.events.on(BoardEvents.CursorMoved, this.updateCursorState);
-        this.props.model.events.on(CommonEvents.StateChanged, this.updateCellState);
+        this.props.board.events.attach(BoardEvents.ReadyStateChanged,   this.loadCellState);
+        this.props.board.events.attach(BoardEvents.CursorMoved,         this.updateCursorState);
+        this.props.model.events.attach(CommonEvents.StateChanged,       this.updateCellState);
     }
 
     componentWillUnmount() {
-        this.props.board.events.detach(BoardEvents.CursorMoved, this.updateCursorState);
-        this.props.model.events.detach(CommonEvents.StateChanged, this.updateCellState);
+        this.props.board.events.detach(BoardEvents.ReadyStateChanged,   this.loadCellState);
+        this.props.board.events.detach(BoardEvents.CursorMoved,         this.updateCursorState);
+        this.props.model.events.detach(CommonEvents.StateChanged,       this.updateCellState);
     }
 
     updateCursorState = (_: IBoard, to: ICell, from: ICell) => {
@@ -60,6 +62,12 @@ export class Cell extends Component<CellProperties, CellState>{
         }
 
         this.setState(() => ({ isCursor: cursor }));
+    }
+
+    loadCellState = (board: IBoard) => {
+        if (board.isReady()) {
+            this.updateCellState(this.props.model);
+        }
     }
 
     updateCellState = (cell: ICell) => {
@@ -97,7 +105,7 @@ export class Cell extends Component<CellProperties, CellState>{
         if (this.state.isStatic !== nextState.isStatic) {
             return true;
         }
-
+        
         return false;
     }
 

@@ -6,7 +6,7 @@ export enum CommonEvents {
 
 export enum BoardEvents {
     CursorMoved     = "CursorMoved",
-    Loaded          = "Loaded",
+    ReadyStateChanged          = "Loaded",
     Solved          = "Solved",
     Cleared         = "Cleared",
     Reset           = "Reset"
@@ -35,7 +35,7 @@ export function createStore() {
 const StateChangeEvents: { [key: string]: string[] } = {
     [ModelType.Board]: [
         BoardEvents.CursorMoved, 
-        BoardEvents.Loaded, 
+        BoardEvents.ReadyStateChanged, 
         BoardEvents.Reset, 
         BoardEvents.Cleared
     ],
@@ -61,7 +61,7 @@ class EventStore implements IEventStore {
         for (let model of Object.keys(StateChangeEvents))
         for (let event of StateChangeEvents[model]) {
             let manager = this.get(model);
-            manager.on(event, (...args: any[]) => {
+            manager.attach(event, (...args: any[]) => {
                 manager.fire(CommonEvents.StateChanged, ...args);
             });
         }
@@ -102,7 +102,7 @@ class EventManager implements IEventManager {
         return this.stopped;
     }
 
-    on(eventName: string, listener: (...args:any[]) => any) {
+    attach(eventName: string, listener: (...args:any[]) => any) {
         if (eventName === null || eventName === undefined) {
             return false;
         }

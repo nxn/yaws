@@ -1,6 +1,6 @@
 import { Component, linkEvent } from 'inferno';
 import { ICandidate, ICandidateController, ICell, IBoard } from '../interfaces';
-import { CommonEvents } from '../events';
+import { BoardEvents, CommonEvents } from '../events';
 import { createPointerDoubleClickHandler } from '../pointer';
 
 type CandidateProperties = {
@@ -34,10 +34,18 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
     }
 
     componentDidMount() {
-        this.props.model.events.on(CommonEvents.StateChanged, this.updateCandidateState);
+        this.props.board.events.attach(BoardEvents.ReadyStateChanged,   this.loadCandidateState);
+        this.props.model.events.attach(CommonEvents.StateChanged,       this.updateCandidateState);
     }
     componentWillUnmount() {
-        this.props.model.events.detach(CommonEvents.StateChanged, this.updateCandidateState);
+        this.props.board.events.detach(BoardEvents.ReadyStateChanged,   this.loadCandidateState);
+        this.props.model.events.detach(CommonEvents.StateChanged,       this.updateCandidateState);
+    }
+
+    loadCandidateState = (board: IBoard) => {
+        if (board.isReady()) {
+            this.updateCandidateState(this.props.model);
+        }
     }
 
     updateCandidateState = (candidate: ICandidate) => {

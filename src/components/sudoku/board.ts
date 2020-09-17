@@ -72,15 +72,17 @@ class Board implements IBoard {
         readonly events:    IEventManager
     ) { }
 
-    private loaded = false;
-    isLoaded() { return this.loaded } 
-    setLoaded(value: boolean, silent = false) {
-        if (typeof value === 'boolean') {
-            this.loaded = value;
+    private ready = false;
+    isReady() { return this.ready } 
+    setReady(ready: boolean, silent = false) {
+        if (typeof ready !== 'boolean' || this.ready === ready) {
+            return;
         }
 
-        if (this.loaded && !silent) {
-            this.events.fire(BoardEvents.Loaded, this);
+        this.ready = ready;
+
+        if (!silent) {
+            this.events.fire(BoardEvents.ReadyStateChanged, this);
         }
     }
 
@@ -129,7 +131,7 @@ class Board implements IBoard {
                     valueCounts.set(value, 1);
                 }
             }
-            cell.setValid(valueCounts.get(cell.getValue()) <= 1, silent);
+            cell.setValid((valueCounts.get(cell.getValue()) || 0) <= 1, silent);
             cell.candidates.forEach(
                 candidate => candidate.setValid(!valueCounts.has(candidate.value), silent)
             );

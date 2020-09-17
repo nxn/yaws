@@ -18,7 +18,7 @@ class Candidate implements ICandidate {
         readonly cell: ICell,
         readonly events: IEventManager
     ) {
-        this.cell.events.on(CellEvents.ValueChanged, this.validate);
+        this.cell.events.attach(CellEvents.ValueChanged, this.validate);
     }
 
     validate = (cell: ICell, newValue: number, oldValue: number) => {
