@@ -3,6 +3,7 @@ import { Candidate } from "./candidate";
 import { IBoard, ICell, ICellController } from "../interfaces";
 import { createPointerDoubleClickHandler } from '../pointer';
 import { BoardEvents, CommonEvents } from '../events';
+import { partialEq } from '@components/utilities/misc';
 
 type CellProperties = { 
     model:          ICell,
@@ -73,40 +74,23 @@ export class Cell extends Component<CellProperties, CellState>{
     updateCellState = (cell: ICell) => {
         if (this.props.model !== cell) { return; }
 
-        const value = cell.getValue();
-        const isValid = cell.isValid();
-        const isStatic = cell.isStatic();
-
-        // No changes
-        if (this.state.value === value && this.state.isValid === isValid && this.state.isStatic === isStatic) {
-            return;
+        const newState = {
+            value:      cell.getValue(),
+            isValid:    cell.isValid(),
+            isStatic:   cell.isStatic()
         }
 
-        this.setState(() => ({ 
-            value: value, 
-            isValid: isValid,
-            isStatic: isStatic,
-        }));
+        if (!partialEq(this.state, newState)) {
+            this.setState(() => newState);
+        }
     }
 
     shouldComponentUpdate(nextProps: CellProperties, nextState: CellState) {
         if (this.props.highlight !== nextProps.highlight) {
             return true;
         }
-        if (this.state.isCursor !== nextState.isCursor) {
-            return true;
-        }
-        if (this.state.value !== nextState.value) {
-            return true;
-        }
-        if (this.state.isValid !== nextState.isValid) {
-            return true;
-        }
-        if (this.state.isStatic !== nextState.isStatic) {
-            return true;
-        }
-        
-        return false;
+
+        return !partialEq(this.state, nextState);
     }
 
     setCellValue = (value: number) => {

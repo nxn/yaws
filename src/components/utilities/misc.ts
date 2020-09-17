@@ -54,6 +54,16 @@ export function uuid(): string {
         } 
     );
 };
+
+type Partial<T> = { [P in keyof T]?: T[P]; }
+export function partialEq<T>(object: T, partial: Partial<T>): boolean {
+    for (const key in partial) {
+        if (object[key] !== partial[key]) {
+            return false;
+        }
+    }
+    return true;
+}
     
 export function locationOf<T>(item: T, array: T[], comparer: (a: T, b: T) => number, start = 0, end = array.length)
 : number {

@@ -2,6 +2,7 @@ import { Component, linkEvent } from 'inferno';
 import { ICandidate, ICandidateController, ICell, IBoard } from '../interfaces';
 import { BoardEvents, CommonEvents } from '../events';
 import { createPointerDoubleClickHandler } from '../pointer';
+import { partialEq } from '@components/utilities/misc';
 
 type CandidateProperties = {
     model:          ICandidate,
@@ -53,27 +54,18 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
             return;
         }
 
-        const selected = candidate.isSelected();
-        const valid = candidate.isValid();
-
-        if (this.state.selected === selected && this.state.valid === valid) {
-            return;
+        const newState = {
+            selected: candidate.isSelected(),
+            valid: candidate.isValid()
         }
 
-        this.setState(() => ({
-            selected: selected,
-            valid: valid
-        }));
+        if (!partialEq(this.state, newState)) {
+            this.setState(() => newState);
+        }
     }
 
     shouldComponentUpdate(_: CandidateProperties, nextState: CandidateState) {
-        if (this.state.selected !== nextState.selected) {
-            return true;
-        }
-        if (this.state.valid !== nextState.valid) {
-            return true;
-        }
-        return false;
+        return !partialEq(this.state, nextState);
     }
 
     render() {
