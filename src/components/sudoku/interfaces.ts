@@ -118,10 +118,10 @@ export interface ICursorController {
 export interface IBoardController extends ICellController, ICursorController { }
 
 export interface IEventManager {
-    attach:         (eventName: string, listener: (...args: any[]) => any) => void;
+    attach:     (eventName: string, listener: (...args: any[]) => any) => void;
     fire:       (eventName: string, ...eventArgs: any[]) => void;
-    detach:     (eventName: string, listener: (...args: any[]) => any) => boolean;
-    detachAll:  (eventName: string) => boolean;
+    detach:     (eventName: string, listener: (...args: any[]) => any) => void;
+    detachAll:  (eventName: string) => void;
     clear:      () => void;
     stop:       () => void;
     start:      () => void;

@@ -44,7 +44,7 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
     }
 
     loadCandidateState = (board: IBoard) => {
-        if (board.isReady()) {
+        if (this.props.board === board && board.isReady()) {
             this.updateCandidateState(this.props.model);
         }
     }

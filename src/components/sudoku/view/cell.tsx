@@ -66,7 +66,7 @@ export class Cell extends Component<CellProperties, CellState>{
     }
 
     loadCellState = (board: IBoard) => {
-        if (board.isReady()) {
+        if (this.props.board === board && board.isReady()) {
             this.updateCellState(this.props.model);
         }
     }

@@ -5,11 +5,11 @@ export enum CommonEvents {
 }
 
 export enum BoardEvents {
-    CursorMoved     = "CursorMoved",
-    ReadyStateChanged          = "Loaded",
-    Solved          = "Solved",
-    Cleared         = "Cleared",
-    Reset           = "Reset"
+    CursorMoved         = "CursorMoved",
+    ReadyStateChanged   = "ReadyStateChanged",
+    Solved              = "Solved",
+    Cleared             = "Cleared",
+    Reset               = "Reset"
 }
 
 export enum CellEvents {
@@ -113,7 +113,11 @@ class EventManager implements IEventManager {
             attachedListeners = [];
             this.listeners.set(event, attachedListeners);
         }
-        attachedListeners.push(listener);
+        
+        // In the case where this function is being called from another listener that has been executed through @fire we
+        // want to avoid modifying the event store until after @fire is finished. Adding listeners through setTimout
+        // should hopefully allow @fire to finish iterating through existing listeners first.
+        setTimeout(() => { attachedListeners.push(listener); });
 
         return true;
     }
@@ -123,10 +127,10 @@ class EventManager implements IEventManager {
             return false;
         }
 
-        let attachedListeners = this.listeners.get(eventName.toUpperCase());
+        const attachedListeners = this.listeners.get(eventName.toUpperCase());
         if (!attachedListeners) { return true; };
 
-        for (let listener of attachedListeners) {
+        for (const listener of attachedListeners) {
             listener(...eventArgs);
         }
 
@@ -138,35 +142,39 @@ class EventManager implements IEventManager {
             return false;
         }
 
-        let attachedListeners = this.listeners.get(eventName.toUpperCase());
+        const attachedListeners = this.listeners.get(eventName.toUpperCase());
         if (!attachedListeners) { return false; }
 
-        let index = 0;
-        let found = false;
-        while (index < attachedListeners.length) {
-            if (listener === attachedListeners[index]) {
-                found = true;
-                break;
+        // This needs to be performed via setTimeout to ensure that any event listeners detaching themselves after
+        // being executed via @fire are not modifying the event store as it is being iterated over.
+        setTimeout(() => {
+            let index = 0;
+            let found = false;
+            while (index < attachedListeners.length) {
+                if (listener === attachedListeners[index]) {
+                    found = true;
+                    break;
+                }
+                index++;
             }
-            index++;
-        }
-
-        if (found) {
-            attachedListeners.splice(index, 1);
-        }
+    
+            if (found) {
+                attachedListeners.splice(index, 1);
+            }
+        });
         
-        return found;
+        return true;
     }
 
     detachAll(eventName: string) {
         if (eventName === null || eventName === undefined) {
             return false;
         }
-
-        return this.listeners.delete(eventName.toUpperCase());
+        setTimeout(() => this.listeners.delete(eventName.toUpperCase()));
+        return true;
     }
 
     clear() {
-        return this.listeners.clear();
+        setTimeout(() => this.listeners.clear());
     }
 }
