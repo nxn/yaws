@@ -22,11 +22,11 @@ class Candidate implements ICandidate {
     }
 
     validate = (cell: ICell, newValue: number, oldValue: number) => {
-        // I suspect there might be an issue with view event listeners not being attached soon enough to catch 
-        // validation change events when a cell value is cleared and candidates are re-added to the DOM. To work around
-        // this for the time being the "this.cell === cell" condition is necessary as it will skip marking the candidate
-        // as invalid should its parent cell get set to its value. This way if the cell value gets cleared later the
-        // candidate will no longer automatically be in an invalid state due to its own cell's value.
+        // There might be an issue with view event listeners not being attached in time to receive validation change 
+        // events when a cell value is cleared and candidates are re-rendered to the DOM. To work around this problem 
+        // the "this.cell === cell" early return condition is necessary as it will skip marking the candidate as invalid
+        // should its parent cell get set to its value. This way if the cell value gets cleared later the candidate will
+        // no longer automatically be in an invalid state due to its own cell's prior value.
         if (this.cell.isStatic() || this.cell === cell || !cell.rcb.has(this.cell)) { 
             return; 
         }
