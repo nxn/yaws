@@ -464,8 +464,8 @@
     box-sizing: border-box;
     border-radius: 100%;
     background-color: #666;
-    width: calc(0.3125rem * var(--yaws-scale));
-    height: calc(0.3125rem * var(--yaws-scale));
+    width: calc(0.25rem * var(--yaws-scale));
+    height: calc(0.25rem * var(--yaws-scale));
 
     animation-duration: 1s;
     animation-name: fade;
