@@ -19,7 +19,6 @@ module.exports = {
   target: 'web',
   devtool: 'source-map',
   devServer: {
-    contentBase: outputPath,
     hot: true,
     host: '0.0.0.0',
     port: 8080,
