@@ -32,7 +32,7 @@ export class Board extends Component<BoardProperties, BoardState> {
             readyListener: this.props.model.events
                 .get(BoardEvents.ReadyStateChanged)
                 .attach(this.updateReadyState),
-                
+
             cursorListener: this.props.model.events
                 .get(BoardEvents.CursorMoved)
                 .attach(this.updateHighlightState)
@@ -40,6 +40,7 @@ export class Board extends Component<BoardProperties, BoardState> {
 
         this.setState(() => listeners);
     }
+    
     componentWillUnmount() {
         if (this.state.readyListener) {
             this.props.model.events.get(BoardEvents.ReadyStateChanged).detach(this.state.readyListener);
@@ -55,14 +56,14 @@ export class Board extends Component<BoardProperties, BoardState> {
         }));
     }
 
+    shouldComponentUpdate(_: BoardProperties, nextState: BoardState) {
+        return !partialEq(this.state, nextState);
+    }
+
     updateReadyState = (board: IBoard) => {
         if (this.props.model === board && board.isReady()) {
             this.setState(() => ({ isReady: true }));
         }
-    }
-
-    shouldComponentUpdate(_: BoardProperties, nextState: BoardState) {
-        return !partialEq(this.state, nextState);
     }
 
     updateHighlightState = (board: IBoard, cell: ICell) => {

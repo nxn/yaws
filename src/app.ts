@@ -69,8 +69,6 @@ function init() {
     const renderEnd = 'render end';
     performance.mark(renderEnd);
     performance.measure("Render", renderStart, renderEnd);
-
-    window['events'] = events;
 };
 
 init();

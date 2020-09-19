@@ -48,7 +48,7 @@ export class Cell extends Component<CellProperties, CellState>{
             readyStateListener: this.props.board.events
                 .get(BoardEvents.ReadyStateChanged)
                 .attach(this.loadCellState),
-                
+
             cursorListener: this.props.board.events
                 .get(BoardEvents.CursorMoved)
                 .attach(this.updateCursorState),
@@ -79,6 +79,14 @@ export class Cell extends Component<CellProperties, CellState>{
             cursorListener: undefined,
             cellStateListener: undefined
         }));
+    }
+
+    shouldComponentUpdate(nextProps: CellProperties, nextState: CellState) {
+        if (this.props.highlight !== nextProps.highlight) {
+            return true;
+        }
+
+        return !partialEq(this.state, nextState);
     }
 
     updateCursorState = (_: IBoard, to: ICell, from: ICell) => {
@@ -112,14 +120,6 @@ export class Cell extends Component<CellProperties, CellState>{
         if (!partialEq(this.state, newState)) {
             this.setState(() => newState);
         }
-    }
-
-    shouldComponentUpdate(nextProps: CellProperties, nextState: CellState) {
-        if (this.props.highlight !== nextProps.highlight) {
-            return true;
-        }
-
-        return !partialEq(this.state, nextState);
     }
 
     setCellValue = (value: number) => {

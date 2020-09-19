@@ -49,6 +49,7 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
         
         this.setState(() => listeners);
     }
+
     componentWillUnmount() {
         if (this.state.readyStateListener) {
             this.props.board.events.get(BoardEvents.ReadyStateChanged).detach(this.state.readyStateListener);
@@ -62,6 +63,10 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
             readyStateListener: undefined,
             candidateStateListener: undefined
         }));
+    }
+
+    shouldComponentUpdate(_: CandidateProperties, nextState: CandidateState) {
+        return !partialEq(this.state, nextState);
     }
 
     loadCandidateState = (board: IBoard) => {
@@ -83,10 +88,6 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
         if (!partialEq(this.state, newState)) {
             this.setState(() => newState);
         }
-    }
-
-    shouldComponentUpdate(_: CandidateProperties, nextState: CandidateState) {
-        return !partialEq(this.state, nextState);
     }
 
     render() {
