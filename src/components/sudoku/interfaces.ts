@@ -7,7 +7,7 @@ export const ModelType = {
     get Candidate(): ModelType  { return "Candidate"; }
 }
 
-export interface IModel { 
+export interface IModel {
     type:   ModelType;
     events: IEventStore;
 }
@@ -119,22 +119,18 @@ export interface ICursorController {
 export interface IBoardController extends ICellController, ICursorController { }
 
 export type EventListener = (...args: any[]) => void;
-import {
-    IGenerationalIndexAllocator         as IEventListenerKeyAllocator,
+
+import type {
     IGenerationalIndex                  as IEventListenerKey,
+    IGenerationalIndexAllocator         as IEventListenerKeyAllocator,
     IGenerationalIndexArray             as IEventListenerArray,
-    IGenerationalIndexArrayIterator     as IEventListenerIterator,
-    createGenerationalIndexAllocator    as createEventListenerKeyAllocator,
-    createGenerationalIndexArray        as createEventListenerArray
-} from './garray';
-export {
-    IEventListenerKeyAllocator,
+} from './genarray';
+
+export type {
     IEventListenerKey,
-    IEventListenerArray,
-    IEventListenerIterator,
-    createEventListenerKeyAllocator,
-    createEventListenerArray
-}
+    IEventListenerKeyAllocator,
+    IEventListenerArray
+};
 
 export interface IEventManager {
     get: (type: ModelType, eventName: string) => IEvent;

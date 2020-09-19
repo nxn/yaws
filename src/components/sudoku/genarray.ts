@@ -1,4 +1,4 @@
-import { BinaryHeap } from './bheap';
+import { BinaryHeap } from './binheap';
 import { Nothing } from './maybe';
 
 export interface IGenerationalIndex {

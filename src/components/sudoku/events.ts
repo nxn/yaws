@@ -7,9 +7,12 @@ import {
     IEventListenerKeyAllocator,
     IEventListenerArray,
     EventListener,
-    createEventListenerKeyAllocator,
-    createEventListenerArray
 } from './interfaces';
+
+import { 
+    createGenerationalIndexAllocator    as createEventListenerKeyAllocator,
+    createGenerationalIndexArray        as createEventListenerArray
+} from './genarray';
 
 export type CommonEvents = "StateChanged";
 export const CommonEvents = { 
