@@ -1,18 +1,19 @@
 export type TSudokuPuzzle = string | number[];
 
-export enum ModelType   { 
-    Board       = "Board",
-    Cell        = "Cell",
-    Candidate   = "Candidate"
-};
+export type ModelType = "Board" | "Cell" | "Candidate";
+export const ModelType = {
+    get Board(): ModelType      { return "Board"; },
+    get Cell(): ModelType       { return "Cell"; },
+    get Candidate(): ModelType  { return "Candidate"; }
+}
 
 export interface IModel { 
     type:   ModelType;
-    events: IEventManager;
+    events: IEventStore;
 }
 
 export interface IBoard extends IModel {
-    type:           ModelType.Board;
+    type:           "Board";
     id:             string;
     cells:          ICell[];
     rows:           ISet[];
@@ -28,7 +29,7 @@ export interface IBoard extends IModel {
 }
 
 export interface ICell extends IModel {
-    type:           ModelType.Cell;
+    type:           "Cell";
     id:             string;
     name:           string;
     index:          number;
@@ -47,7 +48,7 @@ export interface ICell extends IModel {
 }
 
 export interface ICandidate extends IModel {
-    type:           ModelType.Candidate;
+    type:           "Candidate";
     value:          number;
     isValid:        () => boolean;
     setValid:       (value: boolean, silent?: boolean) => void;
@@ -117,19 +118,40 @@ export interface ICursorController {
 
 export interface IBoardController extends ICellController, ICursorController { }
 
+export type EventListener = (...args: any[]) => void;
+import {
+    IGenerationalIndexAllocator         as IEventListenerKeyAllocator,
+    IGenerationalIndex                  as IEventListenerKey,
+    IGenerationalIndexArray             as IEventListenerArray,
+    IGenerationalIndexArrayIterator     as IEventListenerIterator,
+    createGenerationalIndexAllocator    as createEventListenerKeyAllocator,
+    createGenerationalIndexArray        as createEventListenerArray
+} from './genarray';
+export {
+    IEventListenerKeyAllocator,
+    IEventListenerKey,
+    IEventListenerArray,
+    IEventListenerIterator,
+    createEventListenerKeyAllocator,
+    createEventListenerArray
+}
+
 export interface IEventManager {
-    attach:     (eventName: string, listener: (...args: any[]) => any) => void;
-    fire:       (eventName: string, ...eventArgs: any[]) => void;
-    detach:     (eventName: string, listener: (...args: any[]) => any) => void;
-    detachAll:  (eventName: string) => void;
-    clear:      () => void;
-    stop:       () => void;
-    start:      () => void;
-    isStopped:  () => boolean;
+    get: (type: ModelType, eventName: string) => IEvent;
+    type: (type: ModelType) => IEventStore;
 }
 
 export interface IEventStore {
-    get: (modelType: ModelType) => IEventManager;
+    get: (eventName: string) => IEvent;
+}
+
+export interface IEvent {
+    attach:     (listener: (...args: any[]) => any) => IEventListenerKey;
+    fire:       (...eventArgs: any[]) => void;
+    detach:     (listenerKey: IEventListenerKey) => boolean;
+    stop:       () => void;
+    start:      () => void;
+    isStopped:  () => boolean;
 }
 
 export enum KeyboardActions {

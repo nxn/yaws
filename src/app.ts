@@ -1,5 +1,5 @@
 import config                               from './config';
-import { createStore as createEventStore }  from '@components/sudoku/events';
+import { create as createEventManager }     from '@components/sudoku/events';
 import { create as createBoard }            from '@components/sudoku/board';
 import { create as createStateManager }     from '@components/sudoku/statemanager';
 import { create as createBoardController }  from '@components/sudoku/controller';
@@ -10,8 +10,8 @@ import { storage, proxies }                 from '@components/storage/storage';
 import { waffleIron }                       from '@components/web-workers/waffle-iron';
 
 function init() {
-    const eventStore    = createEventStore();
-    const board         = createBoard(eventStore);
+    const events        = createEventManager();
+    const board         = createBoard(events);
     const controller    = createBoardController();
     const keyboard      = createKeyboardHandler(board, controller);
     const state         = createStateManager(board);
@@ -69,6 +69,8 @@ function init() {
     const renderEnd = 'render end';
     performance.mark(renderEnd);
     performance.measure("Render", renderStart, renderEnd);
+
+    //window['events'] = events;
 };
 
 init();

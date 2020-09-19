@@ -1,6 +1,6 @@
 import { Component } from 'inferno';
 import { Cell } from './cell';
-import { IBoardController, IBoard, ICell } from '../interfaces';
+import { IBoardController, IBoard, ICell, IEventListenerKey } from '../interfaces';
 import { BoardEvents } from '../events';
 import { partialEq } from '@components/utilities/misc';
 
@@ -12,7 +12,9 @@ type BoardProperties = {
 type BoardState = {
     isReady:            boolean,
     highlightedColumn:  number,
-    highlightedRow:     number
+    highlightedRow:     number,
+    readyListener?:     IEventListenerKey,
+    cursorListener?:    IEventListenerKey
 };
 
 export class Board extends Component<BoardProperties, BoardState> {
@@ -26,12 +28,31 @@ export class Board extends Component<BoardProperties, BoardState> {
     }
 
     componentWillMount() {
-        this.props.model.events.attach(BoardEvents.ReadyStateChanged,   this.updateReadyState)
-        this.props.model.events.attach(BoardEvents.CursorMoved,         this.updateHighlightState);
+        const listeners = {
+            readyListener: this.props.model.events
+                .get(BoardEvents.ReadyStateChanged)
+                .attach(this.updateReadyState),
+                
+            cursorListener: this.props.model.events
+                .get(BoardEvents.CursorMoved)
+                .attach(this.updateHighlightState)
+        }
+
+        this.setState(() => listeners);
     }
     componentWillUnmount() {
-        this.props.model.events.detach(BoardEvents.ReadyStateChanged,   this.updateReadyState);
-        this.props.model.events.detach(BoardEvents.CursorMoved,         this.updateHighlightState);
+        if (this.state.readyListener) {
+            this.props.model.events.get(BoardEvents.ReadyStateChanged).detach(this.state.readyListener);
+        }
+        
+        if (this.state.cursorListener) {
+            this.props.model.events.get(BoardEvents.CursorMoved).detach(this.state.cursorListener);
+        }
+
+        this.setState(() => ({
+            readyListener: undefined,
+            cursorListener: undefined
+        }));
     }
 
     updateReadyState = (board: IBoard) => {

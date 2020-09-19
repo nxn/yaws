@@ -1,4 +1,4 @@
-import { IEventStore, IEventManager, IBoard, ISet, ICell, ModelType } from './interfaces';
+import { IEventManager, IEventStore, IBoard, ISet, ICell, ModelType } from './interfaces';
 import { BoardEvents }              from './events';
 import { create as createSet }      from './set';
 import { create as createCell }     from './cell';
@@ -14,10 +14,10 @@ export const constants = Object.freeze(Object.create(null,
     }
 ));
 
-export function create(events: IEventStore, id = `g${boardCount}`): IBoard {
+export function create(events: IEventManager, id = `g${boardCount}`): IBoard {
     boardCount++;
 
-    const boardEvents = events.get(ModelType.Board);
+    const boardEvents = events.type(ModelType.Board);
     
     const cells   = new Array(constants.rowCount * constants.columnCount);
     const rows    = new Array(constants.rowCount);
@@ -61,7 +61,7 @@ export function create(events: IEventStore, id = `g${boardCount}`): IBoard {
 }
 
 class Board implements IBoard {
-    readonly type = ModelType.Board;
+    readonly type = "Board";
 
     constructor(
         readonly id:        string, 
@@ -69,7 +69,7 @@ class Board implements IBoard {
         readonly rows:      ISet[], 
         readonly columns:   ISet[], 
         readonly boxes:     ISet[],
-        readonly events:    IEventManager
+        readonly events:    IEventStore
     ) { }
 
     private ready = false;
@@ -82,7 +82,7 @@ class Board implements IBoard {
         this.ready = ready;
 
         if (!silent) {
-            this.events.fire(BoardEvents.ReadyStateChanged, this);
+            this.events.get(BoardEvents.ReadyStateChanged).fire(this);
         }
     }
 
@@ -97,14 +97,14 @@ class Board implements IBoard {
         this.cursor = to;
 
         if (!silent) {
-            this.events.fire(BoardEvents.CursorMoved, this, to, from);
+            this.events.get(BoardEvents.CursorMoved).fire(this, to, from);
         }
     };
 
     clear(silent = false): IBoard {
         this.cells.forEach(c => c.clear(silent));
         if (!silent) {
-            this.events.fire(BoardEvents.Cleared, this);
+            this.events.get(BoardEvents.Cleared).fire(this);
         }
         return this;        
     };
@@ -112,7 +112,7 @@ class Board implements IBoard {
     reset(silent = false): IBoard {
         this.cells.forEach(c => !c.isStatic && c.clear(silent));
         if (!silent) {
-            this.events.fire(BoardEvents.Reset, this);
+            this.events.get(BoardEvents.Reset).fire(this);
         }
         return this;
     };

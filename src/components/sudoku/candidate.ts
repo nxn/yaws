@@ -1,24 +1,24 @@
-import { ICandidate, ICell, IEventStore, IEventManager, ModelType } from './interfaces';
+import { ICandidate, ICell, IEventManager, IEventStore, ModelType } from './interfaces';
 import { CandidateEvents, CellEvents } from "./events";
 
 export const constants = Object.freeze({
     candidateCount: 9
 });
 
-export function create(events: IEventStore, value: number, cell: ICell): ICandidate {
-    const candidateEvents = events.get(ModelType.Candidate);
+export function create(events: IEventManager, value: number, cell: ICell): ICandidate {
+    const candidateEvents = events.type(ModelType.Candidate);
     return new Candidate(value, cell, candidateEvents);
 }
 
 class Candidate implements ICandidate {
-    readonly type = ModelType.Candidate;
+    readonly type = "Candidate";
 
     constructor(
         readonly value: number,
         readonly cell: ICell,
-        readonly events: IEventManager
+        readonly events: IEventStore
     ) {
-        this.cell.events.attach(CellEvents.ValueChanged, this.validate);
+        this.cell.events.get(CellEvents.ValueChanged).attach(this.validate);
     }
 
     validate = (cell: ICell, newValue: number, oldValue: number) => {
@@ -63,7 +63,7 @@ class Candidate implements ICandidate {
         this.valid = valid;
 
         if (!silent) {
-            this.events.fire(CandidateEvents.ValidityChanged, this, this.valid);
+            this.events.get(CandidateEvents.ValidityChanged).fire(this, this.valid);
         }
     }
 
@@ -79,7 +79,7 @@ class Candidate implements ICandidate {
         this.selected = selected && !this.cell.isStatic()
 
         if ((previous !== this.selected) && !silent) {
-            this.events.fire(CandidateEvents.SelectedChanged, this, this.value, this.selected);
+            this.events.get(CandidateEvents.SelectedChanged).fire(this, this.value, this.selected);
         }
     }
 }

@@ -9,14 +9,15 @@ export interface IGenerationalIndexAllocator {
     isLive      (index: IGenerationalIndex):    boolean;
 }
 
-export interface IGenerationalIndexArrayIterator<T> {
-    next(): T | { done: true };
-}
-
 export interface IGenerationalIndexArray<T> {
     get(index: IGenerationalIndex):             T | undefined;
     set(index: IGenerationalIndex, value: T):   T | undefined;
-    values():                                   IGenerationalIndexArrayIterator<T>;
+    remove(index: IGenerationalIndex):          T | undefined;
+    [Symbol.iterator]():                        IGenerationalIndexArrayIterator<T>;
+}
+
+export interface IGenerationalIndexArrayIterator<T> {
+    next(): { value?: T, done: boolean };
 }
 
 export function createGenerationalIndexAllocator(): IGenerationalIndexAllocator {
@@ -123,21 +124,35 @@ class GenerationalIndexArray<T> {
         return undefined;
     }
 
-    values(): IGenerationalIndexArrayIterator<T> {
-        let index = 0;
+    remove(index: IGenerationalIndex): T | undefined {
+        if (!index) { return undefined; }
+
+        const entry = this.entries[index.index];
+        if (entry && index.generation >= entry.generation) {
+            let value = entry.value;
+            this.entries[index.index] = undefined;
+            return value;
+        }
+
+        return undefined;
+    }
+
+    [Symbol.iterator]() {
+        const self = this;
         return {
-            next: () => {
-                let entry = this.entries[index];
+            index: 0,
+            next(): { value?: T, done: boolean } {
+                let entry = self.entries[this.index];
                 while (entry === undefined) {
-                    if (index >= this.entries.length) {
+                    if (this.index >= self.entries.length) {
                         return { done: true }
                     }
-
-                    entry = this.entries[++index];
+        
+                    entry = self.entries[++this.index];
                 }
-                index++;
-                return entry.value;
+                this.index++;
+                return { value: entry.value, done: false };
             }
-        };
+        }
     }
 }

@@ -1,6 +1,6 @@
 import { Component, linkEvent } from 'inferno';
 import { Candidate } from "./candidate";
-import { IBoard, ICell, ICellController } from "../interfaces";
+import { IBoard, ICell, ICellController, IEventListenerKey } from "../interfaces";
 import { createPointerDoubleClickHandler } from '../pointer';
 import { BoardEvents, CommonEvents } from '../events';
 import { partialEq } from '@components/utilities/misc';
@@ -15,10 +15,13 @@ type CellProperties = {
 };
 
 type CellState = {
-    value:      number,
-    isValid:    boolean,
-    isCursor:   boolean,
-    isStatic:   boolean,
+    value:                  number,
+    isValid:                boolean,
+    isCursor:               boolean,
+    isStatic:               boolean,
+    readyStateListener?:    IEventListenerKey,
+    cursorListener?:        IEventListenerKey,
+    cellStateListener?:     IEventListenerKey
 };
 
 export class Cell extends Component<CellProperties, CellState>{
@@ -41,15 +44,41 @@ export class Cell extends Component<CellProperties, CellState>{
     }
 
     componentWillMount() {
-        this.props.board.events.attach(BoardEvents.ReadyStateChanged,   this.loadCellState);
-        this.props.board.events.attach(BoardEvents.CursorMoved,         this.updateCursorState);
-        this.props.model.events.attach(CommonEvents.StateChanged,       this.updateCellState);
+        const listeners = {
+            readyStateListener: this.props.board.events
+                .get(BoardEvents.ReadyStateChanged)
+                .attach(this.loadCellState),
+                
+            cursorListener: this.props.board.events
+                .get(BoardEvents.CursorMoved)
+                .attach(this.updateCursorState),
+
+            cellStateListener: this.props.model.events
+                .get(CommonEvents.StateChanged)
+                .attach(this.updateCellState)
+        };
+        
+        this.setState(() => listeners);
     }
 
     componentWillUnmount() {
-        this.props.board.events.detach(BoardEvents.ReadyStateChanged,   this.loadCellState);
-        this.props.board.events.detach(BoardEvents.CursorMoved,         this.updateCursorState);
-        this.props.model.events.detach(CommonEvents.StateChanged,       this.updateCellState);
+        if (this.state.readyStateListener) {
+            this.props.board.events.get(BoardEvents.ReadyStateChanged).detach(this.state.readyStateListener);
+        }
+
+        if (this.state.cursorListener) {
+            this.props.board.events.get(BoardEvents.CursorMoved).detach(this.state.cursorListener);
+        }
+
+        if (this.state.cellStateListener) {
+            this.props.model.events.get(CommonEvents.StateChanged).detach(this.state.cellStateListener);
+        }
+
+        this.setState(() => ({
+            readyStateListener: undefined,
+            cursorListener: undefined,
+            cellStateListener: undefined
+        }));
     }
 
     updateCursorState = (_: IBoard, to: ICell, from: ICell) => {

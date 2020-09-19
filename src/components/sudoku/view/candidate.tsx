@@ -1,5 +1,5 @@
 import { Component, linkEvent } from 'inferno';
-import { ICandidate, ICandidateController, ICell, IBoard } from '../interfaces';
+import { ICandidate, ICandidateController, ICell, IBoard, IEventListenerKey } from '../interfaces';
 import { BoardEvents, CommonEvents } from '../events';
 import { createPointerDoubleClickHandler } from '../pointer';
 import { partialEq } from '@components/utilities/misc';
@@ -13,8 +13,10 @@ type CandidateProperties = {
 };
 
 type CandidateState = {
-    selected: boolean,
-    valid: boolean
+    selected:                   boolean,
+    valid:                      boolean,
+    readyStateListener?:        IEventListenerKey,
+    candidateStateListener?:    IEventListenerKey
 }
 
 export class Candidate extends Component<CandidateProperties, CandidateState> {
@@ -35,12 +37,31 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
     }
 
     componentWillMount() {
-        this.props.board.events.attach(BoardEvents.ReadyStateChanged,   this.loadCandidateState);
-        this.props.model.events.attach(CommonEvents.StateChanged,       this.updateCandidateState);
+        const listeners = {
+            readyStateListener: this.props.board.events
+                .get(BoardEvents.ReadyStateChanged)
+                .attach(this.loadCandidateState),
+
+            candidateStateListener: this.props.model.events
+                .get(CommonEvents.StateChanged)
+                .attach(this.updateCandidateState)
+        };
+        
+        this.setState(() => listeners);
     }
     componentWillUnmount() {
-        this.props.board.events.detach(BoardEvents.ReadyStateChanged,   this.loadCandidateState);
-        this.props.model.events.detach(CommonEvents.StateChanged,       this.updateCandidateState);
+        if (this.state.readyStateListener) {
+            this.props.board.events.get(BoardEvents.ReadyStateChanged).detach(this.state.readyStateListener);
+        }
+
+        if (this.state.candidateStateListener) {
+            this.props.model.events.get(CommonEvents.StateChanged).detach(this.state.candidateStateListener);
+        }
+        
+        this.setState(() => ({
+            readyStateListener: undefined,
+            candidateStateListener: undefined
+        }));
     }
 
     loadCandidateState = (board: IBoard) => {

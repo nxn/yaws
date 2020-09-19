@@ -1,9 +1,9 @@
-import { IEventStore, IEventManager, IBoard, ISet, ICell, ICandidate, ModelType } from './interfaces';
+import { IEventManager, IEventStore, IBoard, ISet, ICell, ICandidate, ModelType } from './interfaces';
 import { CellEvents } from './events';
 import { constants, create as createCandidate } from './candidate';
 
 export function create(
-    events:     IEventStore, 
+    events:     IEventManager, 
     board:      IBoard, 
     index:      number, 
     row:        ISet, 
@@ -11,7 +11,7 @@ export function create(
     box:        ISet, 
     isStatic =  false
 ): ICell {
-    const cellEvents = events.get(ModelType.Cell);
+    const cellEvents = events.type(ModelType.Cell);
 
     const id         = `${board.id}-${row.name}${col.name}`;
     const name       = `${row.name}${col.name}`;
@@ -36,7 +36,7 @@ const CellSetValidationMap: { [K in keyof CellSets]: (keyof CellSets)[] } = {
 };
 
 class Cell implements ICell {
-    readonly type = ModelType.Cell;
+    readonly type = "Cell";
 
     constructor(
         readonly id:            string,
@@ -46,7 +46,7 @@ class Cell implements ICell {
         readonly column:        ISet,
         readonly box:           ISet,
         readonly candidates:    ICandidate[],
-        readonly events:        IEventManager
+        readonly events:        IEventStore
     ) { }
     
     private _rcb: Set<ICell>;
@@ -67,7 +67,7 @@ class Cell implements ICell {
         this.value = value;
 
         if (!silent) {
-            this.events.fire(CellEvents.ValueChanged, this, value, previous)
+            this.events.get(CellEvents.ValueChanged).fire(this, value, previous)
         }
 
         if (validate) {
@@ -88,7 +88,7 @@ class Cell implements ICell {
         this.valid = valid;
 
         if (!silent) {
-            this.events.fire(CellEvents.ValidityChanged, this, this.valid);
+            this.events.get(CellEvents.ValidityChanged).fire(this, this.valid);
         }
     }
 
@@ -102,7 +102,7 @@ class Cell implements ICell {
         this.static = value;
 
         if (!silent) {
-            this.events.fire(CellEvents.StaticChanged, this, value);
+            this.events.get(CellEvents.StaticChanged).fire(this, value);
         }
     }
 
@@ -112,7 +112,7 @@ class Cell implements ICell {
         this.candidates.forEach(c => c.setSelected(false, silent));
 
         if (!silent) {
-            this.events.fire(CellEvents.Cleared, this);
+            this.events.get(CellEvents.Cleared).fire(this);
         }
     };
 

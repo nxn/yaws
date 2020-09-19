@@ -1,180 +1,154 @@
-import { ModelType, IEventManager, IEventStore } from './interfaces';
+import { 
+    ModelType,
+    IEvent, 
+    IEventStore,
+    IEventManager,
+    IEventListenerKey,
+    IEventListenerKeyAllocator,
+    IEventListenerArray,
+    EventListener,
+    createEventListenerKeyAllocator,
+    createEventListenerArray
+} from './interfaces';
 
-export enum CommonEvents {
-    StateChanged    = "StateChanged"
+export type CommonEvents = "StateChanged";
+export const CommonEvents = { 
+    get StateChanged(): CommonEvents { return "StateChanged"; }
 }
 
-export enum BoardEvents {
-    CursorMoved         = "CursorMoved",
-    ReadyStateChanged   = "ReadyStateChanged",
-    Solved              = "Solved",
-    Cleared             = "Cleared",
-    Reset               = "Reset"
+export type BoardEvents = "CursorMoved" | "ReadyStateChanged" | "Solved" | "Cleared" | "Reset";
+export const BoardEvents = {
+    get CursorMoved(): BoardEvents          { return "CursorMoved" },
+    get ReadyStateChanged(): BoardEvents    { return "ReadyStateChanged" },
+    get Solved(): BoardEvents               { return "Solved" },
+    get Cleared(): BoardEvents              { return "Cleared" },
+    get Reset(): BoardEvents                { return "Reset" }
 }
 
-export enum CellEvents {
-    ValueChanged    = "ValueChanged",
-    StaticChanged   = "StaticChanged",
-    ValidityChanged = "ValidityChanged",
-    Cleared         = "Cleared"
+export type CellEvents = "ValueChanged" | "StaticChanged" | "ValidityChanged" | "Cleared";
+export const CellEvents = {
+    get ValueChanged(): CellEvents      { return "ValueChanged" },
+    get StaticChanged(): CellEvents     { return "StaticChanged" },
+    get ValidityChanged(): CellEvents   { return "ValidityChanged" },
+    get Cleared(): CellEvents           { return "Cleared" }
 }
 
-export enum CandidateEvents {
-    SelectedChanged = "SelectedChanged",
-    ValidityChanged = "ValidityChanged"
+export type CandidateEvents = "SelectedChanged" | "ValidityChanged";
+export const CandidateEvents = {
+    get SelectedChanged(): CandidateEvents { return "SelectedChanged" },
+    get ValidityChanged(): CandidateEvents { return "ValidityChanged" }
 }
 
-export function createManager() {
+export function create() {
     return new EventManager();
 }
 
-export function createStore() {
-    return new EventStore();
-}
-
-const StateChangeEvents: { [key: string]: string[] } = {
-    [ModelType.Board]: [
+const StateChangeEvents: { 
+    "Board": BoardEvents[], 
+    "Cell": CellEvents[], 
+    "Candidate": CandidateEvents[] 
+} = {
+    "Board": [
         BoardEvents.CursorMoved, 
         BoardEvents.ReadyStateChanged, 
         BoardEvents.Reset, 
         BoardEvents.Cleared
     ],
-    [ModelType.Cell]: [
+    "Cell": [
         CellEvents.ValueChanged, 
         CellEvents.ValidityChanged, 
         CellEvents.StaticChanged, 
         CellEvents.Cleared
     ],
-    [ModelType.Candidate]: [
+    "Candidate": [
         CandidateEvents.SelectedChanged,
         CandidateEvents.ValidityChanged
     ]
 };
 
-class EventStore implements IEventStore {
-    private stores: Map<string, IEventManager>;
+class EventManager implements IEventManager {
+    private stores: Map<ModelType, Map<string, IEvent>>;
 
     constructor() {
         this.stores = new Map();
 
         // Fire a generic StateChanged event whenever any of the events listed in StateChangeEvents are fired
-        for (let model of Object.keys(StateChangeEvents))
-        for (let event of StateChangeEvents[model]) {
-            let manager = this.get(model);
-            manager.attach(event, (...args: any[]) => {
-                manager.fire(CommonEvents.StateChanged, ...args);
+        let model: ModelType;
+        for (model in StateChangeEvents)
+        for (let eventName of StateChangeEvents[model]) {
+            const type = this.type(model);
+            type.get(eventName).attach((...args: any[]) => {
+                type.get(CommonEvents.StateChanged).fire(...args);
             });
         }
     }
 
-    get(modelType: string) {
-        if (modelType === null || modelType === undefined) {
+    type(type: ModelType): IEventStore | undefined {
+        if (!type) { return undefined; }
+        return {
+            get: (eventName: string) => {
+                return this.get(type, eventName);
+            }
+        };
+    }
+
+    get(type: ModelType, eventName: string): IEvent | undefined {
+        if (!type || !eventName) {
             return undefined;
         }
 
-        const model = modelType.toUpperCase();
-        let manager = this.stores.get(model);
-        if (!manager) {
-            manager = new EventManager();
-            this.stores.set(model, manager);
+        let store = this.stores.get(type);
+        if (!store) {
+            store = new Map();
+            this.stores.set(type, store);
         }
-        return manager;
+
+        let event = store.get(eventName);
+
+        if (!event) {
+            event = new Event(eventName);
+            store.set(eventName, event);
+        }
+
+        return event;
     }
 }
 
-class EventManager implements IEventManager {
-    private listeners: Map<string, ((...args:any[]) => any)[]>;
-    private stopped = false;
+class Event implements IEvent {
+    private keys:       IEventListenerKeyAllocator;
+    private listeners:  IEventListenerArray<EventListener>;
+    private stopped =   false;
 
-    constructor() {
-        this.listeners = new Map();
+    constructor(readonly name: string) {
+        this.keys       = createEventListenerKeyAllocator();
+        this.listeners  = createEventListenerArray();
     }
 
-    stop() {
-        this.stopped = true;
-    }
+    stop()      { this.stopped = true; }
+    start()     { this.stopped = false; }
+    isStopped() { return this.stopped; }
 
-    start() {
-        this.stopped = false;
-    }
-
-    isStopped() {
-        return this.stopped;
-    }
-
-    attach(eventName: string, listener: (...args:any[]) => any) {
-        if (eventName === null || eventName === undefined) {
-            return false;
-        }
-
-        const event = eventName.toUpperCase();
-        let attachedListeners = this.listeners.get(event);
-        if (!attachedListeners) {
-            attachedListeners = [];
-            this.listeners.set(event, attachedListeners);
-        }
-        
+    attach(listener: EventListener): IEventListenerKey {
+        const listenerKey = this.keys.allocate();
         // In the case where this function is being called from another listener that has been executed through @fire we
         // want to avoid modifying the event store until after @fire is finished. Adding listeners through setTimout
         // should hopefully allow @fire to finish iterating through existing listeners first.
-        setTimeout(() => { attachedListeners.push(listener); });
-
-        return true;
+        setTimeout(() => { this.listeners.set(listenerKey, listener); });
+        //this.listeners.set(listenerKey, listener);
+        return listenerKey;
     }
 
-    fire(eventName: string, ...eventArgs: any[]) {
-        if (this.stopped || eventName === null || eventName === undefined) { 
-            return false;
-        }
-
-        const attachedListeners = this.listeners.get(eventName.toUpperCase());
-        if (!attachedListeners) { return true; };
-
-        for (const listener of attachedListeners) {
+    fire(...eventArgs: any[]) {
+        for (const listener of this.listeners) {
             listener(...eventArgs);
         }
-
-        return true;
     }
 
-    detach(eventName: string, listener: (...args:any[]) => any) {
-        if (eventName === null || eventName === undefined) {
-            return false;
-        }
-
-        const attachedListeners = this.listeners.get(eventName.toUpperCase());
-        if (!attachedListeners) { return false; }
-
+    detach(listenerKey: IEventListenerKey): boolean {
         // This needs to be performed via setTimeout to ensure that any event listeners detaching themselves after
         // being executed via @fire are not modifying the event store as it is being iterated over.
-        setTimeout(() => {
-            let index = 0;
-            let found = false;
-            while (index < attachedListeners.length) {
-                if (listener === attachedListeners[index]) {
-                    found = true;
-                    break;
-                }
-                index++;
-            }
-    
-            if (found) {
-                attachedListeners.splice(index, 1);
-            }
-        });
-        
-        return true;
-    }
-
-    detachAll(eventName: string) {
-        if (eventName === null || eventName === undefined) {
-            return false;
-        }
-        setTimeout(() => this.listeners.delete(eventName.toUpperCase()));
-        return true;
-    }
-
-    clear() {
-        setTimeout(() => this.listeners.clear());
+        setTimeout(() => { this.listeners.remove(listenerKey); });
+        //this.listeners.set(listenerKey, undefined);
+        return this.keys.deallocate(listenerKey);
     }
 }
