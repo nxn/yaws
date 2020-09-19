@@ -70,7 +70,7 @@ function init() {
     performance.mark(renderEnd);
     performance.measure("Render", renderStart, renderEnd);
 
-    //window['events'] = events;
+    window['events'] = events;
 };
 
 init();
