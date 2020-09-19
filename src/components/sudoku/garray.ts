@@ -1,3 +1,6 @@
+import { BinaryHeap } from './bheap';
+import { Nothing } from './maybe';
+
 export interface IGenerationalIndex {
     index:      number;
     generation: number;
@@ -35,18 +38,18 @@ interface IAllocEntry {
 
 class GenerationalIndexAllocator implements IGenerationalIndexAllocator {
     private entries:    IAllocEntry[];
-    private free:       number[];
+    private free:       BinaryHeap<number>;
 
     constructor() {
         this.entries    = [];
-        this.free       = [];
+        this.free       = BinaryHeap.create((n: number) => n);
     }
 
     allocate(): IGenerationalIndex {
-        let index = this.free.pop();
+        const index = this.free.pop();
 
-        if (index === undefined) {
-            index = this.entries.length;
+        if (index === Nothing) {
+            const index = this.entries.length;
             this.entries.push({
                 live: true,
                 generation: 0
@@ -54,13 +57,13 @@ class GenerationalIndexAllocator implements IGenerationalIndexAllocator {
             return Object.freeze({ index: index, generation: 0 });
         }
         else {
-            const entry = this.entries[index];
+            const entry = this.entries[index.value];
             if (!entry) {
                 throw "Generational Index Allocator: Free contained non-existant index"
             }
             entry.live = true;
             entry.generation += 1;
-            return Object.freeze({ index: index, generation: entry.generation });
+            return Object.freeze({ index: index.value, generation: entry.generation });
         }
     }
 

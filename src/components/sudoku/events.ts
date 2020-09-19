@@ -134,7 +134,6 @@ class Event implements IEvent {
         // want to avoid modifying the event store until after @fire is finished. Adding listeners through setTimout
         // should hopefully allow @fire to finish iterating through existing listeners first.
         setTimeout(() => { this.listeners.set(listenerKey, listener); });
-        //this.listeners.set(listenerKey, listener);
         return listenerKey;
     }
 
@@ -148,7 +147,6 @@ class Event implements IEvent {
         // This needs to be performed via setTimeout to ensure that any event listeners detaching themselves after
         // being executed via @fire are not modifying the event store as it is being iterated over.
         setTimeout(() => { this.listeners.remove(listenerKey); });
-        //this.listeners.set(listenerKey, undefined);
         return this.keys.deallocate(listenerKey);
     }
 }

@@ -126,7 +126,7 @@ import {
     IGenerationalIndexArrayIterator     as IEventListenerIterator,
     createGenerationalIndexAllocator    as createEventListenerKeyAllocator,
     createGenerationalIndexArray        as createEventListenerArray
-} from './genarray';
+} from './garray';
 export {
     IEventListenerKeyAllocator,
     IEventListenerKey,
