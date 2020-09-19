@@ -473,22 +473,29 @@
 }
 
 @keyframes fade {
-    from    { opacity: 0; }
+    from    { opacity: 0.25; }
     50%     { opacity: 1; }
-    to      { opacity: 0; }
+    to      { opacity: 0.25; }
+}
+@keyframes fade2 {
+    from    { opacity: 1; }
+    50%     { opacity: 0.5; }
+    to      { opacity: 1; }
 }
 
 .yaws .board.loading .cursor .candidate:nth-child(2n) {
-    animation-delay: 250ms;
+    animation-name: fade2;
+    animation-duration: 0.5s;
+
 }
 .yaws .board.loading .cursor .candidate:nth-child(4n) {
-    animation-delay: 333ms;
+    animation-delay: 666ms;
 }
 .yaws .board.loading .cursor .candidate:nth-child(5) {
     animation-delay: 500ms;
 }
 .yaws .board.loading .cursor .candidate:nth-child(3) {
-    animation-delay: 666ms;
+    animation-delay: 333ms;
 }
 .yaws .board.loading .cursor .candidate:nth-child(7) {
     animation-delay: 750ms;
