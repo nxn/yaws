@@ -452,3 +452,44 @@
         height: auto;
     }
 }
+
+.yaws .board.loading .cursor .notes {
+    justify-items: center;
+    align-items: center;
+    margin: calc(0.25rem * var(--yaws-scale));
+    width: calc(100% - (0.5rem * var(--yaws-scale)));
+    height: calc(100% - (0.5rem * var(--yaws-scale)));
+}
+.yaws .board.loading .cursor .candidate {
+    box-sizing: border-box;
+    border-radius: 100%;
+    background-color: #666;
+    width: calc(0.3125rem * var(--yaws-scale));
+    height: calc(0.3125rem * var(--yaws-scale));
+
+    animation-duration: 1s;
+    animation-name: fade;
+    animation-iteration-count: infinite;
+}
+
+@keyframes fade {
+    from    { opacity: 0; }
+    50%     { opacity: 1; }
+    to      { opacity: 0; }
+}
+
+.yaws .board.loading .cursor .candidate:nth-child(2n) {
+    animation-delay: 250ms;
+}
+.yaws .board.loading .cursor .candidate:nth-child(4n) {
+    animation-delay: 333ms;
+}
+.yaws .board.loading .cursor .candidate:nth-child(5) {
+    animation-delay: 500ms;
+}
+.yaws .board.loading .cursor .candidate:nth-child(3) {
+    animation-delay: 666ms;
+}
+.yaws .board.loading .cursor .candidate:nth-child(7) {
+    animation-delay: 750ms;
+}
