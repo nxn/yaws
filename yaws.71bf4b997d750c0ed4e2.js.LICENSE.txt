@@ -1,5 +1,5 @@
 /** @preserve base32k.js / https://github.com/simonratner/base32k
- ** Copyright (C) 2012 Simon Ratner, distributed under the MIT license.
+ ** Copyright (C) 2012 Simon Ratner, distributed under the MIT license. 
  *
  *  Javascript implementation of base32k encoding, used to efficiently pack
  *  binary data into javascript's UTF-16 strings.
