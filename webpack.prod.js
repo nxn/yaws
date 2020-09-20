@@ -1,11 +1,12 @@
 const path                    = require('path');
+const webpack                 = require('webpack');
 const WorkerPlugin            = require('worker-plugin');
 const HtmlWebpackPlugin       = require('html-webpack-plugin');
 const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
 const MiniCssExtractPlugin    = require('mini-css-extract-plugin');
 const CopyPlugin              = require('copy-webpack-plugin');
-const OptimizeCssAssetsPlugin   = require('optimize-css-assets-webpack-plugin');
-const TerserPlugin              = require('terser-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin            = require('terser-webpack-plugin');
 
 const outputPath = path.resolve(__dirname, 'dist');
 const workers = /src[\/\\]components[\/\\]web-workers[\/\\].*\.tsx?$/i;
@@ -17,17 +18,11 @@ module.exports = {
   mode: 'production',
   target: 'web',
   module: {
-    rules: [{ // Main app/root TypeScript loader instance
-      test: /\.tsx?$/,
-      /* Code within the /src/components/workers directory should be compiled using a separate ts-loader instance so 
-      that the compiler uses the correct tsconfig.json file*/
-      exclude: [workers, /node_modules/],
-      loader: 'ts-loader',
-      options: {
-        instance: "root",
-        configFile: path.resolve(__dirname, 'tsconfig.json')
-      }
-    },{ // Web Worker TypeScript loader instance
+    rules: [{ // Main JS/TS loader via babel -> tsc
+      test: /\.(js|jsx|tsx|ts)$/,
+      loaders: 'babel-loader',
+      exclude: [workers, /node_modules/]
+    },{ // Web Worker TypeScript loader instance (requires separate tsconfig)
       test: workers,
       loader: 'ts-loader',
       options: {
@@ -63,7 +58,7 @@ module.exports = {
   },
   resolve: {
     mainFields: ['browser', 'module', 'main'],
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
       '@components': path.resolve(__dirname, 'src/components/'),
       '@lib'       : path.resolve(__dirname, 'src/lib/'),
@@ -75,6 +70,11 @@ module.exports = {
     path: outputPath
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
     new CleanWebpackPlugin(),
     new CopyPlugin({ 
       patterns: [

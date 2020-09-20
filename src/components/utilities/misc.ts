@@ -41,6 +41,8 @@ export function rand<T>(input: number | T[]): number | T {
     if (Array.isArray(input)) {
         return input[ Math.random() * input.length | 0 ];
     }
+
+    return Math.random()
 }
     
 export function uuid(): string { 
@@ -52,6 +54,16 @@ export function uuid(): string {
         } 
     );
 };
+
+type Partial<T> = { [P in keyof T]?: T[P]; }
+export function partialEq<T>(object: T, partial: Partial<T>): boolean {
+    for (const key in partial) {
+        if (object[key] !== partial[key]) {
+            return false;
+        }
+    }
+    return true;
+}
     
 export function locationOf<T>(item: T, array: T[], comparer: (a: T, b: T) => number, start = 0, end = array.length)
 : number {
@@ -71,4 +83,6 @@ export function locationOf<T>(item: T, array: T[], comparer: (a: T, b: T) => num
         case  0: return pivot;
         case  1: return locationOf(item, array, comparer, pivot, end);
     };
+
+    return -1;
 }

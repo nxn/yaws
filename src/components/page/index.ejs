@@ -7,17 +7,17 @@
         <meta name="description" content="YAWS is a personal project to create a modern and functional web-based sudoku
         game using standard browser technologies.">
         
-        <link rel="preload" href="<%= require('@components/sudoku-core/fonts/cabincondensed-bold-digits.woff2').default %>" 
+        <link rel="preload" href="<%= require('@components/sudoku/view/fonts/cabincondensed-bold-digits.woff2').default %>" 
             as="font" type="font/woff2" crossorigin>
-        <link rel="preload" href="<%= require('@components/sudoku-core/fonts/robotomono-bold-digits.woff2').default %>" 
+        <link rel="preload" href="<%= require('@components/sudoku/view/fonts/robotomono-bold-digits.woff2').default %>" 
             as="font" type="font/woff2" crossorigin>
-        <link rel="preload" href="<%= require('@components/sudoku-core/icons.svg').default %>" as="image" 
+        <link rel="preload" href="<%= require('@components/sudoku/view/images/icons.svg').default %>" as="image" 
             type="image/svg+xml" crossorigin>
     </head>
     <body>
         <div id="page">
             <div id="header">
-                <img id="logo" src="images/yaws-logo.svg" alt="YAWS Logo">
+                <!-- <img id="logo" src="images/yaws-logo.svg" alt="YAWS Logo"> -->
                 <h1 id="full-name">
                     <span class="accent">Y</span>et. 
                     <span class="accent">A</span>nother. 
@@ -37,10 +37,7 @@
                 </p>
             </section> -->
 
-            <div id="sudoku">
-                <div id="board-root"></div>
-                <div id="tool-root"></div>
-            </div>
+            <div id="sudoku"></div>
 
             <div class="content-grid">
                 <section>

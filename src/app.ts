@@ -1,43 +1,75 @@
-import config                                   from './config';
-import * as page                                from '@components/page/page';
-import { storage, proxies }                     from '@components/storage/storage';
-import { create as createBoard }                from '@components/sudoku-core/board';
-import { createManager as createStateManager }  from '@components/sudoku-core/gamestate';
-import { createKeyboardController }             from '@components/sudoku-core/keyboard';
-import { waffleIron }                           from '@components/web-workers/waffle-iron';
+import config               from './config';
+import { EventManager }     from '@components/sudoku/events';
+import { Board }            from '@components/sudoku/board';
+import { StateManager }     from '@components/sudoku/statemanager';
+import { BoardController }  from '@components/sudoku/controller';
+import { KeyboardHandler }  from '@components/sudoku/keyboard';
+import { init as initView } from '@components/sudoku/view/view';
+import { init as initPage } from '@components/page/page';
+import { storage, proxies } from '@components/storage/storage';
+import { waffleIron }       from '@components/web-workers/waffle-iron';
 
 function init() {
-    const board     = createBoard();
-    const state     = createStateManager(board);
-    const keyboard  = createKeyboardController(board);
-    const refresh   = page.init(board, null, config.parentSelector);
-    const puzzleStore = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
+    const events        = EventManager.create();
+    const board         = Board.create(events);
+    const controller    = BoardController.create();
+    const keyboard      = KeyboardHandler.create(board, controller);
+    const state         = StateManager.create(board);
+    const puzzleStore   = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
 
-    document.addEventListener('keydown', event => {
-        keyboard.onKey(event);
-        refresh.board();
-    });
-    
+    initPage();
+    const render = initView(board, controller, 'sudoku');
+    document.addEventListener(
+        'keydown', event => { keyboard.onKey(event); }
+    );
+
     // check if URL contains puzzle
     if (false) {
         state.loadLink(location.toString())
-        refresh.board();
     }
     else if (!puzzleStore.empty) {
         state.loadBinary(puzzleStore.mostRecent.buffer)
-        refresh.board();
     }
     else {
+        const generateStart = 'generate start';
+        performance.mark(generateStart);
+
         waffleIron.generate(
             { samples: 15, iterations: 29, removals: 2}
         ).then(response => {
+            const generateEnd = 'generate end';
+            performance.mark(generateEnd);
+            performance.measure("Generate", generateStart, generateEnd);
+
+            const loadStart = 'load start';
+            performance.mark(loadStart);
+
             state.loadTypedArray(response.puzzle);
-            refresh.board();
+
+            const loadEnd = 'load end';
+            performance.mark(loadEnd);
+            performance.measure("Load", loadStart, loadEnd);
+
+            const measurements = performance.getEntriesByType("measure");
+            performance.clearMarks();
+            performance.clearMeasures();
+
+            let output = "";
+            for(const m of measurements) {
+                output += (`- ${m.name}: ${m.duration} -`);
+            }
+            document.appendChild(document.createComment(output));
         });
     }
 
-    //window["wi"] = waffleIron;
-    //wi.generate().then(function(r) { return wi.solve({ puzzle: r.puzzle }); }).then(function(r) { console.log(r) });
+    const renderStart = 'render start';
+    performance.mark(renderStart);
+
+    render();
+
+    const renderEnd = 'render end';
+    performance.mark(renderEnd);
+    performance.measure("Render", renderStart, renderEnd);
 };
 
 init();

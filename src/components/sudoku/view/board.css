@@ -20,6 +20,7 @@
 
 :root {
     --yaws-scale: 1;
+    --yaws-transition-duration: 250ms;
 
     --yaws-board-spacer-color:          #666;
     --yaws-board-border:                calc(0.1875rem * var(--yaws-scale)) solid #222;
@@ -85,6 +86,12 @@
     --yaws-cursor-notes-color:                  rgba(128,128,128,1);
     --yaws-cursor-notes-border:                 0.0625rem solid rgba(166,166,166,1);
 
+    --yaws-loading-icon-width:      calc(100% - (0.5rem * var(--yaws-scale)));
+    --yaws-loading-icon-height:     var(--yaws-loading-icon-width);
+    --yaws-loading-icon-margin:     calc(0.25rem * var(--yaws-scale));
+    --yaws-loading-icon-dot-size:   calc(0.25rem * var(--yaws-scale));
+    --yaws-loading-icon-dot-color:  #666;
+
     --yaws-control-panel-button-color:      #333;
     --yaws-control-panel-button-bg-color:   #eaeaea;
     --yaws-control-panel-button-gap:        calc(0.25rem * var(--yaws-scale));
@@ -110,7 +117,7 @@
     --yaws-control-panel-button-note-font-family:   'Roboto Mono', monospace;
     --yaws-control-panel-button-note-font-size:     calc(var(--yaws-control-panel-button-value-font-size)/2);
     --yaws-control-panel-button-clear-color:        #eaeaea;
-    --yaws-control-panel-button-clear-bg-color:     #222;
+    --yaws-control-panel-button-clear-bg-color:     #444;
     --yaws-control-panel-button-clear-border-color: #222;
 }
 
@@ -129,6 +136,8 @@
     -moz-user-select:       none;
     -ms-user-select:        none;
     user-select:            none;
+
+    touch-action:           auto;
 }
 
 .yaws .board
@@ -154,8 +163,8 @@
     margin-right:   var(--yaws-cell-spacer-size);
     margin-bottom:  var(--yaws-cell-spacer-size);
 
-    transition:         background-color 250ms ease;
-    transition-delay:   100ms;
+    transition:         background-color var(--yaws-transition-duration) ease;
+    /*transition-delay:   100ms;*/
 }
 
 /* Apply board inner radius to corner cells -- alternate way of doing this involves settings 
@@ -227,7 +236,7 @@
     border-bottom:  var(--yaws-candidate-border);
 
     transition-property:        color, border;
-    transition-duration:        250ms;
+    transition-duration:        var(--yaws-transition-duration);
     transition-timing-function: ease;
 }
 
@@ -256,7 +265,7 @@
 .yaws .board .highlight.cell
 {
     background-color:   var(--yaws-cell-highlight-bg-color);
-    transition:         background-color 250ms ease;
+    transition:         background-color var(--yaws-transition-duration) ease;
 }
 .yaws .board .cursor.cell
 {
@@ -317,9 +326,63 @@
 
 
 
+/* Loading icon animation */
+.yaws .board.loading .cursor .notes 
+{
+    justify-items: center;
+    align-items: center;
+    
+    margin: var(--yaws-loading-icon-margin);
+    width:  var(--yaws-loading-icon-width);
+    height: var(--yaws-loading-icon-height);
+}
+.yaws .board.loading .cursor .candidate 
+{
+    box-sizing: border-box;
+    border-radius: 100%;
+
+    background-color:   var(--yaws-loading-icon-dot-color);
+    width:              var(--yaws-loading-icon-dot-size);
+    height:             var(--yaws-loading-icon-dot-size);
+
+    animation-duration: 1s;
+    animation-name: loading-icon-fade;
+    animation-iteration-count: infinite;
+}
+
+@keyframes loading-icon-fade 
+{
+    from    { opacity: 0.25; }
+    50%     { opacity: 1; }
+    to      { opacity: 0.25; }
+}
+@keyframes loading-icon-fade2 
+{
+    from    { opacity: 1; }
+    50%     { opacity: 0.5; }
+    to      { opacity: 1; }
+}
+
+.yaws .board.loading .cursor .candidate:nth-child(4n)   { animation-delay: 666ms; }
+.yaws .board.loading .cursor .candidate:nth-child(5)    { animation-delay: 500ms; }
+.yaws .board.loading .cursor .candidate:nth-child(3)    { animation-delay: 333ms; }
+.yaws .board.loading .cursor .candidate:nth-child(7)    { animation-delay: 750ms; }
+.yaws .board.loading .cursor .candidate:nth-child(2n) 
+{
+    animation-name: loading-icon-fade2;
+    animation-duration: 0.5s;
+}
+
+.yaws .board.loading .cursor .notes:hover .candidate,
+.yaws .board.loading .cursor .selected.candidate,
+.yaws .board.loading .cursor .invalid.selected.candidate {
+    color: var(--yaws-candidate-color) !important;
+    border: none;
+}
 
 
 
+/* Control panels */
 .yaws .control-panel
 {
     display: grid;

@@ -229,6 +229,7 @@ function createDataManager<T>(appName:string, indexId:string, proxy:IStorageProx
         , empty:        { get: empty }
         , mostRecent:   { get: mostRecent }
         , get:          { value: get }
+        , has:          { value: has }
         , update:       { value: update }
         , meta:         { value: meta }
         , list:         { value: list }

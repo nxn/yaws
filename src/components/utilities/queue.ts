@@ -1,10 +1,10 @@
 export interface IQueue<T>{
     readonly size:  number;
     maxSize:        number;
-    enqueue:        (item: T) => T;
-    dequeue:        () => T;
-    first:          () => T;
-    last:           () => T;
+    enqueue:        (item: T) => T | void;
+    dequeue:        () => T | void;
+    first:          () => T | void;
+    last:           () => T | void;
     while:          (fn:(arg:T) => boolean) => void;
     whileRev:       (fn:(arg:T) => boolean) => void;
     each:           (fn:(arg:T) => void)    => void;
@@ -77,19 +77,19 @@ function _eachRev<T>(queue: _IQueue<T>, fn: (item:T) => void): void {
     });
 };
 
-function _first<T>(queue: _IQueue<T>): T {
+function _first<T>(queue: _IQueue<T>): T | void {
     if (queue.firstNode) {
         return queue.firstNode.data;
     }
 };
 
-function _last<T>(queue: _IQueue<T>): T {
+function _last<T>(queue: _IQueue<T>): T | void {
     if (queue.lastNode) {
         return queue.lastNode.data;
     }
 };
 
-function _enqueue<T>(queue: _IQueue<T>, item: T): T {
+function _enqueue<T>(queue: _IQueue<T>, item: T): T | void {
     const node:IQueueNode<T> = 
         { prev: queue.lastNode
         , data: item
@@ -113,7 +113,7 @@ function _enqueue<T>(queue: _IQueue<T>, item: T): T {
     }
 };
 
-function _dequeue<T>(queue: _IQueue<T>): T {
+function _dequeue<T>(queue: _IQueue<T>): T | void {
     if (queue.size === 0) {
         return;
     }

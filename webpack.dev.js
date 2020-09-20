@@ -1,4 +1,5 @@
 const path                    = require('path');
+
 const WorkerPlugin            = require('worker-plugin');
 const HtmlWebpackPlugin       = require('html-webpack-plugin');
 const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
@@ -18,24 +19,17 @@ module.exports = {
   target: 'web',
   devtool: 'source-map',
   devServer: {
-    contentBase: outputPath,
     hot: true,
     host: '0.0.0.0',
     port: 8080,
     disableHostCheck: true,
   },
   module: {
-    rules: [{ // Main app/root TypeScript loader instance
-      test: /\.tsx?$/,
-      /* Code within the /src/components/workers directory should be compiled using a separate ts-loader instance so 
-      that the compiler uses the correct tsconfig.json file*/
-      exclude: [workers, /node_modules/],
-      loader: 'ts-loader',
-      options: {
-        instance: "root",
-        configFile: path.resolve(__dirname, 'tsconfig.json')
-      }
-    },{ // Web Worker TypeScript loader instance
+    rules: [{ // Main JS/TS loader via babel -> tsc
+      test: /\.(js|jsx|tsx|ts)$/,
+      loaders: 'babel-loader',
+      exclude: [workers, /node_modules/]
+    },{ // Web Worker TypeScript loader instance (requires separate tsconfig)
       test: workers,
       loader: 'ts-loader',
       options: {
@@ -71,8 +65,9 @@ module.exports = {
   },
   resolve: {
     mainFields: ['browser', 'module', 'main'],
-    extensions: [ '.tsx', '.ts', '.js' ],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
+      'inferno'    : path.resolve(__dirname, 'node_modules/inferno/dist/index.dev.esm.js'),
       '@components': path.resolve(__dirname, 'src/components/'),
       '@lib'       : path.resolve(__dirname, 'src/lib/'),
       '@utilities' : path.resolve(__dirname, 'src/components/utilities')
