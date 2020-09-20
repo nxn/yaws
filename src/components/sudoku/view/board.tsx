@@ -61,8 +61,8 @@ export class Board extends Component<BoardProperties, BoardState> {
     }
 
     updateReadyState = (board: IBoard) => {
-        if (this.props.model === board && board.isReady()) {
-            this.setState(() => ({ isReady: true }));
+        if (this.props.model === board && this.state.isReady !== board.isReady()) {
+            this.setState(() => ({ isReady: board.isReady() }));
         }
     }
 

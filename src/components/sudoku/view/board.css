@@ -486,7 +486,6 @@
 .yaws .board.loading .cursor .candidate:nth-child(2n) {
     animation-name: fade2;
     animation-duration: 0.5s;
-
 }
 .yaws .board.loading .cursor .candidate:nth-child(4n) {
     animation-delay: 666ms;
@@ -499,4 +498,11 @@
 }
 .yaws .board.loading .cursor .candidate:nth-child(7) {
     animation-delay: 750ms;
+}
+
+.yaws .board.loading .cursor .notes:hover .candidate,
+.yaws .board.loading .cursor .selected.candidate,
+.yaws .board.loading .cursor .invalid.selected.candidate {
+    color: var(--yaws-candidate-color) !important;
+    border: none;
 }
