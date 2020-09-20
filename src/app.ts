@@ -54,10 +54,11 @@ function init() {
             performance.clearMarks();
             performance.clearMeasures();
 
-            const el = document.querySelector("#performance");
+            let output = "";
             for(const m of measurements) {
-                el.append(`- ${m.name}: ${m.duration} -`);
+                output += (`- ${m.name}: ${m.duration} -`);
             }
+            document.appendChild(document.createComment(output));
         });
     }
 
