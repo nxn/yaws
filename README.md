@@ -1,2 +1,2 @@
 # yaws
-Yet Another Web Sudoku -- https://yaws.nxn.io
+Yet Another Web Sudoku -- https://sudoku.nxn.io
