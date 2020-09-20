@@ -1,20 +1,33 @@
-import { IBoard, ICell, ICellData, ILocation, IStateManager } from './interfaces';
+import type { IBoard } from './board';
+import { ICell, ICellData, Constants as CellConstants } from './cell';
 import { deflateRaw as compress, inflateRaw as expand } from '@lib/pako/pako';
 
-export function create(board: IBoard) {
-    return new StateManager(board);
+export interface IStateManager {
+    getString:      () => string;
+    loadString:     (puzzle: string) => IBoard;
+    getTypedArray:  () => Uint8Array;
+    loadTypedArray: (array: Uint8Array) => IBoard;
+    getLink:        (includeProgress: boolean, location: ILocation) => string;
+    loadLink:       (link: string) => IBoard;
+    getData:        (ignoreHiddenCandidates?: boolean) => ICellData[];
+    loadData:       (data: ICellData[]) => IBoard;
+    getBinary:      (ignoreHiddenCandidates?: boolean) => Uint8Array;
+    loadBinary:     (buffer: ArrayBuffer) => IBoard;
 }
 
-const cellConstants = Object.freeze(Object.create(null,
-    { byteLength:       { value: 2 }
-    , bitLength:        { value: 14 }
-    }
-));
+export interface ILocation {
+    origin: string;
+    pathname: string;
+}
 
-class StateManager implements IStateManager {
-    constructor(
+export class StateManager implements IStateManager {
+    private constructor(
         readonly board: IBoard
     ) { }
+
+    static create(board: IBoard): IStateManager {
+        return new StateManager(board);
+    }
 
     loadTypedArray(array: Uint8Array): IBoard {
         if (array.length !== this.board.cells.length) {
@@ -88,7 +101,7 @@ class StateManager implements IStateManager {
         const cells = this.board.cells;
         // 9 columns * 9 rows * 2 bytes per cell = 162 bytes
         const buffer = new ArrayBuffer(
-            cells.length * cellConstants.byteLength
+            cells.length * CellConstants.byteLength
         );
     
         const view16 = new Uint16Array(buffer);
@@ -205,7 +218,7 @@ class StateManager implements IStateManager {
     
         // Cell values are only valid if they're in the 0 to 16383 range (4 bits for value, 1 isStatic bit, 9 bits to mark
         // whether each candidate is selected).
-        if (v < 0 || v >= 2 ** cellConstants.bitLength) {
+        if (v < 0 || v >= 2 ** CellConstants.bitLength) {
             return;
         }
     

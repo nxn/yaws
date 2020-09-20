@@ -1,14 +1,41 @@
-import { constants as gc } from './board';
-import { IBoard, IBoardController, ICell, ICandidate, ISet } from './interfaces';
+import type { ICandidate } from './candidate';
+import type { ICell } from './cell';
+import type { ISet } from './set';
+import { IBoard, Constants as gc } from './board';
 
-export function create(): IBoardController {
-    return new BoardController();
+export interface ICandidateController {
+    toggleCandidate:    (board: IBoard, cell: ICell, candidate: ICandidate | number) => void;
 }
+
+export interface ICellController extends ICandidateController {
+    setCellValue:       (board: IBoard, cell: ICell, value: number) => void;
+    clear:              (board: IBoard, cell: ICell) => void;
+}
+
+export interface ICursorController {
+    setCursor:      (board: IBoard, cell: ICell) => void;
+    columnLeft:     (board: IBoard) => void;
+    columnRight:    (board: IBoard) => void;
+    rowUp:          (board: IBoard) => void;
+    rowDown:        (board: IBoard) => void;
+    boxLeft:        (board: IBoard) => void;
+    boxRight:       (board: IBoard) => void;
+    boxUp:          (board: IBoard) => void;
+    boxDown:        (board: IBoard) => void;
+    previousError:  (board: IBoard) => void;
+    nextError:      (board: IBoard) => void;
+}
+
+export interface IBoardController extends ICellController, ICursorController { }
 
 type TCellSelector = (set: ISet) => ICell;
 
-class BoardController implements IBoardController {
-    constructor( ) { }
+export class BoardController implements IBoardController {
+    private constructor( ) { }
+
+    static create(): IBoardController {
+        return new BoardController();
+    }
 
     toggleCandidate = (board: IBoard, cell: ICell, candidate: ICandidate | number) => {
         if (board.getCursor() !== cell) {

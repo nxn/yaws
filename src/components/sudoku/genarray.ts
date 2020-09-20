@@ -19,26 +19,22 @@ export interface IGenerationalIndexArray<T> {
     [Symbol.iterator]():                        Generator<T>;
 }
 
-export function createGenerationalIndexAllocator(): IGenerationalIndexAllocator {
-    return new GenerationalIndexAllocator();
-}
-
-export function createGenerationalIndexArray<T>(): IGenerationalIndexArray<T> {
-    return new GenerationalIndexArray();
-}
-
 interface IAllocEntry {
     live:       boolean;
     generation: number;
 }
 
-class GenerationalIndexAllocator implements IGenerationalIndexAllocator {
+export class GenerationalIndexAllocator implements IGenerationalIndexAllocator {
     private entries:    IAllocEntry[];
     private free:       BinaryHeap<number>;
 
-    constructor() {
+    private constructor() {
         this.entries    = [];
         this.free       = BinaryHeap.create((n: number) => n);
+    }
+
+    static create(): IGenerationalIndexAllocator {
+        return new GenerationalIndexAllocator();
     }
 
     allocate(): IGenerationalIndex {
@@ -89,10 +85,14 @@ interface IArrayEntry<T> {
     generation: number;
 }
 
-class GenerationalIndexArray<T> {
+export class GenerationalIndexArray<T> {
     private entries: IArrayEntry<T>[];
-    constructor() {
+    private constructor() {
         this.entries = [];
+    }
+
+    static create<T>(): IGenerationalIndexArray<T> {
+        return new GenerationalIndexArray();
     }
 
     get(index: IGenerationalIndex): T | undefined {

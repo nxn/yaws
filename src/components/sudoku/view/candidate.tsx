@@ -1,8 +1,11 @@
-import { Component, linkEvent } from 'inferno';
-import { ICandidate, ICandidateController, ICell, IBoard, IEventListenerKey } from '../interfaces';
-import { BoardEvents, CommonEvents } from '../events';
+import type { ICandidateController } from '../controller';
+import type { ICandidate } from '../candidate';
+import type { ICell } from '../cell';
+import { IEventListenerKey, CommonEvents } from '../events';
+import { IBoard, BoardEvents } from '../board';
 import { createPointerDoubleClickHandler } from '../pointer';
 import { partialEq } from '@components/utilities/misc';
+import { Component, linkEvent } from 'inferno';
 
 type CandidateProperties = {
     model:          ICandidate,

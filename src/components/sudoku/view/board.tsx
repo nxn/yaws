@@ -1,7 +1,11 @@
-import { Component } from 'inferno';
+import type { IBoardController } from '../controller';
+import type { IEventListenerKey } from '../events';
+import type { ICell } from '../cell';
+import { IBoard, BoardEvents } from '../board';
 import { Cell } from './cell';
-import { IBoardController, IBoard, ICell, IEventListenerKey } from '../interfaces';
-import { BoardEvents } from '../events';
+import { Component } from 'inferno';
+
+
 import { partialEq } from '@components/utilities/misc';
 
 type BoardProperties = { 

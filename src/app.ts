@@ -1,20 +1,20 @@
-import config                               from './config';
-import { create as createEventManager }     from '@components/sudoku/events';
-import { create as createBoard }            from '@components/sudoku/board';
-import { create as createStateManager }     from '@components/sudoku/statemanager';
-import { create as createBoardController }  from '@components/sudoku/controller';
-import { create as createKeyboardHandler }  from '@components/sudoku/keyboard';
-import { init as initView }                 from '@components/sudoku/view/view';
-import { init as initPage }                 from '@components/page/page';
-import { storage, proxies }                 from '@components/storage/storage';
-import { waffleIron }                       from '@components/web-workers/waffle-iron';
+import config               from './config';
+import { EventManager }     from '@components/sudoku/events';
+import { Board }            from '@components/sudoku/board';
+import { StateManager }     from '@components/sudoku/statemanager';
+import { BoardController }  from '@components/sudoku/controller';
+import { KeyboardHandler }  from '@components/sudoku/keyboard';
+import { init as initView } from '@components/sudoku/view/view';
+import { init as initPage } from '@components/page/page';
+import { storage, proxies } from '@components/storage/storage';
+import { waffleIron }       from '@components/web-workers/waffle-iron';
 
 function init() {
-    const events        = createEventManager();
-    const board         = createBoard(events);
-    const controller    = createBoardController();
-    const keyboard      = createKeyboardHandler(board, controller);
-    const state         = createStateManager(board);
+    const events        = EventManager.create();
+    const board         = Board.create(events);
+    const controller    = BoardController.create();
+    const keyboard      = KeyboardHandler.create(board, controller);
+    const state         = StateManager.create(board);
     const puzzleStore   = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
 
     initPage();

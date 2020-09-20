@@ -1,7 +1,8 @@
-import { render as inferno } from 'inferno';
+import type { IBoardController } from '../controller';
+import type { IBoard } from '../board';
 import { Board } from './board';
 import { Controls } from './controls';
-import { IBoard, IBoardController } from '../interfaces';
+import { render as inferno } from 'inferno';
 import './board.css';
 
 type ViewProperties = {

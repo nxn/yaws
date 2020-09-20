@@ -1,78 +1,57 @@
-import { 
-    ModelType,
-    IEvent, 
-    IEventStore,
-    IEventManager,
-    IEventListenerKey,
-    IEventListenerKeyAllocator,
-    IEventListenerArray,
-    EventListener,
-} from './interfaces';
+import { ModelType } from './model';
+import { StateChangeEvents as BoardStateChangeEvents } from './board';
+import { StateChangeEvents as CellStateChangeEvents } from './cell';
+import { StateChangeEvents as CandidateStateChangeEvents } from './candidate';
 
-import { 
-    createGenerationalIndexAllocator    as createEventListenerKeyAllocator,
-    createGenerationalIndexArray        as createEventListenerArray
-} from './genarray';
+export type EventListener = (...args: any[]) => void;
 
 export type CommonEvents = "StateChanged";
 export const CommonEvents = { 
     get StateChanged(): CommonEvents { return "StateChanged"; }
 }
 
-export type BoardEvents = "CursorMoved" | "ReadyStateChanged" | "Solved" | "Cleared" | "Reset";
-export const BoardEvents = {
-    get CursorMoved(): BoardEvents          { return "CursorMoved" },
-    get ReadyStateChanged(): BoardEvents    { return "ReadyStateChanged" },
-    get Solved(): BoardEvents               { return "Solved" },
-    get Cleared(): BoardEvents              { return "Cleared" },
-    get Reset(): BoardEvents                { return "Reset" }
-}
+import {
+    IGenerationalIndex                  as IEventListenerKey,
+    IGenerationalIndexAllocator         as IEventListenerKeyAllocator,
+    IGenerationalIndexArray             as IEventListenerArray,
+    GenerationalIndexAllocator          as EventListenerKeyAllocator,
+    GenerationalIndexArray              as EventListenerArray
+} from './genarray';
 
-export type CellEvents = "ValueChanged" | "StaticChanged" | "ValidityChanged" | "Cleared";
-export const CellEvents = {
-    get ValueChanged(): CellEvents      { return "ValueChanged" },
-    get StaticChanged(): CellEvents     { return "StaticChanged" },
-    get ValidityChanged(): CellEvents   { return "ValidityChanged" },
-    get Cleared(): CellEvents           { return "Cleared" }
-}
-
-export type CandidateEvents = "SelectedChanged" | "ValidityChanged";
-export const CandidateEvents = {
-    get SelectedChanged(): CandidateEvents { return "SelectedChanged" },
-    get ValidityChanged(): CandidateEvents { return "ValidityChanged" }
-}
-
-export function create() {
-    return new EventManager();
-}
-
-const StateChangeEvents: { 
-    "Board": BoardEvents[], 
-    "Cell": CellEvents[], 
-    "Candidate": CandidateEvents[] 
-} = {
-    "Board": [
-        BoardEvents.CursorMoved, 
-        BoardEvents.ReadyStateChanged, 
-        BoardEvents.Reset, 
-        BoardEvents.Cleared
-    ],
-    "Cell": [
-        CellEvents.ValueChanged, 
-        CellEvents.ValidityChanged, 
-        CellEvents.StaticChanged, 
-        CellEvents.Cleared
-    ],
-    "Candidate": [
-        CandidateEvents.SelectedChanged,
-        CandidateEvents.ValidityChanged
-    ]
+export type {
+    IEventListenerKey,
+    IEventListenerKeyAllocator,
+    IEventListenerArray
 };
 
-class EventManager implements IEventManager {
+export interface IEventManager {
+    get: (type: ModelType, eventName: string) => IEvent;
+    type: (type: ModelType) => IEventStore;
+}
+
+export interface IEventStore {
+    get: (eventName: string) => IEvent;
+}
+
+export interface IEvent {
+    attach:     (listener: (...args: any[]) => any) => IEventListenerKey;
+    fire:       (...eventArgs: any[]) => void;
+    detach:     (listenerKey: IEventListenerKey) => boolean;
+    stop:       () => void;
+    start:      () => void;
+    isStopped:  () => boolean;
+}
+
+const StateChangeEvents = {
+    "Board":        BoardStateChangeEvents,
+    "Cell":         CellStateChangeEvents,
+    "Candidate":    CandidateStateChangeEvents
+};
+
+export class EventManager implements IEventManager {
     private stores: Map<ModelType, Map<string, IEvent>>;
 
-    constructor() {
+    private constructor() {
         this.stores = new Map();
 
         // Fire a generic StateChanged event whenever any of the events listed in StateChangeEvents are fired
@@ -84,6 +63,10 @@ class EventManager implements IEventManager {
                 type.get(CommonEvents.StateChanged).fire(...args);
             });
         }
+    }
+
+    static create(): IEventManager {
+        return new EventManager();
     }
 
     type(type: ModelType): IEventStore | undefined {
@@ -109,7 +92,7 @@ class EventManager implements IEventManager {
         let event = store.get(eventName);
 
         if (!event) {
-            event = new Event(eventName);
+            event = Event.create(eventName);
             store.set(eventName, event);
         }
 
@@ -117,14 +100,17 @@ class EventManager implements IEventManager {
     }
 }
 
-class Event implements IEvent {
-    private keys:       IEventListenerKeyAllocator;
-    private listeners:  IEventListenerArray<EventListener>;
+export class Event implements IEvent {
     private stopped =   false;
 
-    constructor(readonly name: string) {
-        this.keys       = createEventListenerKeyAllocator();
-        this.listeners  = createEventListenerArray();
+    private constructor(
+        readonly name: string, 
+        private keys: IEventListenerKeyAllocator,
+        private listeners: IEventListenerArray<EventListener>
+    ) { }
+
+    static create(name: string): IEvent {
+        return new Event(name, EventListenerKeyAllocator.create(), EventListenerArray.create());
     }
 
     stop()      { this.stopped = true; }

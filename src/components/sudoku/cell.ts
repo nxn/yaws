@@ -1,44 +1,60 @@
-import { IEventManager, IEventStore, IBoard, ISet, ICell, ICandidate, ModelType } from './interfaces';
-import { CellEvents } from './events';
-import { constants, create as createCandidate } from './candidate';
+import type { IEventManager, IEventStore } from './events';
+import type { IBoard } from './board';
+import type { ISet } from './set';
+import { IModel, ModelType } from './model';
 
-export function create(
-    events:     IEventManager, 
-    board:      IBoard, 
-    index:      number, 
-    row:        ISet, 
-    col:        ISet, 
-    box:        ISet, 
-    isStatic =  false
-): ICell {
-    const cellEvents = events.type(ModelType.Cell);
+import { ICandidate, Candidate, Constants as CandidateConstants } from './candidate';
 
-    const id         = `${board.id}-${row.name}${col.name}`;
-    const name       = `${row.name}${col.name}`;
-    const candidates = new Array(constants.candidateCount);
+export const Constants = Object.freeze({
+    byteLength: 2,
+    bitLength:  14
+});
 
-    const cell = new Cell(id, name, index, row, col, box, candidates, cellEvents);
+export type CellEvents = "ValueChanged" | "StaticChanged" | "ValidityChanged" | "Cleared";
 
-    cell.setStatic(isStatic, true);
-
-    for (let i = 0; i < candidates.length; i++) {
-        candidates[i] = createCandidate(events, i+1, cell);
-    }
-
-    return cell;
+export const CellEvents = {
+    get ValueChanged(): CellEvents      { return "ValueChanged" },
+    get StaticChanged(): CellEvents     { return "StaticChanged" },
+    get ValidityChanged(): CellEvents   { return "ValidityChanged" },
+    get Cleared(): CellEvents           { return "Cleared" }
 }
 
-type  CellSets = { "row": ISet, "column": ISet, "box": ISet };
-const CellSetValidationMap: { [K in keyof CellSets]: (keyof CellSets)[] } = {
-    'row':      ['column',  'box'],
-    'column':   ['row',     'box'],
-    'box':      ['row',     'column']
-};
+export const StateChangeEvents = [
+    CellEvents.ValueChanged, 
+    CellEvents.ValidityChanged, 
+    CellEvents.StaticChanged, 
+    CellEvents.Cleared
+]
 
-class Cell implements ICell {
+export interface ICell extends IModel {
+    type:           "Cell";
+    id:             string;
+    name:           string;
+    index:          number;
+    row:            ISet;
+    column:         ISet;
+    box:            ISet;
+    rcb:            Set<ICell>;
+    candidates:     ICandidate[];
+    getValue:       () => number;
+    setValue:       (value: number, silent?: boolean, validate?: boolean) => void;
+    isStatic:       () => boolean;
+    setStatic:      (value: boolean, silent?: boolean) => void;
+    isValid:        () => boolean;
+    setValid:       (value: boolean, silent?: boolean) => void;
+    clear:          (silent?: boolean) => void;
+}
+
+export interface ICellData {
+    v: number;
+    c: number[];
+    s: boolean;
+}
+
+export class Cell implements ICell {
     readonly type = "Cell";
 
-    constructor(
+    private constructor(
         readonly id:            string,
         readonly name:          string,
         readonly index:         number,
@@ -48,6 +64,32 @@ class Cell implements ICell {
         readonly candidates:    ICandidate[],
         readonly events:        IEventStore
     ) { }
+
+    static create(
+        events:     IEventManager, 
+        board:      IBoard, 
+        index:      number, 
+        row:        ISet, 
+        col:        ISet, 
+        box:        ISet, 
+        isStatic =  false
+    ): ICell {
+        const cellEvents = events.type(ModelType.Cell);
+    
+        const id         = `${board.id}-${row.name}${col.name}`;
+        const name       = `${row.name}${col.name}`;
+        const candidates = new Array(CandidateConstants.candidateCount);
+    
+        const cell = new Cell(id, name, index, row, col, box, candidates, cellEvents);
+    
+        cell.setStatic(isStatic, true);
+    
+        for (let i = 0; i < candidates.length; i++) {
+            candidates[i] = Candidate.create(events, i+1, cell);
+        }
+    
+        return cell;
+    }
     
     private _rcb: Set<ICell>;
     get rcb() {
@@ -162,3 +204,10 @@ class Cell implements ICell {
         }
     }
 }
+
+type  CellSets = { "row": ISet, "column": ISet, "box": ISet };
+const CellSetValidationMap: { [K in keyof CellSets]: (keyof CellSets)[] } = {
+    'row':      ['column',  'box'],
+    'column':   ['row',     'box'],
+    'box':      ['row',     'column']
+};

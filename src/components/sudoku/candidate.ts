@@ -1,24 +1,45 @@
-import { ICandidate, ICell, IEventManager, IEventStore, ModelType } from './interfaces';
-import { CandidateEvents, CellEvents } from "./events";
+import type { IEventManager, IEventStore } from './events';
+import { IModel, ModelType } from './model';
+import { ICell, CellEvents } from './cell';
 
-export const constants = Object.freeze({
+export const Constants = Object.freeze({
     candidateCount: 9
 });
 
-export function create(events: IEventManager, value: number, cell: ICell): ICandidate {
-    const candidateEvents = events.type(ModelType.Candidate);
-    return new Candidate(value, cell, candidateEvents);
+export type CandidateEvents = "SelectedChanged" | "ValidityChanged";
+
+export const CandidateEvents = {
+    get SelectedChanged(): CandidateEvents { return "SelectedChanged" },
+    get ValidityChanged(): CandidateEvents { return "ValidityChanged" }
 }
 
-class Candidate implements ICandidate {
+export const StateChangeEvents = [
+    CandidateEvents.SelectedChanged,
+    CandidateEvents.ValidityChanged
+]
+
+export interface ICandidate extends IModel {
+    type:           "Candidate";
+    value:          number;
+    isValid:        () => boolean;
+    setValid:       (value: boolean, silent?: boolean) => void;
+    isSelected:     () => boolean;
+    setSelected:    (value: boolean, silent?: boolean) => void;
+}
+
+export class Candidate implements ICandidate {
     readonly type = "Candidate";
 
-    constructor(
+    private constructor(
         readonly value: number,
         readonly cell: ICell,
         readonly events: IEventStore
     ) {
         this.cell.events.get(CellEvents.ValueChanged).attach(this.validate);
+    }
+
+    static create(events: IEventManager, value: number, cell: ICell): ICandidate {
+        return new Candidate(value, cell, events.type(ModelType.Candidate));
     }
 
     validate = (cell: ICell, newValue: number, oldValue: number) => {

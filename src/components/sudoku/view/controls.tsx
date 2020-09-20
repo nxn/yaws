@@ -1,6 +1,7 @@
-import { Component }                    from 'inferno';
-import { IBoard, ICellController }      from '../interfaces';
-import { ValueButtons, NoteButtons }    from './buttons';
+import type { ICellController } from '../controller';
+import type { IBoard } from '../board';
+import { ValueButtons, NoteButtons } from './buttons';
+import { Component } from 'inferno';
 import icons from './images/icons.svg';
 
 type ControlProperties = { 

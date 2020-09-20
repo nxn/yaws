@@ -1,9 +1,35 @@
-import { IBoardController, IKeyboardHandler, IKeyPress, KeyboardActions, IBoard } from "./interfaces";
+import type { IBoard } from "./board";
+import type { IBoardController } from './controller';
 
 const rxNumberInput = /(?:Digit|Numpad)([1-9])/i;
 
-export function create(board: IBoard, controller: IBoardController, map = defaultMap) {
-    return new KeyboardHandler(board, controller, map);
+export enum KeyboardActions {
+    left        = "Left",
+    right       = "Right",
+    up          = "Up",
+    down        = "Down",
+    boxLeft     = "Box Left",
+    boxRight    = "Box Right",
+    boxUp       = "Box Up",
+    boxDown     = "Box Down",
+    nextError   = "Next Error",
+    prevError   = "Previous Error",
+    clearCell   = "Clear Cell",
+    save        = "Save Game",
+    resetBoard  = "Reset Board",
+    getLink     = "Get Link"
+}
+
+export interface IKeyboardHandler {
+    map:    { [key: string]: KeyboardActions[] }
+    onKey:  (key: IKeyPress) => void;
+}
+
+export interface IKeyPress {
+    key: string;
+    code: string;
+    shiftKey: boolean;
+    preventDefault: () => void;
 }
 
 export const defaultMap: { [key: string]: KeyboardActions[] } = {
@@ -49,12 +75,16 @@ const actionMap: { [key: string]: (board: IBoard, controller: IBoardController) 
     [KeyboardActions.clearCell]:    (b,c) => c.clear(b, b.getCursor())
 };
 
-class KeyboardHandler implements IKeyboardHandler {
-    constructor(
+export class KeyboardHandler implements IKeyboardHandler {
+    private constructor(
         readonly board: IBoard,
         readonly controller: IBoardController,
         readonly bindings = defaultMap
     ) { }
+
+    static create(board: IBoard, controller: IBoardController, map = defaultMap): IKeyboardHandler {
+        return new KeyboardHandler(board, controller, map);
+    }
 
     get map() { 
         return this.bindings;
