@@ -1,6 +1,6 @@
 import type { IEventManager, IEventStore } from './events';
 import { IModel, ModelType } from './model';
-import { ICell, CellEvents } from './cell';
+import type { ICell } from './cell';
 
 export const Constants = Object.freeze({
     candidateCount: 9
@@ -25,6 +25,7 @@ export interface ICandidate extends IModel {
     setValid:       (value: boolean, silent?: boolean) => void;
     isSelected:     () => boolean;
     setSelected:    (value: boolean, silent?: boolean) => void;
+    validate:       () => void;
 }
 
 export class Candidate implements ICandidate {
@@ -34,41 +35,21 @@ export class Candidate implements ICandidate {
         readonly value: number,
         readonly cell: ICell,
         readonly events: IEventStore
-    ) {
-        this.cell.events.get(CellEvents.ValueChanged).attach(this.validate);
-    }
+    ) { }
 
     static create(events: IEventManager, value: number, cell: ICell): ICandidate {
         return new Candidate(value, cell, events.type(ModelType.Candidate));
     }
 
-    validate = (cell: ICell, newValue: number, oldValue: number) => {
-        // There might be an issue with view event listeners not being attached in time to receive validation change 
-        // events when a cell value is cleared and candidates are re-rendered to the DOM. To work around this problem 
-        // the "this.cell === cell" early return condition is necessary as it will skip marking the candidate as invalid
-        // should its parent cell get set to its value. This way if the cell value gets cleared later the candidate will
-        // no longer automatically be in an invalid state due to its own cell's prior value.
-        if (this.cell.isStatic() || this.cell === cell || !cell.rcb.has(this.cell)) { 
-            return; 
-        }
-
-        if (this.value === newValue) {
-            this.setValid(false);
-        }
-
-        if (this.value === oldValue) {
-            let valid = true;
-            for (const associatedCell of this.cell.rcb) {
-                if (associatedCell.getValue() === oldValue) {
-                    valid = false;
-                    break;
-                }
+    validate = () => {
+        let valid = true;
+        for (const cell of this.cell.rcb) {
+            if (this.value === cell.getValue()) {
+                valid = false;
+                break;
             }
-            if (this.cell === cell) {
-                console.log(valid);
-            }
-            this.setValid(valid);
         }
+        this.setValid(valid);
     }
 
     private valid = true;

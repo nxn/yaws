@@ -108,12 +108,36 @@ export class Cell implements ICell {
         let previous = this.value;
         this.value = value;
 
-        if (!silent) {
-            this.events.get(CellEvents.ValueChanged).fire(this, value, previous)
+        if (validate && this.value > 0) {
+            this.validate();
         }
 
-        if (validate) {
-            this.validate();
+        // Updates validity of candidates within this row, column, and box.
+        for (const associatedCell of this.rcb) {
+            // If the new value isn't empty (0), the only thing that is needed is to set the candidates corresponding to
+            // the new value as invalid.
+            if (this.value > 0) {
+                associatedCell.candidates[this.value - 1].setValid(false);
+            }
+            // In the case of updating the validity of candidates corresponding to the previous value, their own RCBs
+            // need to be checked to determine whether the previous value is valid in their region of the board or not.
+            if (previous > 0) {
+                associatedCell.candidates[previous - 1].validate();
+            }
+        }
+
+        // This event must fire *after* validation has been performed; doing so beforehand causes problems whenever a 
+        // cell value is removed and candidates are rendered. Specifically, the new empty cell value causes candidates 
+        // to render with whatever validity state they had at the time of the value change. Their listener for tracking 
+        // state changes doesn't get attached until after this event loop cycle is complete, so as a consequence they 
+        // miss the valid/invalid state updates entirely. Performing validation before firing the ValueChanged event 
+        // avoids the issue entirely.
+
+        // For the time being this is fine, though ideally new events should be setup specifically for signaling when
+        // state changes are fully complete so that there is less ambiguity about when it is safe to add or remove
+        // components.
+        if (!silent) {
+            this.events.get(CellEvents.ValueChanged).fire(this, value, previous)
         }
     }
 
