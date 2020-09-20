@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "inferno": "^7.4.3",
-    "inferno-router": "^7.4.3",
+    "inferno": "^7.4.5",
+    "inferno-router": "^7.4.5",
     "waffle-iron": "file:src/lib/waffle-iron"
   },
   "devDependencies": {
@@ -25,7 +25,7 @@
     "mini-css-extract-plugin": "^0.11.2",
     "optimize-css-assets-webpack-plugin": "^5.0.4",
     "source-map-loader": "^0.2.4",
-    "terser-webpack-plugin": "^4.2.1",
+    "terser-webpack-plugin": "^4.2.2",
     "ts-loader": "^6.2.2",
     "typescript": "^3.9.7",
     "webpack": "^4.44.2",
@@ -46,7 +46,7 @@
   "bugs": {
     "url": "https://github.com/nxn/yaws/issues"
   },
-  "homepage": "https://yaws.nxn.io/",
+  "homepage": "https://sudoku.nxn.io/",
   "keywords": [],
   "author": "Ernie Wieczorek",
   "email": "ernie@nxn.io",
