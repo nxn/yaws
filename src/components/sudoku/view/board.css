@@ -86,6 +86,12 @@
     --yaws-cursor-notes-color:                  rgba(128,128,128,1);
     --yaws-cursor-notes-border:                 0.0625rem solid rgba(166,166,166,1);
 
+    --yaws-loading-icon-width:      calc(100% - (0.5rem * var(--yaws-scale)));
+    --yaws-loading-icon-height:     var(--yaws-loading-icon-width);
+    --yaws-loading-icon-margin:     calc(0.25rem * var(--yaws-scale));
+    --yaws-loading-icon-dot-size:   calc(0.25rem * var(--yaws-scale));
+    --yaws-loading-icon-dot-color:  #666;
+
     --yaws-control-panel-button-color:      #333;
     --yaws-control-panel-button-bg-color:   #eaeaea;
     --yaws-control-panel-button-gap:        calc(0.25rem * var(--yaws-scale));
@@ -320,9 +326,63 @@
 
 
 
+/* Loading icon animation */
+.yaws .board.loading .cursor .notes 
+{
+    justify-items: center;
+    align-items: center;
+    
+    margin: var(--yaws-loading-icon-margin);
+    width:  var(--yaws-loading-icon-width);
+    height: var(--yaws-loading-icon-height);
+}
+.yaws .board.loading .cursor .candidate 
+{
+    box-sizing: border-box;
+    border-radius: 100%;
+
+    background-color:   var(--yaws-loading-icon-dot-color);
+    width:              var(--yaws-loading-icon-dot-size);
+    height:             var(--yaws-loading-icon-dot-size);
+
+    animation-duration: 1s;
+    animation-name: loading-icon-fade;
+    animation-iteration-count: infinite;
+}
+
+@keyframes loading-icon-fade 
+{
+    from    { opacity: 0.25; }
+    50%     { opacity: 1; }
+    to      { opacity: 0.25; }
+}
+@keyframes loading-icon-fade2 
+{
+    from    { opacity: 1; }
+    50%     { opacity: 0.5; }
+    to      { opacity: 1; }
+}
+
+.yaws .board.loading .cursor .candidate:nth-child(4n)   { animation-delay: 666ms; }
+.yaws .board.loading .cursor .candidate:nth-child(5)    { animation-delay: 500ms; }
+.yaws .board.loading .cursor .candidate:nth-child(3)    { animation-delay: 333ms; }
+.yaws .board.loading .cursor .candidate:nth-child(7)    { animation-delay: 750ms; }
+.yaws .board.loading .cursor .candidate:nth-child(2n) 
+{
+    animation-name: loading-icon-fade2;
+    animation-duration: 0.5s;
+}
+
+.yaws .board.loading .cursor .notes:hover .candidate,
+.yaws .board.loading .cursor .selected.candidate,
+.yaws .board.loading .cursor .invalid.selected.candidate {
+    color: var(--yaws-candidate-color) !important;
+    border: none;
+}
 
 
 
+/* Control panels */
 .yaws .control-panel
 {
     display: grid;
@@ -451,58 +511,4 @@
     {
         height: auto;
     }
-}
-
-.yaws .board.loading .cursor .notes {
-    justify-items: center;
-    align-items: center;
-    margin: calc(0.25rem * var(--yaws-scale));
-    width: calc(100% - (0.5rem * var(--yaws-scale)));
-    height: calc(100% - (0.5rem * var(--yaws-scale)));
-}
-.yaws .board.loading .cursor .candidate {
-    box-sizing: border-box;
-    border-radius: 100%;
-    background-color: #666;
-    width: calc(0.25rem * var(--yaws-scale));
-    height: calc(0.25rem * var(--yaws-scale));
-
-    animation-duration: 1s;
-    animation-name: fade;
-    animation-iteration-count: infinite;
-}
-
-@keyframes fade {
-    from    { opacity: 0.25; }
-    50%     { opacity: 1; }
-    to      { opacity: 0.25; }
-}
-@keyframes fade2 {
-    from    { opacity: 1; }
-    50%     { opacity: 0.5; }
-    to      { opacity: 1; }
-}
-
-.yaws .board.loading .cursor .candidate:nth-child(2n) {
-    animation-name: fade2;
-    animation-duration: 0.5s;
-}
-.yaws .board.loading .cursor .candidate:nth-child(4n) {
-    animation-delay: 666ms;
-}
-.yaws .board.loading .cursor .candidate:nth-child(5) {
-    animation-delay: 500ms;
-}
-.yaws .board.loading .cursor .candidate:nth-child(3) {
-    animation-delay: 333ms;
-}
-.yaws .board.loading .cursor .candidate:nth-child(7) {
-    animation-delay: 750ms;
-}
-
-.yaws .board.loading .cursor .notes:hover .candidate,
-.yaws .board.loading .cursor .selected.candidate,
-.yaws .board.loading .cursor .invalid.selected.candidate {
-    color: var(--yaws-candidate-color) !important;
-    border: none;
 }
