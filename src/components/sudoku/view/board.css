@@ -475,12 +475,6 @@
             'notes';
     }
 
-    .yaws .control-panel .values,
-    .yaws .control-panel .notes
-    {
-        flex-flow: column nowrap;
-    }
-
     .yaws .control-panel .btn-clear
     {
         width: auto;
@@ -498,13 +492,6 @@
     {
         margin-top:             2rem;
         grid-template-areas:    'values clear notes'
-    }
-
-    .yaws .control-panel .values,
-    .yaws .control-panel .notes
-    {
-        flex-flow:          row nowrap;
-        justify-content:    space-evenly;
     }
 
     .yaws .control-panel .btn-clear
