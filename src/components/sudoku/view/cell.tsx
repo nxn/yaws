@@ -5,7 +5,7 @@ import { IBoard, BoardEvents } from '../board';
 import { Candidate } from "./candidate";
 import { createPointerDoubleClickHandler } from '../pointer';
 import { partialEq } from '@components/utilities/misc';
-import { Component, linkEvent } from 'inferno';
+import * as React from 'react';
 
 type CellProperties = { 
     model:          ICell,
@@ -26,8 +26,8 @@ type CellState = {
     cellStateListener?:     IEventListenerKey
 };
 
-export class Cell extends Component<CellProperties, CellState>{
-    private valuePointerDown: (event: PointerEvent) => any;
+export class Cell extends React.Component<CellProperties, CellState>{
+    private valuePointerDown: (event: React.PointerEvent) => any;
 
     constructor(props: CellProperties) {
         super(props);
@@ -45,7 +45,7 @@ export class Cell extends Component<CellProperties, CellState>{
         );
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const listeners = {
             readyStateListener: this.props.board.events
                 .get(BoardEvents.ReadyStateChanged)
@@ -149,8 +149,8 @@ export class Cell extends Component<CellProperties, CellState>{
         return (
             <div id         = { this.props.model.id } 
                 className   = { classes.join(' ') }
-                onMouseMove = { linkEvent(this.props.model, this.props.onMouseMove) }
-                onClick     = { linkEvent(this.props.model, this.props.onClick) }>
+                onMouseMove = { () => this.props.onMouseMove(this.props.model) }
+                onClick     = { () => this.props.onClick(this.props.model) }>
 
                 { this.state.value > 0 ? this.renderValue() : this.renderNotes() }
             </div>
@@ -159,7 +159,7 @@ export class Cell extends Component<CellProperties, CellState>{
 
     renderValue() {
         return (
-            <div className={ this.state.isValid ? "value" : "invalid value" } onpointerdown={ this.valuePointerDown }>
+            <div className={ this.state.isValid ? "value" : "invalid value" } onPointerDown={ this.valuePointerDown }>
                 { this.state.value > 0 ? this.state.value : "" }
             </div>
         );

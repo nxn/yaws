@@ -17,14 +17,14 @@ export const CellEvents = {
     get StaticChanged(): CellEvents     { return "StaticChanged" },
     get ValidityChanged(): CellEvents   { return "ValidityChanged" },
     get Cleared(): CellEvents           { return "Cleared" }
-}
+};
 
 export const StateChangeEvents = [
     CellEvents.ValueChanged, 
     CellEvents.ValidityChanged, 
     CellEvents.StaticChanged, 
     CellEvents.Cleared
-]
+];
 
 export interface ICell extends IModel {
     type:           "Cell";
@@ -43,13 +43,13 @@ export interface ICell extends IModel {
     isValid:        () => boolean;
     setValid:       (value: boolean, silent?: boolean) => void;
     clear:          (silent?: boolean) => void;
-}
+};
 
 export interface ICellData {
     v: number;
     c: number[];
     s: boolean;
-}
+};
 
 export class Cell implements ICell {
     readonly type = "Cell";
@@ -227,7 +227,7 @@ export class Cell implements ICell {
             }
         }
     }
-}
+};
 
 type  CellSets = { "row": ISet, "column": ISet, "box": ISet };
 const CellSetValidationMap: { [K in keyof CellSets]: (keyof CellSets)[] } = {

@@ -1,5 +1,5 @@
-import { linkEvent }    from 'inferno';
-import { range }        from '@components/utilities/misc';
+import * as React from 'react';
+import { range } from '@components/utilities/misc';
 
 type ButtonProperties = {
     onClick:    (value: number) => void
@@ -17,7 +17,7 @@ const createButton = (number: number, props: ButtonProperties) => {
     else                        { classes.push('right'); }
 
     return (
-        <button className={classes.join(' ')} onClick={ linkEvent(number, props.onClick) }>
+        <button key={number} className={classes.join(' ')} onClick={ () => props.onClick(number) }>
             <span>{number}</span>
         </button>
     );

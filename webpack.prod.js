@@ -19,8 +19,8 @@ module.exports = {
   target: 'web',
   module: {
     rules: [{ // Main JS/TS loader via babel -> tsc
-      test: /\.(js|jsx|tsx|ts)$/,
-      loaders: 'babel-loader',
+      test: /\.(js|ts)x?$/i,
+      loader: 'babel-loader',
       exclude: [workers, /node_modules/]
     },{ // Web Worker TypeScript loader instance (requires separate tsconfig)
       test: workers,

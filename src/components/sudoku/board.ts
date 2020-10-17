@@ -21,14 +21,14 @@ export const BoardEvents = {
     get Solved(): BoardEvents               { return "Solved" },
     get Cleared(): BoardEvents              { return "Cleared" },
     get Reset(): BoardEvents                { return "Reset" }
-}
+};
 
 export const StateChangeEvents = [
     BoardEvents.CursorMoved, 
     BoardEvents.ReadyStateChanged, 
     BoardEvents.Reset, 
     BoardEvents.Cleared
-]
+];
 
 export interface IBoard extends IModel {
     type:           "Board";
@@ -44,7 +44,7 @@ export interface IBoard extends IModel {
     validate:       (silent?: boolean) => IBoard;
     clear:          (silent?: boolean) => IBoard;
     reset:          (silent?: boolean) => IBoard;
-}
+};
 
 export class Board implements IBoard {
     readonly type = "Board";
@@ -171,4 +171,4 @@ export class Board implements IBoard {
 
         return this;
     }
-}
+};

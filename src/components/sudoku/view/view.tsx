@@ -2,7 +2,8 @@ import type { IBoardController } from '../controller';
 import type { IBoard } from '../board';
 import { Board } from './board';
 import { Controls } from './controls';
-import { render as inferno } from 'inferno';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import './board.css';
 
 type ViewProperties = {
@@ -23,7 +24,7 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
     scaleToViewport();
     window.addEventListener('resize', scaleToViewport);
 
-    return () => inferno(<Yaws model={board} controller={controller} />, container);
+    return () => ReactDOM.render(<Yaws model={board} controller={controller} />, container);
 }
 
 function scaleToViewport() {

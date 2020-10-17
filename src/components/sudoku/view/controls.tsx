@@ -1,7 +1,7 @@
 import type { ICellController } from '../controller';
 import type { IBoard } from '../board';
 import { ValueButtons, NoteButtons } from './buttons';
-import { Component } from 'inferno';
+import * as React from 'react';
 import icons from './images/icons.svg';
 
 type ControlProperties = { 
@@ -9,7 +9,7 @@ type ControlProperties = {
     controller: ICellController
 };
 
-export class Controls extends Component<ControlProperties, any> {
+export class Controls extends React.Component<ControlProperties, any> {
     constructor(props: ControlProperties) {
         super(props);
     }
@@ -33,7 +33,7 @@ export class Controls extends Component<ControlProperties, any> {
                 <NoteButtons  onClick={ this.toggleCandidate } />
                 <button className="btn-clear" onClick={ this.clear }>
                     <span>
-                        <svg class="icon">
+                        <svg className="icon">
                             <use xlinkHref={ icons + '#yaws-icon-x' }></use>
                         </svg>
                     </span>

@@ -26,8 +26,8 @@ module.exports = {
   },
   module: {
     rules: [{ // Main JS/TS loader via babel -> tsc
-      test: /\.(js|jsx|tsx|ts)$/,
-      loaders: 'babel-loader',
+      test: /\.(js|ts)x?$/i,
+      loader: 'babel-loader',
       exclude: [workers, /node_modules/]
     },{ // Web Worker TypeScript loader instance (requires separate tsconfig)
       test: workers,
@@ -67,7 +67,6 @@ module.exports = {
     mainFields: ['browser', 'module', 'main'],
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
-      'inferno'    : path.resolve(__dirname, 'node_modules/inferno/dist/index.dev.esm.js'),
       '@components': path.resolve(__dirname, 'src/components/'),
       '@lib'       : path.resolve(__dirname, 'src/lib/'),
       '@utilities' : path.resolve(__dirname, 'src/components/utilities')

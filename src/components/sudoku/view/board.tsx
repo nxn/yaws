@@ -3,7 +3,7 @@ import type { IEventListenerKey } from '../events';
 import type { ICell } from '../cell';
 import { IBoard, BoardEvents } from '../board';
 import { Cell } from './cell';
-import { Component } from 'inferno';
+import * as React from 'react';
 
 
 import { partialEq } from '@components/utilities/misc';
@@ -21,7 +21,7 @@ type BoardState = {
     cursorListener?:    IEventListenerKey
 };
 
-export class Board extends Component<BoardProperties, BoardState> {
+export class Board extends React.Component<BoardProperties, BoardState> {
     constructor(props: BoardProperties) {
         super(props);
         this.state = {
@@ -31,7 +31,7 @@ export class Board extends Component<BoardProperties, BoardState> {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const listeners = {
             readyListener: this.props.model.events
                 .get(BoardEvents.ReadyStateChanged)
@@ -103,7 +103,7 @@ export class Board extends Component<BoardProperties, BoardState> {
         return (
             <div id={this.props.model.id} 
                 className={ this.state.isReady ? "board" : "board loading" }
-                onmouseleave={ this.resetHighlight }>{
+                onMouseLeave={ this.resetHighlight }>{
                 this.props.model.cells.map((cell: ICell) => 
                     <Cell 
                         key         = { cell.index }

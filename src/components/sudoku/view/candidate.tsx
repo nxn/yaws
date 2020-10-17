@@ -5,7 +5,7 @@ import { IEventListenerKey, CommonEvents } from '../events';
 import { IBoard, BoardEvents } from '../board';
 import { createPointerDoubleClickHandler } from '../pointer';
 import { partialEq } from '@components/utilities/misc';
-import { Component, linkEvent } from 'inferno';
+import * as React from 'react';
 
 type CandidateProperties = {
     model:          ICandidate,
@@ -22,8 +22,8 @@ type CandidateState = {
     candidateStateListener?:    IEventListenerKey
 }
 
-export class Candidate extends Component<CandidateProperties, CandidateState> {
-    private candidatePointerDown: (data: number, event: PointerEvent) => any;
+export class Candidate extends React.Component<CandidateProperties, CandidateState> {
+    private candidatePointerDown: (data: number, event: React.PointerEvent) => any;
 
     constructor(props: CandidateProperties) {
         super(props);
@@ -39,7 +39,7 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
         );
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const listeners = {
             readyStateListener: this.props.board.events
                 .get(BoardEvents.ReadyStateChanged)
@@ -110,7 +110,7 @@ export class Candidate extends Component<CandidateProperties, CandidateState> {
     
         return (
             <div className={ classes.join(' ') }
-                onpointerdown={ linkEvent(this.props.model.value, this.candidatePointerDown) }>
+                onPointerDown={ (event) => this.candidatePointerDown(this.props.model.value, event) }>
 
                 { this.props.model.value }
             </div>
