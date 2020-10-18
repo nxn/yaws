@@ -4,6 +4,7 @@ import { Board } from './board';
 import { Controls } from './controls';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { hot } from "react-hot-loader";
 import './board.css';
 
 type ViewProperties = {
@@ -38,3 +39,5 @@ function scaleToViewport() {
 
     document.documentElement.style.setProperty('--yaws-scale', scale.toString());
 }
+
+export default hot(module)(Yaws);

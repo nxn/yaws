@@ -1,4 +1,5 @@
 const path                    = require('path');
+const webpack                 = require('webpack');
 
 const WorkerPlugin            = require('worker-plugin');
 const HtmlWebpackPlugin       = require('html-webpack-plugin');
@@ -88,6 +89,7 @@ module.exports = {
       filename: "[name].[contenthash].css", 
       chunkFilename: "[id].[contenthash].css"
     }),
-    new HtmlWebpackPlugin({ template: 'src/components/page/index.ejs' })
+    new HtmlWebpackPlugin({ template: 'src/components/page/index.ejs' }),
+    new webpack.HotModuleReplacementPlugin()
   ]
 };

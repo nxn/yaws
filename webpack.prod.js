@@ -1,5 +1,6 @@
 const path                    = require('path');
 const webpack                 = require('webpack');
+
 const WorkerPlugin            = require('worker-plugin');
 const HtmlWebpackPlugin       = require('html-webpack-plugin');
 const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
