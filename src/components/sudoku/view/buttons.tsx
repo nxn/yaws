@@ -17,7 +17,7 @@ const createButton = (number: number, props: ButtonProperties) => {
     else                        { classes.push('right'); }
 
     return (
-        <button key={number} className={classes.join(' ')} onClick={ () => props.onClick(number) }>
+        <button key={number} className={ classes.join(' ') } onClick={ () => props.onClick(number) }>
             <span>{number}</span>
         </button>
     );
