@@ -1,7 +1,7 @@
 import type { ICellController } from '../controller';
 import type { IBoard } from '../board';
 import { ValueButtons, NoteButtons } from './buttons';
-import * as React from 'react';
+import React from 'react';
 import icons from './images/icons.svg';
 
 type ControlProperties = { 

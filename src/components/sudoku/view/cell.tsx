@@ -5,7 +5,7 @@ import { IBoard, BoardEvents } from '../board';
 import { Candidate } from "./candidate";
 import { createPointerDoubleClickHandler } from '../pointer';
 import { partialEq } from '@components/utilities/misc';
-import * as React from 'react';
+import React from 'react';
 
 type CellProperties = { 
     model:          ICell,

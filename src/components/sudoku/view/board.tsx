@@ -3,7 +3,7 @@ import type { IEventListenerKey } from '../events';
 import type { ICell } from '../cell';
 import { IBoard, BoardEvents } from '../board';
 import { Cell } from './cell';
-import * as React from 'react';
+import React from 'react';
 
 
 import { partialEq } from '@components/utilities/misc';

@@ -2,8 +2,9 @@ import type { IBoardController } from '../controller';
 import type { IBoard } from '../board';
 import { Board } from './board';
 import { Controls } from './controls';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { AppMenu } from './appmenu';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { hot } from "react-hot-loader";
 import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
 import './board.css';
@@ -16,6 +17,7 @@ type ViewProperties = {
 export const Yaws = (props: ViewProperties) => (
     <ScopedCssBaseline>
         <div className="yaws">
+            <AppMenu />
             <Board      model={props.model} controller={props.controller} />
             <Controls   board={props.model} controller={props.controller} />
         </div>
