@@ -2,7 +2,7 @@ import type { ICellController } from '../controller';
 import type { ICell } from '../cell';
 import { IEventListenerKey, CommonEvents } from '../events';
 import { IBoard, BoardEvents } from '../board';
-import { Candidate } from "./candidate";
+import Candidate from "./candidate";
 import { createPointerDoubleClickHandler } from '../pointer';
 import { partialEq } from '@components/utilities/misc';
 import React from 'react';
@@ -26,7 +26,7 @@ type CellState = {
     cellStateListener?:     IEventListenerKey
 };
 
-export class Cell extends React.Component<CellProperties, CellState>{
+export default class Cell extends React.Component<CellProperties, CellState>{
     private valuePointerDown:   (event: React.PointerEvent) => void;
     private onMouseMove:        (event: React.MouseEvent)   => void;
     private onClick:            (event: React.MouseEvent)   => void;

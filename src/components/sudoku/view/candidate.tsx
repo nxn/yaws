@@ -22,7 +22,7 @@ type CandidateState = {
     candidateStateListener?:    IEventListenerKey
 }
 
-export class Candidate extends React.Component<CandidateProperties, CandidateState> {
+export default class Candidate extends React.Component<CandidateProperties, CandidateState> {
     private candidatePointerDown: (event: React.PointerEvent) => void;
 
     constructor(props: CandidateProperties) {

@@ -2,7 +2,7 @@ import type { IBoardController } from '../controller';
 import type { IEventListenerKey } from '../events';
 import type { ICell } from '../cell';
 import { IBoard, BoardEvents } from '../board';
-import { Cell } from './cell';
+import Cell from './cell';
 import React from 'react';
 
 
@@ -21,7 +21,7 @@ type BoardState = {
     cursorListener?:    IEventListenerKey
 };
 
-export class Board extends React.Component<BoardProperties, BoardState> {
+export default class Board extends React.Component<BoardProperties, BoardState> {
     constructor(props: BoardProperties) {
         super(props);
         this.state = {

@@ -23,6 +23,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import { Dialogs } from './container';
+
 const drawerWidth = 180;
 
 const useStyles = makeStyles((theme) => ({
@@ -65,7 +67,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function AppMenu() {
+export interface DialogMenuProps {
+    onItemClick: (dialog: Dialogs) => void;
+}
+
+export default function DialogMenu(props: DialogMenuProps) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
@@ -75,8 +81,7 @@ export function AppMenu() {
 
     return (
         <div className={classes.root}>
-            <Drawer
-                variant="permanent"
+            <Drawer variant="permanent"
                 className={clsx(classes.drawer, {
                     [classes.drawerOpen]: open,
                     [classes.drawerClose]: !open,
@@ -103,7 +108,7 @@ export function AppMenu() {
                 <Divider />
 
                 <List>
-                    <ListItem button key="new">
+                    <ListItem button key="new" onClick={ () => props.onItemClick(Dialogs.NewPuzzle) }>
                         <ListItemIcon><NewIcon /></ListItemIcon>
                         <ListItemText primary="New" />
                     </ListItem>
@@ -142,7 +147,6 @@ export function AppMenu() {
                     </ListItem>
                 </List>
             </Drawer>
-      
         </div>
     );
 }

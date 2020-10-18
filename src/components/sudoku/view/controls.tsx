@@ -9,7 +9,7 @@ type ControlProperties = {
     controller: ICellController
 };
 
-export class Controls extends React.Component<ControlProperties, any> {
+export default class Controls extends React.Component<ControlProperties, any> {
     constructor(props: ControlProperties) {
         super(props);
     }
