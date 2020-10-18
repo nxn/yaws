@@ -1,7 +1,10 @@
 {
     "compact": false,
     "presets": [
-        ["@babel/preset-env", {"loose": true, "targets": {"esmodules": true}}],
+        // "esmodules: true" is a temporary workaround to issues surrounding wasm, web workers, and webpack. Ideally
+        // this should be false so that babel can provide support for targets that aren't capable of loading ES6
+        // modules. This will be corrected in the future after migrating to webpack 5.
+        ["@babel/preset-env", {"targets": {"esmodules": true}}],
         ["@babel/typescript", {"isTSX": true, "allExtensions": true}],
         ["@babel/preset-react"]
     ],
