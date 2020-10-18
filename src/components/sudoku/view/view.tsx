@@ -5,6 +5,7 @@ import { Controls } from './controls';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { hot } from "react-hot-loader";
+import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
 import './board.css';
 
 type ViewProperties = {
@@ -13,10 +14,12 @@ type ViewProperties = {
 };
 
 export const Yaws = (props: ViewProperties) => (
-    <div className="yaws">
-        <Board      model={props.model} controller={props.controller} />
-        <Controls   board={props.model} controller={props.controller} />
-    </div>
+    <ScopedCssBaseline>
+        <div className="yaws">
+            <Board      model={props.model} controller={props.controller} />
+            <Controls   board={props.model} controller={props.controller} />
+        </div>
+    </ScopedCssBaseline>
 );
 
 export function init(board: IBoard, controller: IBoardController, containerId: string) {

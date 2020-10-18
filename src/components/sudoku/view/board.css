@@ -29,7 +29,7 @@
 
     --yaws-box-spacer-size: calc(0.1875rem * var(--yaws-scale));
 
-    --yaws-cell-bg-color:           #f8f8f8;
+    --yaws-cell-bg-color:           #fff;
     --yaws-cell-highlight-bg-color: #eaeaea;
     --yaws-cell-width:              calc(2rem * var(--yaws-scale));
     --yaws-cell-height:             var(--yaws-cell-width);

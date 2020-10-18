@@ -23,7 +23,7 @@ type CandidateState = {
 }
 
 export class Candidate extends React.Component<CandidateProperties, CandidateState> {
-    private candidatePointerDown: (data: number, event: React.PointerEvent) => any;
+    private candidatePointerDown: (event: React.PointerEvent) => void;
 
     constructor(props: CandidateProperties) {
         super(props);
@@ -33,10 +33,12 @@ export class Candidate extends React.Component<CandidateProperties, CandidateSta
             valid: props.model.isValid()
         }
 
-        this.candidatePointerDown = createPointerDoubleClickHandler(
-            (value: number) => props.controller.toggleCandidate(this.props.board, this.props.cell, value),
-            (value: number) => props.onDoubleClick(value)
+        const handler = createPointerDoubleClickHandler(
+            () => props.controller.toggleCandidate(props.board, props.cell, props.model),
+            () => props.onDoubleClick(props.model.value)
         );
+
+        this.candidatePointerDown = (event: React.SyntheticEvent) => handler(event.nativeEvent);
     }
 
     componentDidMount() {
@@ -109,9 +111,7 @@ export class Candidate extends React.Component<CandidateProperties, CandidateSta
         }
     
         return (
-            <div className={ classes.join(' ') }
-                onPointerDown={ (event) => this.candidatePointerDown(this.props.model.value, event) }>
-
+            <div className={ classes.join(' ') } onPointerDown={ this.candidatePointerDown }>
                 { this.props.model.value }
             </div>
         );

@@ -27,7 +27,9 @@ type CellState = {
 };
 
 export class Cell extends React.Component<CellProperties, CellState>{
-    private valuePointerDown: (event: React.PointerEvent) => any;
+    private valuePointerDown:   (event: React.PointerEvent) => void;
+    private onMouseMove:        (event: React.MouseEvent)   => void;
+    private onClick:            (event: React.MouseEvent)   => void;
 
     constructor(props: CellProperties) {
         super(props);
@@ -39,10 +41,14 @@ export class Cell extends React.Component<CellProperties, CellState>{
             isCursor:   props.board.getCursor() === props.model
         }
 
-        this.valuePointerDown = createPointerDoubleClickHandler(
+        const handler = createPointerDoubleClickHandler(
             () => { }, // No action for single click
             () => props.controller.clear(props.board, props.model)
         );
+
+        this.valuePointerDown   = (event: React.SyntheticEvent) => handler(event.nativeEvent);
+        this.onMouseMove        = () => props.onMouseMove(props.model);
+        this.onClick            = () => props.onClick(props.model)
     }
 
     componentDidMount() {
@@ -149,8 +155,8 @@ export class Cell extends React.Component<CellProperties, CellState>{
         return (
             <div id         = { this.props.model.id } 
                 className   = { classes.join(' ') }
-                onMouseMove = { () => this.props.onMouseMove(this.props.model) }
-                onClick     = { () => this.props.onClick(this.props.model) }>
+                onMouseMove = { this.onMouseMove }
+                onClick     = { this.onClick }>
 
                 { this.state.value > 0 ? this.renderValue() : this.renderNotes() }
             </div>
