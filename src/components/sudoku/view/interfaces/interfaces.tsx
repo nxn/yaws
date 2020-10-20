@@ -8,15 +8,18 @@ export enum Dialogs {
     None
 }
 
-export default function DialogContainer() {
+export default function AppInterfaces() {
     const [openDialog, setOpenDialog] = React.useState(Dialogs.None);
+    const close = () => {
+        setOpenDialog(Dialogs.None);
+    }
 
     return (
-        <div>
+        <div className="app-ui">
             <Menu onItemClick={ setOpenDialog }/>
-            <div className="dialogs">
-                <NewPuzzle open={ openDialog === Dialogs.NewPuzzle } />
-            </div>
+            {/* <div className="dialogs">
+                <NewPuzzle open={ openDialog === Dialogs.NewPuzzle } onClose={ close } />
+            </div> */}
         </div>
     );
 };

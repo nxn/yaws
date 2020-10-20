@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import { hot } from "react-hot-loader";
 import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
 import './board.css';
-import Dialogs from './dialogs/container';
+import AppInterfaces from './interfaces/interfaces';
 
 type ViewProperties = {
     model:      IBoard,
@@ -17,9 +17,11 @@ type ViewProperties = {
 export const Yaws = (props: ViewProperties) => (
     <ScopedCssBaseline>
         <div className="yaws">
-            <Board      model={props.model} controller={props.controller} />
-            <Controls   board={props.model} controller={props.controller} />
-            <Dialogs />
+            <AppInterfaces />
+            <div className="game-ui">
+                <Board      model={props.model} controller={props.controller} />
+                <Controls   board={props.model} controller={props.controller} />
+            </div>
         </div>
     </ScopedCssBaseline>
 );

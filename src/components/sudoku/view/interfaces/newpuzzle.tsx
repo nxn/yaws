@@ -61,21 +61,15 @@ const DialogActions = withStyles((theme: Theme) => ({
 }))(MuiDialogActions);
 
 export interface NewPuzzleProps {
-    open?: boolean
+    open?: boolean,
+    onClose: () => void
 };
 
 export default function NewPuzzleDialog(props: NewPuzzleProps) {
-    
-    //const [open, setOpen] = React.useState(props.open);
-
-    const handleClose = () => {
-        //setOpen(false);
-    };
-
     return (
         <div>
-            <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={!!props.open}>
-                <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+            <Dialog onClose={ props.onClose } aria-labelledby="customized-dialog-title" open={!!props.open}>
+                <DialogTitle id="customized-dialog-title" onClose={ props.onClose }>
                     New Puzzle
                 </DialogTitle>
 
@@ -97,7 +91,7 @@ export default function NewPuzzleDialog(props: NewPuzzleProps) {
                 </DialogContent>
 
                 <DialogActions>
-                    <Button autoFocus onClick={handleClose} color="primary">
+                    <Button autoFocus onClick={ props.onClose } color="primary">
                         Generate
                     </Button>
                 </DialogActions>

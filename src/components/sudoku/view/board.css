@@ -124,24 +124,32 @@
 :focus              { outline:none; }
 ::-moz-focus-inner  { border: 0; }
 
-.yaws
-{
+.yaws {
+    display:            flex;
+    flex-flow:          row nowrap;
+}
+
+.yaws .app-ui {
+    flex-shrink: 0;
+}
+
+.yaws .game-ui {
+    flex-grow:          1;
     display:            flex;
     flex-flow:          column nowrap;
     align-items:        center;
     justify-content:    center;
+}
 
+.yaws .board
+{
     cursor:                 default;
     -webkit-user-select:    none;
     -moz-user-select:       none;
     -ms-user-select:        none;
     user-select:            none;
-
     touch-action:           auto;
-}
 
-.yaws .board
-{
     flex-grow:              0;
     text-align:             center;
     display:                grid;
@@ -460,9 +468,8 @@
 
 @media (orientation: landscape)
 {
-    .yaws
+    .yaws .game-ui
     {
-        width:              100%;
         flex-direction:     row;
         justify-content:    space-evenly;
     }
@@ -483,7 +490,7 @@
 
 @media (orientation: portrait)
 {
-    .yaws
+    .yaws .game-ui
     { 
         flex-direction: column;
     }
