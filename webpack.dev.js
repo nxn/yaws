@@ -24,6 +24,9 @@ module.exports = {
     host: '0.0.0.0',
     port: 8080,
     disableHostCheck: true,
+    watchOptions: {
+      ignored: [/node_modules/]
+    }
   },
   module: {
     rules: [{ // Main JS/TS loader via babel -> tsc
