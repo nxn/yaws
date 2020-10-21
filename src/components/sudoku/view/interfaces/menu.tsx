@@ -3,13 +3,11 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
-import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import NewIcon from '@material-ui/icons/AddCircleOutline';
+import NewIcon from '@material-ui/icons/GridOn';
 import OpenIcon from '@material-ui/icons/FolderOpen';
 import SaveIcon from '@material-ui/icons/SaveAlt';
 import ResetIcon from '@material-ui/icons/Replay';
@@ -28,9 +26,6 @@ import { Dialogs } from './interfaces';
 const drawerWidth = 180;
 
 const useStyles = makeStyles((theme) => ({
-    hide: {
-        display: 'none',
-    },
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
@@ -44,23 +39,12 @@ const useStyles = makeStyles((theme) => ({
         }),
     },
     drawerClose: {
+        width: theme.spacing(7) + 1,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        overflowX: 'hidden',
-        width: theme.spacing(7) + 1,
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9) + 1,
-        },
-    },
-    toolbar: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
+        overflowX: 'hidden'
     }
 }));
 
@@ -68,7 +52,7 @@ export interface DialogMenuProps {
     onItemClick: (dialog: Dialogs) => void;
 }
 
-export default function DialogMenu(props: DialogMenuProps) {
+export default function AppMenu(props: DialogMenuProps) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
@@ -89,17 +73,14 @@ export default function DialogMenu(props: DialogMenuProps) {
                 }),
             }}>
 
-            <div className={ classes.toolbar }>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label={ open ? "Collapse" : "Expand" }
-                        onClick={ toggleDrawer }
-                        edge="end">
+            <List>
+                <ListItem button key="drawer" onClick={ toggleDrawer }>
+                    <ListItemIcon>
                         { open ? <ChevronLeftIcon /> : <ChevronRightIcon /> }
-                    </IconButton>
-                </Toolbar>
-            </div>
+                    </ListItemIcon>
+                    <ListItemText primary="YAWS" />
+                </ListItem>
+            </List>
 
             <Divider />
 

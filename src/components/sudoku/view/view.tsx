@@ -35,12 +35,18 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
     return () => ReactDOM.render(<Yaws model={board} controller={controller} />, container);
 }
 
+
 function scaleToViewport() {
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
     
     const vmin = 320;
-    const vsize = Math.min(vw, vh);
+
+    // TODO: Hardcoding dimensions of menu and controls for the time being
+    const menuSize = 57;
+    const controlsSize = 184;
+    
+    const vsize = Math.max(vw, vh) - (menuSize + controlsSize);
     
     const scale = Math.max(1, Math.min(2, vsize/vmin));
 
