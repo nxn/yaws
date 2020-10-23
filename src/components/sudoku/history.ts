@@ -51,9 +51,11 @@ Example Pseudo Code:
     }
 
     // Replay a set of operations
-    else if (newHistoryIndex > currentHistoryIndex) {
+    if (newHistoryIndex > currentHistoryIndex) {
         return history.slice(currentHistoryIndex, newHistoryIndex);
     }
+    
+    return [];
 
 
 In the event a new action is performed when the current history index is not at the tail of the history array, the array should be truncated 
