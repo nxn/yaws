@@ -5,17 +5,21 @@ import Controls from './controls';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { hot } from "react-hot-loader";
-import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
+import { Theme, ThemeProvider, createMuiTheme } from '@material-ui/core';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import './board.css';
 import AppInterfaces from './interfaces/interfaces';
 
+
 type ViewProperties = {
     model:      IBoard,
-    controller: IBoardController
+    controller: IBoardController,
+    theme:      Theme
 };
 
 export const Yaws = (props: ViewProperties) => (
-    <ScopedCssBaseline>
+    <ThemeProvider theme={props.theme}>
+        <CssBaseline />
         <div className="yaws">
             <AppInterfaces />
             <div className="game-ui">
@@ -23,7 +27,7 @@ export const Yaws = (props: ViewProperties) => (
                 <Controls   board={props.model} controller={props.controller} />
             </div>
         </div>
-    </ScopedCssBaseline>
+    </ThemeProvider>
 );
 
 export function init(board: IBoard, controller: IBoardController, containerId: string) {
@@ -32,7 +36,13 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
     scaleToViewport();
     window.addEventListener('resize', scaleToViewport);
 
-    return () => ReactDOM.render(<Yaws model={board} controller={controller} />, container);
+    const dark = createMuiTheme({
+        palette: {
+            type: 'dark',
+        },
+    });
+
+    return () => ReactDOM.render(<Yaws model={board} controller={controller} theme={dark} />, container);
 }
 
 

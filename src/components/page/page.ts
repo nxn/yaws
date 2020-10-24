@@ -1,4 +1,4 @@
-import './page.css';
+//import './page.css';
 
 export function init() {
     // const page = Object.create(null,

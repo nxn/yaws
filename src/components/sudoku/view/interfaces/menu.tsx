@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
@@ -32,7 +32,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 const drawerWidth = 180;
 
-const useStyles = makeStyles((theme) => ({
+const useDrawerStyles = makeStyles((theme) => ({
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
@@ -55,31 +55,48 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const DrawerSubMenu = withStyles({
+const DrawerSubMenu = withStyles((theme) => ({
     paper: {
-        border: '1px solid rgba(0, 0, 0, 0.12)',
-        borderLeft: '1px dashed rgba(0, 0, 0, 0.12)',
-        borderTopLeftRadius: '0',
-        borderBottomLeftRadius: '0'
+        border:                 `1px solid  ${ theme.palette.divider }`,
+        borderLeft:             `1px dashed ${ theme.palette.divider }`,
+        borderTopLeftRadius:    '0',
+        borderBottomLeftRadius: '0',
+        marginLeft:             theme.spacing(1),
+        marginTop:              -1 * (theme.spacing(1) + 1)
     },
-})((props: MenuProps) => (
+}))((props: MenuProps) => (
     <Menu
         elevation={0}
         getContentAnchorEl={null}
         anchorOrigin={{
-            vertical: -9,
+            vertical: 'top',
             horizontal: 'right',
         }}
-        {...props}
-    />
+        {...props} />
 ));
+
+const MenuGroup = withStyles((theme) => ({
+    padding: {
+        padding: theme.spacing(0, 1)
+    }
+}))(List);
+
+const MenuGroupItem = withStyles((theme) => ({
+    root: {
+        borderRadius: theme.shape.borderRadius,
+        margin: theme.spacing(1, 0)
+    },
+    gutters: {
+        padding: theme.spacing(0.5, 1)
+    }
+}))(ListItem);
 
 export interface DialogMenuProps {
     onItemClick: (dialog: string) => void;
 }
 
 export default function AppMenu(props: DialogMenuProps) {
-    const classes = useStyles();
+    const drawerClasses = useDrawerStyles();
 
     const [open, setOpen] = React.useState(false);
     const toggleNavDrawer = () => {
@@ -98,10 +115,14 @@ export default function AppMenu(props: DialogMenuProps) {
     };
 
     const [mode, setMode] = React.useState('edit');
-    const changeMode = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    const changeMode = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setMode(event.currentTarget.dataset.mode);
-        subMenuClose();
     };
+
+    const [history, setHistory] = React.useState(false);
+    const toggleHistory = () => {
+        setHistory(!history);
+    }
 
     const openDialog = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
         props.onItemClick(event.currentTarget.dataset.dialog);
@@ -111,60 +132,64 @@ export default function AppMenu(props: DialogMenuProps) {
     return (
         <>
             <Drawer variant="permanent"
-                className={clsx(classes.drawer, {
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open,
+                className={clsx(drawerClasses.drawer, {
+                    [drawerClasses.drawerOpen]: open,
+                    [drawerClasses.drawerClose]: !open,
                 })}
                 classes={{
                     paper: clsx({
-                        [classes.drawerOpen]: open,
-                        [classes.drawerClose]: !open,
+                        [drawerClasses.drawerOpen]: open,
+                        [drawerClasses.drawerClose]: !open,
                     }),
                 }}>
 
-                <List>
-                    <ListItem button key="drawer" onClick={ toggleNavDrawer } >
+                <MenuGroup>
+                    <MenuGroupItem button key="drawer" onClick={ toggleNavDrawer } >
                         <ListItemIcon>
                             { open ? <ChevronLeftIcon /> : <ChevronRightIcon /> }
                         </ListItemIcon>
                         <ListItemText primary="YAWS" />
-                    </ListItem>
-                </List>
+                    </MenuGroupItem>
+                </MenuGroup>
 
                 <Divider />
 
-                <List>
-                    <ListItem button key="puzzle" data-submenu="puzzle-sub-menu" onClick={ subMenuOpen }>
+                <MenuGroup>
+                    <MenuGroupItem button key="puzzle" data-submenu="puzzle-sub-menu" onClick={ subMenuOpen }>
                         <ListItemIcon><GridIcon /></ListItemIcon>
                         <ListItemText primary="Puzzle" />
-                    </ListItem>
-                    <ListItem button key="settings" disabled={ true }>
-                        <ListItemIcon><SettingsIcon /></ListItemIcon>
-                        <ListItemText primary="Settings" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <List>
-                    <ListItem button key="input" data-submenu="mode-sub-menu" onClick={ subMenuOpen }>
-                        <ListItemIcon>{ mode === 'color' ? <ColorIcon /> : <EditIcon /> }</ListItemIcon>
-                        <ListItemText primary="Input Mode" />
-                    </ListItem>
-                    <ListItem button key="history" disabled={ true }>
+                    </MenuGroupItem>
+                    <MenuGroupItem button key="history" selected={ history } onClick={ toggleHistory }>
                         <ListItemIcon><HistoryIcon /></ListItemIcon>
                         <ListItemText primary="History" />
-                    </ListItem>
-                </List>
+                    </MenuGroupItem>
+                    <MenuGroupItem button key="settings" disabled={ true }>
+                        <ListItemIcon><SettingsIcon /></ListItemIcon>
+                        <ListItemText primary="Settings" />
+                    </MenuGroupItem>
+                </MenuGroup>
 
                 <Divider />
 
-                <List>
-                    <ListItem button key="help">
+                <MenuGroup>
+                    <MenuGroupItem button key="edit" selected={ mode === 'edit' } data-mode="edit" onClick={ changeMode }>
+                        <ListItemIcon><EditIcon /></ListItemIcon>
+                        <ListItemText primary="Edit" />
+                    </MenuGroupItem>
+                    <MenuGroupItem button key="color" selected={ mode === 'color' } data-mode="color" onClick={ changeMode }>
+                        <ListItemIcon><ColorIcon /></ListItemIcon>
+                        <ListItemText primary="Color" />
+                    </MenuGroupItem>
+                </MenuGroup>
+
+                <Divider />
+
+                <MenuGroup>
+                    <MenuGroupItem button key="help">
                         <ListItemIcon><HelpIcon /></ListItemIcon>
                         <ListItemText primary="Help" />
-                    </ListItem>
-                </List>
+                    </MenuGroupItem>
+                </MenuGroup>
             </Drawer>
 
             <DrawerSubMenu
@@ -197,24 +222,6 @@ export default function AppMenu(props: DialogMenuProps) {
                 <MenuItem onClick={subMenuClose}>
                     <ListItemIcon><ShareIcon /></ListItemIcon>
                     <ListItemText primary="Share" />
-                </MenuItem>
-            </DrawerSubMenu>
-
-            <DrawerSubMenu
-                id="mode-sub-menu"
-                anchorEl={ subMenu.target }
-                keepMounted
-                open={ subMenu.id === 'mode-sub-menu' }
-                onClose={ subMenuClose }>
-
-                <MenuItem data-mode="edit" onClick={ changeMode }>
-                    <ListItemIcon><EditIcon /></ListItemIcon>
-                    <ListItemText primary="Edit" />
-                </MenuItem>
-
-                <MenuItem data-mode="color" onClick={ changeMode }>
-                    <ListItemIcon><ColorIcon /></ListItemIcon>
-                    <ListItemText primary="Color" />
                 </MenuItem>
             </DrawerSubMenu>
         </>
