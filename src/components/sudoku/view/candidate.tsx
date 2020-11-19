@@ -21,10 +21,14 @@ export default function Candidate(props: CandidateProperties) {
         valid: props.model.isValid()
     });
 
-    const handler = createPointerDoubleClickHandler(
-        () => props.controller.toggleCandidate(props.board, props.cell, props.model),
-        () => props.onDoubleClick(props.model.value)
+    const handler = React.useCallback(
+        createPointerDoubleClickHandler(
+            () => props.controller.toggleCandidate(props.board, props.cell, props.model),
+            () => props.onDoubleClick(props.model.value)
+        ),
+        [props.model, props.cell, props.board]
     );
+    const candidatePointerDown = (event: React.SyntheticEvent) => handler(event.nativeEvent);
 
     React.useEffect(() => {
         const update = (candidate: ICandidate) => {
@@ -59,8 +63,6 @@ export default function Candidate(props: CandidateProperties) {
             candidateEventStore.detach(candidateListenerKey);
         }
     });
-
-    const candidatePointerDown = (event: React.SyntheticEvent) => handler(event.nativeEvent);
 
     let classes = ['candidate'];
     if (candidateState.selected) {
