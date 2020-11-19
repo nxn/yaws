@@ -23,9 +23,10 @@ export default function Candidate(props: CandidateProperties) {
 
     // TODO: This could use a cleanup or refactor so that the use of memoization isn't mandatory.
     // Right now the issue is caused by the double click handler keeping internal state between clicks so that it can distinguish
-    // between a single and double click. If a re-render occurs during this time a new handler gets created potentially conflicting 
-    // with the previous one's state. Memoizing the handler ensures this doesn't happen, but there's likely a cleaner approach now
-    // that compatibility with Inferno's linkEvent function isn't a strict requirement.
+    // between a single and double click. If a re-render occurs during this time a new handler gets created potentially ignoring
+    // the existing state/timeouts of the previous handler instance and causing funky behavior. Memoizing the handler so that only
+    // one instance is created per candidate avoids this problem, but there's likely a less gimmicky solution. Especially now that
+    // compatibility with Inferno's linkEvent function isn't a strict requirement like it was when this was originally devised.
     const handler = React.useCallback(
         createPointerDoubleClickHandler(
             () => props.controller.toggleCandidate(props.board, props.cell, props.model),
