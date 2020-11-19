@@ -1,6 +1,6 @@
 import type { ICellController } from '../controller';
 import type { ICell } from '../cell';
-import { IEventListenerKey, CommonEvents } from '../events';
+import { CommonEvents } from '../events';
 import { IBoard, BoardEvents } from '../board';
 import Candidate from "./candidate";
 import { createPointerDoubleClickHandler } from '../pointer';
@@ -16,174 +16,147 @@ type CellProperties = {
     highlight?:     boolean
 };
 
-type CellState = {
-    value:                  number,
-    isValid:                boolean,
-    isCursor:               boolean,
-    isStatic:               boolean,
-    readyStateListener?:    IEventListenerKey,
-    cursorListener?:        IEventListenerKey,
-    cellStateListener?:     IEventListenerKey
-};
+export default function Cell(props: CellProperties) {
+    const [cellState, setCellState] = React.useState({
+        value:  props.model.getValue(),
+        valid:  props.model.isValid(),
+        static: props.model.isStatic()
+    });
 
-export default class Cell extends React.Component<CellProperties, CellState>{
-    private valuePointerDown:   (event: React.PointerEvent) => void;
-    private onMouseMove:        (event: React.MouseEvent)   => void;
-    private onClick:            (event: React.MouseEvent)   => void;
+    const [cursor, setCursor] = React.useState(props.board.getCursor() === props.model);
 
-    constructor(props: CellProperties) {
-        super(props);
-
-        this.state = {
-            value:      props.model.getValue(),
-            isValid:    props.model.isValid(),
-            isStatic:   props.model.isStatic(),
-            isCursor:   props.board.getCursor() === props.model
+    React.useEffect(() => {
+        const update = (cell: ICell) => {
+            if (props.model !== cell) { return; }
+    
+            const newState = {
+                value:  cell.getValue(),
+                valid:  cell.isValid(),
+                static: cell.isStatic()
+            };
+    
+            if (!partialEq(cellState, newState)) {
+                setCellState(newState);
+            }
         }
 
-        const handler = createPointerDoubleClickHandler(
-            () => { }, // No action for single click
-            () => props.controller.clear(props.board, props.model)
-        );
+        const load = (board: IBoard) => {
+            if (props.board === board && board.isReady()) {
+                update(props.model);
+            }
+        }
 
-        this.valuePointerDown   = (event: React.SyntheticEvent) => handler(event.nativeEvent);
-        this.onMouseMove        = () => props.onMouseMove(props.model);
-        this.onClick            = () => props.onClick(props.model)
-    }
+        const boardEventStore = props.board.events.get(BoardEvents.ReadyStateChanged);
+        const boardListenerKey = boardEventStore.attach(load);
 
-    componentDidMount() {
-        const listeners = {
-            readyStateListener: this.props.board.events
-                .get(BoardEvents.ReadyStateChanged)
-                .attach(this.loadCellState),
+        const cellEventStore = props.model.events.get(CommonEvents.StateChanged);
+        const cellListenerKey = cellEventStore.attach(update);
 
-            cursorListener: this.props.board.events
-                .get(BoardEvents.CursorMoved)
-                .attach(this.updateCursorState),
-
-            cellStateListener: this.props.model.events
-                .get(CommonEvents.StateChanged)
-                .attach(this.updateCellState)
+        return function cleanup() {
+            boardEventStore.detach(boardListenerKey);
+            cellEventStore.detach(cellListenerKey);
         };
-        
-        this.setState(() => listeners);
+    });
+
+    React.useEffect(() => {
+        const updateCursorState = (_: IBoard, to: ICell, from: ICell) => {
+            if (props.model !== to && props.model !== from) {
+                return;
+            }
+    
+            const isCursor = props.model === to;
+            if (cursor === isCursor) {
+                return;
+            }
+    
+            setCursor(isCursor);
+        }
+
+        const eventStore = props.board.events.get(BoardEvents.CursorMoved);
+        const listenerKey = eventStore.attach(updateCursorState);
+
+        return function cleanup() {
+            eventStore.detach(listenerKey);
+        }
+    });
+
+    const onMouseMove   = () => props.onMouseMove(props.model);
+    const onClick       = () => props.onClick(props.model)
+
+    let classes = [
+        'cell',
+        props.model.row.name,
+        props.model.column.name,
+        props.model.box.name,
+
+        cellState.static ? 'static' : 'editable'
+    ];
+
+    if (cursor) {
+        classes.push('cursor');
     }
 
-    componentWillUnmount() {
-        if (this.state.readyStateListener) {
-            this.props.board.events.get(BoardEvents.ReadyStateChanged).detach(this.state.readyStateListener);
-        }
-
-        if (this.state.cursorListener) {
-            this.props.board.events.get(BoardEvents.CursorMoved).detach(this.state.cursorListener);
-        }
-
-        if (this.state.cellStateListener) {
-            this.props.model.events.get(CommonEvents.StateChanged).detach(this.state.cellStateListener);
-        }
-
-        this.setState(() => ({
-            readyStateListener: undefined,
-            cursorListener: undefined,
-            cellStateListener: undefined
-        }));
+    if (props.highlight) {
+        classes.push('highlight');
     }
 
-    shouldComponentUpdate(nextProps: CellProperties, nextState: CellState) {
-        if (this.props.highlight !== nextProps.highlight) {
-            return true;
-        }
+    return (
+        <div id         = { props.model.id } 
+            className   = { classes.join(' ') }
+            onMouseMove = { onMouseMove }
+            onClick     = { onClick }>{ 
+                cellState.value > 0 
+                    ? <CellValue controller={ props.controller } board={ props.board } cell={ props.model } value={ cellState.value } valid={ cellState.valid } />
+                    : <CellNotes controller={ props.controller } board={ props.board } cell={ props.model } />
+        }</div>
+    );
+}
 
-        return !partialEq(this.state, nextState);
+type CellValueProps = {
+    controller: ICellController,
+    board: IBoard,
+    cell: ICell,
+    value: number,
+    valid: boolean
+}
+
+function CellValue(props: CellValueProps) {
+    const handler = createPointerDoubleClickHandler(
+        () => { }, // No action for single click
+        () => props.controller.clear(props.board, props.cell)
+    );
+
+    const valuePointerDown = (event: React.SyntheticEvent) => handler(event.nativeEvent);
+
+    return (
+        <div className={ props.valid ? "value" : "invalid value" } onPointerDown={ valuePointerDown }>
+            { props.value > 0 ? props.value : "" }
+        </div>
+    );
+}
+
+type CellNoteProps = {
+    controller: ICellController,
+    board: IBoard,
+    cell: ICell
+}
+
+function CellNotes(props: CellNoteProps) {
+    const setCellValue = (value: number) => {
+        props.controller.setCellValue(props.board, props.cell, value);
     }
 
-    updateCursorState = (_: IBoard, to: ICell, from: ICell) => {
-        if (this.props.model !== to && this.props.model !== from) {
-            return;
-        }
-
-        const cursor = this.props.model === to;
-        if (this.state.isCursor === cursor) {
-            return;
-        }
-
-        this.setState(() => ({ isCursor: cursor }));
-    }
-
-    loadCellState = (board: IBoard) => {
-        if (this.props.board === board && board.isReady()) {
-            this.updateCellState(this.props.model);
-        }
-    }
-
-    updateCellState = (cell: ICell) => {
-        if (this.props.model !== cell) { return; }
-
-        const newState = {
-            value:      cell.getValue(),
-            isValid:    cell.isValid(),
-            isStatic:   cell.isStatic()
-        }
-
-        if (!partialEq(this.state, newState)) {
-            this.setState(() => newState);
-        }
-    }
-
-    setCellValue = (value: number) => {
-        this.props.controller.setCellValue(this.props.board, this.props.model, value);
-    }
-
-    render() {
-        let classes = [
-            'cell',
-            this.props.model.row.name,
-            this.props.model.column.name,
-            this.props.model.box.name,
-
-            this.state.isStatic ? 'static' : 'editable'
-        ];
-
-        if (this.state.isCursor) {
-            classes.push('cursor');
-        }
-
-        if (this.props.highlight) {
-            classes.push('highlight');
-        }
-
-        return (
-            <div id         = { this.props.model.id } 
-                className   = { classes.join(' ') }
-                onMouseMove = { this.onMouseMove }
-                onClick     = { this.onClick }>
-
-                { this.state.value > 0 ? this.renderValue() : this.renderNotes() }
-            </div>
-        );
-    }
-
-    renderValue() {
-        return (
-            <div className={ this.state.isValid ? "value" : "invalid value" } onPointerDown={ this.valuePointerDown }>
-                { this.state.value > 0 ? this.state.value : "" }
-            </div>
-        );
-    }
-
-    renderNotes() {
-        return (
-            <div className="notes">{
-                this.props.model.candidates.map(candidate => 
-                    <Candidate
-                        key             = { candidate.value }
-                        model           = { candidate }
-                        controller      = { this.props.controller }
-                        board           = { this.props.board }
-                        cell            = { this.props.model }
-                        onDoubleClick   = { this.setCellValue } />
-                )
-            }</div>
-        );
-    }
-};
+    return (
+        <div className="notes">{
+            props.cell.candidates.map(candidate => 
+                <Candidate
+                    key             = { candidate.value }
+                    model           = { candidate }
+                    controller      = { props.controller }
+                    board           = { props.board }
+                    cell            = { props.cell }
+                    onDoubleClick   = { setCellValue } />
+            )
+        }</div>
+    );
+}

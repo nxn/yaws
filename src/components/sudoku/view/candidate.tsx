@@ -1,7 +1,7 @@
 import type { ICandidateController } from '../controller';
 import type { ICandidate } from '../candidate';
 import type { ICell } from '../cell';
-import { IEventListenerKey, CommonEvents } from '../events';
+import { CommonEvents } from '../events';
 import { IBoard, BoardEvents } from '../board';
 import { createPointerDoubleClickHandler } from '../pointer';
 import { partialEq } from '@components/utilities/misc';
@@ -15,105 +15,70 @@ type CandidateProperties = {
     onDoubleClick:  (value: number) => any;
 };
 
-type CandidateState = {
-    selected:                   boolean,
-    valid:                      boolean,
-    readyStateListener?:        IEventListenerKey,
-    candidateStateListener?:    IEventListenerKey
-}
+export default function Candidate(props: CandidateProperties) {
+    const [candidateState, setCandidateState] = React.useState({
+        selected: props.model.isSelected(),
+        valid: props.model.isValid()
+    });
 
-export default class Candidate extends React.Component<CandidateProperties, CandidateState> {
-    private candidatePointerDown: (event: React.PointerEvent) => void;
+    const handler = createPointerDoubleClickHandler(
+        () => props.controller.toggleCandidate(props.board, props.cell, props.model),
+        () => props.onDoubleClick(props.model.value)
+    );
 
-    constructor(props: CandidateProperties) {
-        super(props);
-
-        this.state = {
-            selected: props.model.isSelected(),
-            valid: props.model.isValid()
-        }
-
-        const handler = createPointerDoubleClickHandler(
-            () => props.controller.toggleCandidate(props.board, props.cell, props.model),
-            () => props.onDoubleClick(props.model.value)
-        );
-
-        this.candidatePointerDown = (event: React.SyntheticEvent) => handler(event.nativeEvent);
-    }
-
-    componentDidMount() {
-        const listeners = {
-            readyStateListener: this.props.board.events
-                .get(BoardEvents.ReadyStateChanged)
-                .attach(this.loadCandidateState),
-
-            candidateStateListener: this.props.model.events
-                .get(CommonEvents.StateChanged)
-                .attach(this.updateCandidateState)
-        };
-        
-        this.setState(() => listeners);
-    }
-
-    componentWillUnmount() {
-        if (this.state.readyStateListener) {
-            this.props.board.events.get(BoardEvents.ReadyStateChanged).detach(this.state.readyStateListener);
-        }
-
-        if (this.state.candidateStateListener) {
-            this.props.model.events.get(CommonEvents.StateChanged).detach(this.state.candidateStateListener);
-        }
-        
-        this.setState(() => ({
-            readyStateListener: undefined,
-            candidateStateListener: undefined
-        }));
-    }
-
-    shouldComponentUpdate(_: CandidateProperties, nextState: CandidateState) {
-        return !partialEq(this.state, nextState);
-    }
-
-    loadCandidateState = (board: IBoard) => {
-        if (this.props.board === board && board.isReady()) {
-            this.updateCandidateState(this.props.model);
-        }
-    }
-
-    updateCandidateState = (candidate: ICandidate) => {
-        if (this.props.model !== candidate) {
-            return;
-        }
-
-        const newState = {
-            selected: candidate.isSelected(),
-            valid: candidate.isValid()
-        }
-
-        if (!partialEq(this.state, newState)) {
-            this.setState(() => newState);
-        }
-    }
-
-    render() {
-        let classes = ['candidate'];
-        if (this.state.selected) {
-            classes.push('selected');
-        }
-        if (!this.state.valid) {
-            classes.push('invalid');
-        }
-        if (this.props.model.value % 3 === 0) {
-            classes.push('last-column');
-        }
-        if (this.props.model.value > 6) {
-            classes.push('last-row');
-        }
+    React.useEffect(() => {
+        const update = (candidate: ICandidate) => {
+            if (props.model !== candidate) {
+                return;
+            }
     
-        return (
-            <div className={ classes.join(' ') } onPointerDown={ this.candidatePointerDown }>
-                { this.props.model.value }
-            </div>
-        );
+            const newState = {
+                selected: candidate.isSelected(),
+                valid: candidate.isValid()
+            }
+    
+            if (!partialEq(candidateState, newState)) {
+                setCandidateState(newState);
+            }
+        }
+
+        const load = (board: IBoard) => {
+            if (props.board === board && board.isReady()) {
+                update(props.model);
+            }
+        }
+
+        const boardEventStore = props.board.events.get(BoardEvents.ReadyStateChanged);
+        const boardListenerKey = boardEventStore.attach(load);
+
+        const candidateEventStore = props.model.events.get(CommonEvents.StateChanged);
+        const candidateListenerKey = candidateEventStore.attach(update);
+
+        return function cleanup() {
+            boardEventStore.detach(boardListenerKey);
+            candidateEventStore.detach(candidateListenerKey);
+        }
+    });
+
+    const candidatePointerDown = (event: React.SyntheticEvent) => handler(event.nativeEvent);
+
+    let classes = ['candidate'];
+    if (candidateState.selected) {
+        classes.push('selected');
     }
-};
+    if (!candidateState.valid) {
+        classes.push('invalid');
+    }
+    if (props.model.value % 3 === 0) {
+        classes.push('last-column');
+    }
+    if (props.model.value > 6) {
+        classes.push('last-row');
+    }
+
+    return (
+        <div className={ classes.join(' ') } onPointerDown={ candidatePointerDown }>
+            { props.model.value }
+        </div>
+    );
+}

@@ -1,120 +1,76 @@
 import type { IBoardController } from '../controller';
-import type { IEventListenerKey } from '../events';
 import type { ICell } from '../cell';
 import { IBoard, BoardEvents } from '../board';
 import Cell from './cell';
 import React from 'react';
-
-
-import { partialEq } from '@components/utilities/misc';
 
 type BoardProperties = { 
     model:      IBoard,
     controller: IBoardController
 };
 
-type BoardState = {
-    isReady:            boolean,
-    highlightedColumn:  number,
-    highlightedRow:     number,
-    readyListener?:     IEventListenerKey,
-    cursorListener?:    IEventListenerKey
-};
+export default function Board(props: BoardProperties) {
+    const [ready, setReady] = React.useState(props.model.isReady());
+    const [highlight, setHighlight] = React.useState(props.model.getCursor());
 
-export default class Board extends React.Component<BoardProperties, BoardState> {
-    constructor(props: BoardProperties) {
-        super(props);
-        this.state = {
-            isReady:            props.model.isReady(),
-            highlightedColumn:  props.model.getCursor().column.index, 
-            highlightedRow:     props.model.getCursor().row.index
-        };
-    }
-
-    componentDidMount() {
-        const listeners = {
-            readyListener: this.props.model.events
-                .get(BoardEvents.ReadyStateChanged)
-                .attach(this.updateReadyState),
-
-            cursorListener: this.props.model.events
-                .get(BoardEvents.CursorMoved)
-                .attach(this.updateHighlightState)
+    // External event for updating UI when board changes readyness state
+    React.useEffect(() => {
+        const updateReadyState = (board: IBoard) => {
+            if (props.model === board && ready !== board.isReady()) {
+                setReady(board.isReady());
+            }
         }
 
-        this.setState(() => listeners);
+        const eventStore = props.model.events.get(BoardEvents.ReadyStateChanged);
+        const listenerKey = eventStore.attach(updateReadyState);
+
+        return function cleanup() {
+            eventStore.detach(listenerKey);
+        }
+    }, [ready]);
+
+    // External event for updating UI highlight when cursor moves
+    React.useEffect(() => {
+        const updateHighlightState = (board: IBoard, cell: ICell) => {
+            if (board !== props.model) { return; }
+            setHighlight(cell);
+        }
+
+        const eventStore = props.model.events.get(BoardEvents.CursorMoved);
+        const listenerKey = eventStore.attach(updateHighlightState);
+
+        return function cleanup() {
+            eventStore.detach(listenerKey);
+        }
+    }, [highlight]);
+
+    const resetHighlight = () => {
+        setHighlight(props.model.getCursor());
     }
     
-    componentWillUnmount() {
-        if (this.state.readyListener) {
-            this.props.model.events.get(BoardEvents.ReadyStateChanged).detach(this.state.readyListener);
-        }
-        
-        if (this.state.cursorListener) {
-            this.props.model.events.get(BoardEvents.CursorMoved).detach(this.state.cursorListener);
-        }
-
-        this.setState(() => ({
-            readyListener: undefined,
-            cursorListener: undefined
-        }));
+    const isHighlighted = (cell: ICell) => {
+        return cell.row.index    === highlight.row.index 
+            || cell.column.index === highlight.column.index
+    }
+    
+    const setCursor = (cell: ICell) => {
+        props.controller.setCursor(props.model, cell);
     }
 
-    shouldComponentUpdate(_: BoardProperties, nextState: BoardState) {
-        return !partialEq(this.state, nextState);
-    }
-
-    updateReadyState = (board: IBoard) => {
-        if (this.props.model === board && this.state.isReady !== board.isReady()) {
-            this.setState(() => ({ isReady: board.isReady() }));
-        }
-    }
-
-    updateHighlightState = (board: IBoard, cell: ICell) => {
-        if (board !== this.props.model) { return; }
-        this.setHighlight(cell);
-    }
-
-    setHighlight = (cell: ICell) => {
-        const newState = {
-            highlightedColumn: cell.column.index,
-            highlightedRow: cell.row.index
-        };
-
-        if (!partialEq(this.state, newState)) {
-            this.setState(() => newState);
-        }
-    }
-
-    resetHighlight = () => {
-        this.setHighlight(this.props.model.getCursor());
-    }
-
-    isHighlighted(cell: ICell) {
-        return cell.row.index    === this.state.highlightedRow 
-            || cell.column.index === this.state.highlightedColumn;
-    }
-
-    setCursor = (cell: ICell) => {
-        this.props.controller.setCursor(this.props.model, cell);
-    }
-
-    render() {
-        return (
-            <div id={this.props.model.id} 
-                className={ this.state.isReady ? "board" : "board loading" }
-                onMouseLeave={ this.resetHighlight }>{
-                this.props.model.cells.map((cell: ICell) => 
+    return (
+        <div id={ props.model.id } 
+            className={ ready ? "board" : "board loading" }
+            onMouseLeave={ resetHighlight }>{
+                props.model.cells.map((cell: ICell) => 
                     <Cell 
                         key         = { cell.index }
                         model       = { cell } 
-                        controller  = { this.props.controller }
-                        board       = { this.props.model }
-                        onClick     = { this.setCursor }
-                        onMouseMove = { this.setHighlight }
-                        highlight   = { this.isHighlighted(cell) } />
+                        controller  = { props.controller }
+                        board       = { props.model }
+                        onClick     = { setCursor }
+                        onMouseMove = { setHighlight }
+                        highlight   = { isHighlighted(cell) } />
                 )
-            }</div>
-        );
-    }
+        }</div>
+    );
 }
