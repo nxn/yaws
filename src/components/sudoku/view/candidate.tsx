@@ -25,7 +25,7 @@ export default function Candidate(props: CandidateProperties) {
     // Right now the issue is caused by the double click handler keeping internal state between clicks so that it can distinguish
     // between a single and double click. If a re-render occurs during this time a new handler gets created potentially conflicting 
     // with the previous one's state. Memoizing the handler ensures this doesn't happen, but there's likely a cleaner approach now
-    // that compatibility with Inferno's linkEvent function isn't a requirement.
+    // that compatibility with Inferno's linkEvent function isn't a strict requirement.
     const handler = React.useCallback(
         createPointerDoubleClickHandler(
             () => props.controller.toggleCandidate(props.board, props.cell, props.model),
