@@ -1,6 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import { alpha } from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
@@ -46,7 +47,7 @@ const useDrawerStyles = makeStyles((theme) => ({
         }),
     },
     drawerClose: {
-        width: theme.spacing(7) + 1,
+        width: `calc(${ theme.spacing(7) } + 1px)`,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -62,8 +63,8 @@ const DrawerSubMenu = withStyles((theme) => ({
         borderTopLeftRadius:    '0',
         borderBottomLeftRadius: '0',
         marginLeft:             theme.spacing(1),
-        marginTop:              -1 * (theme.spacing(1) + 1)
-    },
+        marginTop:              `calc((${ theme.spacing(1) } + 1px) * -1)`
+    }
 }))((props: MenuProps) => (
     <Menu
         elevation={0}

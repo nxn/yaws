@@ -5,7 +5,8 @@ import Controls from './controls';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { hot } from "react-hot-loader";
-import { Theme, ThemeProvider, createMuiTheme } from '@material-ui/core';
+import { Theme, ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { yellow } from '@material-ui/core/colors'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './board.css';
 import AppInterfaces from './interfaces/interfaces';
@@ -36,13 +37,31 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
     scaleToViewport();
     window.addEventListener('resize', scaleToViewport);
 
-    const dark = createMuiTheme({
+    const light  = createMuiTheme({
         palette: {
-            type: 'dark',
-        },
+            mode: 'light'
+        }
     });
 
-    return () => ReactDOM.render(<Yaws model={board} controller={controller} theme={dark} />, container);
+    const dark = createMuiTheme({
+        palette: {
+            mode: 'dark',
+            primary: {
+                light: '#eeffff',
+                main: '#bbdefb',
+                dark: '#8aacc8',
+                contrastText: '#000',
+            },
+              secondary: {
+                light: '#ffffe4',
+                main: '#ffe0b2',
+                dark: '#cbae82',
+                contrastText: '#000',
+              },
+        }
+    });
+
+    return () => ReactDOM.render(<Yaws model={board} controller={controller} theme={light} />, container);
 }
 
 
