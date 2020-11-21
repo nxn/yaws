@@ -6,7 +6,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { hot } from "react-hot-loader";
 import { Theme, ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { yellow } from '@material-ui/core/colors'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import './board.css';
 import AppInterfaces from './interfaces/interfaces';
@@ -39,7 +38,19 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
 
     const light  = createMuiTheme({
         palette: {
-            mode: 'light'
+            mode: 'light',
+            primary: {
+                light: '#58a5f0',
+                main: '#0277bd',
+                dark: '#004c8c',
+                contrastText: '#000',
+            },
+            secondary: {
+                light: '#ffc046',
+                main: '#ff8f00',
+                dark: '#c56000',
+                contrastText: '#000',
+            },
         }
     });
 
@@ -52,12 +63,12 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
                 dark: '#8aacc8',
                 contrastText: '#000',
             },
-              secondary: {
+            secondary: {
                 light: '#ffffe4',
                 main: '#ffe0b2',
                 dark: '#cbae82',
                 contrastText: '#000',
-              },
+            },
         }
     });
 
