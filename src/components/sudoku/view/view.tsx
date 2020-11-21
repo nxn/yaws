@@ -23,7 +23,7 @@ export const Yaws = (props: ViewProperties) => (
         <div className="yaws">
             <AppInterfaces />
             <div className="game-ui">
-                <Board      model={props.model} controller={props.controller} />
+                <Board      model={props.model} controller={props.controller} scale={2.0} />
                 <Controls   board={props.model} controller={props.controller} />
             </div>
         </div>
