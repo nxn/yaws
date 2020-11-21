@@ -43,7 +43,7 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
                 light: '#58a5f0',
                 main: '#0277bd',
                 dark: '#004c8c',
-                contrastText: '#000',
+                contrastText: '#fff',
             },
             secondary: {
                 light: '#ffc046',
@@ -72,7 +72,7 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
         }
     });
 
-    return () => ReactDOM.render(<Yaws model={board} controller={controller} theme={light} />, container);
+    return () => ReactDOM.render(<Yaws model={board} controller={controller} theme={dark} />, container);
 }
 
 
