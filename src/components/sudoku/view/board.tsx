@@ -15,7 +15,7 @@ type BoardProperties = {
     model:      IBoard,
     controller: IBoardController,
     scale:      number,
-    className?:  string
+    className?: string
 };
 
 type BoardState = {
@@ -107,7 +107,7 @@ class Board extends React.Component<BoardProperties, BoardState> {
     render() {
         return (
             <div id={this.props.model.id} 
-                className={ clsx(this.props.className, { "loading": !this.state.isReady }) }//this.state.isReady ? "board" : "board loading" }
+                className={ clsx("board", { "loading": !this.state.isReady }, this.props.className) }//this.state.isReady ? "board" : "board loading" }
                 onMouseLeave={ this.resetHighlight }>{
                 this.props.model.cells.map((cell: ICell) => 
                     <Cell 
@@ -133,7 +133,6 @@ export default styled(Board)(
         userSelect:             'none',
         touchAction:            'auto',
 
-        flexGrow:               0,
         textAlign:              'center',
         display:                'grid',
         gridTemplateColumns:    'repeat(9, auto)',

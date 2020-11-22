@@ -7,34 +7,83 @@ import ReactDOM from 'react-dom';
 import { hot } from "react-hot-loader";
 import { Theme, ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import './board.css';
+
+import cabinCondensedWoff   from './fonts/cabincondensed-bold-digits.woff';
+import cabinCondensedWoff2  from './fonts/cabincondensed-bold-digits.woff2';
+import robotoMonoWoff       from './fonts/robotomono-bold-digits.woff';
+import robotoMonoWoff2      from './fonts/robotomono-bold-digits.woff2';
+
 import AppInterfaces from './interfaces/interfaces';
+
+import { experimentalStyled as styled } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { Global } from '@emotion/react';
 
 
 type ViewProperties = {
     model:      IBoard,
     controller: IBoardController,
-    theme:      Theme
+    muiTheme:   Theme,
+    className?: string
 };
 
-export const Yaws = (props: ViewProperties) => (
-    <ThemeProvider theme={props.theme}>
+export const Yaws = (props: ViewProperties) => <>
+    <Global styles={[ {
+        ':focus':               { outline: 'none' },
+        '::-moz-focus-inner':   { border: 0 }
+    }, {
+        '@font-face': {
+            fontFamily: '"Cabin Condensed"',
+            fontStyle: 'normal',
+            fontWeight: 700,
+            fontDisplay: 'swap',
+            src: `url("${ cabinCondensedWoff2 }") format("woff2"), url("${ cabinCondensedWoff }") format("woff")`
+        }
+    }, {
+        '@font-face':  {
+            fontFamily: '"Roboto Mono"',
+            fontStyle: 'normal',
+            fontWeight: 700,
+            fontDisplay: 'swap',
+            src: `url("${ robotoMonoWoff2 }") format("woff2"), url("${ robotoMonoWoff }") format("woff")`
+        }
+    } ]} />
+
+    <ThemeProvider theme={ props.muiTheme }>
         <CssBaseline />
-        <div className="yaws">
+
+        <div className={ props.className }>
             <AppInterfaces />
             <div className="game-ui">
                 <Board      model={props.model} controller={props.controller} scale={2.0} />
-                <Controls   board={props.model} controller={props.controller} />
+                {/* <Controls   board={props.model} controller={props.controller} /> */}
             </div>
         </div>
     </ThemeProvider>
-);
+</>;
+
+export const View = styled(Yaws)({
+    display:    'flex',
+    flexFlow:   'row nowrap',
+
+    '& .app-ui': { flexShrink: 0 },
+    '& .game-ui': {
+        flexGrow:       1,
+        height:         '100vh',
+
+        display:        'flex',
+        flexFlow:       'column nowrap',
+        alignItems:     'center',
+        justifyContent: 'center'
+    },
+    '& .board': { flexGrow: 0 }
+});
 
 export function init(board: IBoard, controller: IBoardController, containerId: string) {
     const container = document.getElementById(containerId);
 
-    scaleToViewport();
-    window.addEventListener('resize', scaleToViewport);
+    //scaleToViewport();
+    //window.addEventListener('resize', scaleToViewport);
 
     const light  = createMuiTheme({
         palette: {
@@ -72,7 +121,7 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
         }
     });
 
-    return () => ReactDOM.render(<Yaws model={board} controller={controller} theme={dark} />, container);
+    return () => ReactDOM.render(<View model={board} controller={controller} muiTheme={dark} />, container);
 }
 
 
@@ -90,7 +139,7 @@ function scaleToViewport() {
     
     const scale = Math.max(1, Math.min(2, vsize/vmin));
 
-    document.documentElement.style.setProperty('--yaws-scale', scale.toString());
+    //document.documentElement.style.setProperty('--yaws-scale', scale.toString());
 }
 
-export default hot(module)(Yaws);
+//export default hot(module)(View);
