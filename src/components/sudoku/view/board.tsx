@@ -7,7 +7,7 @@ import React from 'react';
 
 
 import { partialEq } from '@components/utilities/misc';
-import { experimentalStyled as styled } from '@material-ui/core/styles';
+import { experimentalStyled as styled, alpha } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
 
@@ -151,41 +151,27 @@ export default styled(Board)(
             marginRight:        '0.0625rem',
             marginBottom:       '0.0625rem',
             transition:         `background-color ${ theme.transitions.duration.short }ms ease`,
-            '& > div':          { position: 'absolute' },
-        
-            '& .value': {
-                color:      theme.palette.text.primary,
-                fontFamily: '"Cabin Condensed", sans-serif',
-                fontSize:   `${ 1.3125 * scale }rem`,
-                lineHeight: `${ 2.0000 * scale }rem`,
+
+            '& > div': { 
+                position:   'absolute',
                 width:      '100%',
                 height:     '100%'
             },
         
-            '& .invalid': {
-                color: `${ theme.palette.error.dark }`
+            '& > .value': {
+                color:      theme.palette.text.primary,
+                fontFamily: '"Cabin Condensed", sans-serif',
+                fontSize:   `${ 1.3125 * scale }rem`,
+                lineHeight: `${ 2.0000 * scale }rem`
             },
         
-            '& .notes': {
-                display: 'none'
-            },
-            
-            '&.c1.r1': { borderTopLeftRadius:        `${ 0.125 * scale }rem` },
-            '&.c9.r1': { borderTopRightRadius:       `${ 0.125 * scale }rem` },
-            '&.c1.r9': { borderBottomLeftRadius:     `${ 0.125 * scale }rem` },
-            '&.c9.r9': { borderBottomRightRadius:    `${ 0.125 * scale }rem` },
-
-            /* Separate grid boxes (columns and rows 3 and 6) */
-            '&.c3, &.c6': { marginRight:    `${ 0.1875 * scale }rem` },
-            '&.r3, &.r6': { marginBottom:   `${ 0.1875 * scale }rem` },
-
-            /* Remove borders and margins on the last column and row */
-            '&.c9': { marginRight:     0, borderRight:    0 },
-            '&.r9': { marginBottom:    0, borderBottom:   0 }
+            '& > .invalid.value': {
+                color: `${ theme.palette.error.dark }`
+            }
         },
 
         '& .cell.static': {
-            '& .value': {
+            '& > .value': {
                 boxSizing:          'border-box',
                 border:             `0.0625rem solid ${ theme.palette.action.selected }`,
                 backgroundColor:    `${ theme.palette.action.disabledBackground }`,
@@ -196,12 +182,44 @@ export default styled(Board)(
                 margin:             `${ 0.250 * scale }rem`
             },
     
-            '& .invalid': {
+            '& > .invalid.value': {
                 color:              theme.palette.text.primary,
                 backgroundColor:    `${ theme.palette.error.light }`,
                 borderColor:        `${ theme.palette.error.dark }`,
                 borderWidth:        `${ 0.0625 * scale }rem`,
                 lineHeight:         `${ 1.3125 * scale }rem`
+            },
+
+            '& > .notes': {
+                display: 'none'
+            }
+        },
+
+        '& .cell.editable': {
+            '& > .notes': {
+                display:                'grid',
+                gridTemplateColumns:    'repeat(3, 1fr)',
+                gridTemplateRows:       'repeat(3, 1fr)',
+                overflow:               'hidden',
+
+                '& .candidate': {
+                    lineHeight:    `${ 0.625 * scale }rem`,
+                    color:          alpha(theme.palette.text.secondary, 0),
+                    fontFamily:     '"Roboto Mono", monospace',
+                    fontSize:       `${ 0.625 + (0.8125 - 0.625) * (scale - 1.0) }rem`,
+                    borderRight:    `0.0625rem solid ${ alpha(theme.palette.divider, 0) }`,
+                    borderBottom:   `0.0625rem solid ${ alpha(theme.palette.divider, 0) }`,
+                
+                    transitionProperty:         'color, border',
+                    transitionDuration:         `${ theme.transitions.duration.short }ms`,
+                    transitionTimingFunction:   'ease',
+
+                    // '@media (hover: none) and (pointer: fine)': {
+                    //     color: theme.palette.text.secondary
+                    // }
+                },
+
+                //'@media (hover: none) and (pointer: fine)':
             }
         },
 
@@ -213,5 +231,20 @@ export default styled(Board)(
         '& .cell.cursor': {
             backgroundColor: `${ theme.palette.action.selected }`
         },
+
+        // Apply board inner radius to corner cells -- alternate way of doing this involves settings 
+        // the overflow property on the board, but that causes problems with small viewport sizes 
+        '& .cell.c1.r1': { borderTopLeftRadius:        `${ 0.125 * scale }rem` },
+        '& .cell.c9.r1': { borderTopRightRadius:       `${ 0.125 * scale }rem` },
+        '& .cell.c1.r9': { borderBottomLeftRadius:     `${ 0.125 * scale }rem` },
+        '& .cell.c9.r9': { borderBottomRightRadius:    `${ 0.125 * scale }rem` },
+
+        /* Separate grid boxes (columns and rows 3 and 6) */
+        '& .cell.c3, & .cell.c6': { marginRight:    `${ 0.1875 * scale }rem` },
+        '& .cell.r3, & .cell.r6': { marginBottom:   `${ 0.1875 * scale }rem` },
+
+        /* Remove borders and margins on the last column and row */
+        '& .cell.c9': { marginRight:     0, borderRight:    0 },
+        '& .cell.r9': { marginBottom:    0, borderBottom:   0 }
     })
 );
