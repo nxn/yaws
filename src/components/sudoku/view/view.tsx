@@ -23,6 +23,9 @@ import { Global } from '@emotion/react';
 type ViewProperties = {
     model:      IBoard,
     controller: IBoardController,
+    // Cannot be named 'theme', otherwise it will be overwritten by material ui's 'styled' function which uses that name
+    // to propagate any existing theme to the style object. As no theme has been set yet, it gets overwritten by
+    // 'undefined'.
     muiTheme:   Theme,
     className?: string
 };

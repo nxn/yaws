@@ -8,6 +8,7 @@ import React from 'react';
 
 import { partialEq } from '@components/utilities/misc';
 import { experimentalStyled as styled, alpha } from '@material-ui/core/styles';
+import { grey } from '@material-ui/core/colors';
 import clsx from 'clsx';
 
 
@@ -163,9 +164,9 @@ export default styled(Board)(
                 fontSize:   `${ 1.3125 * scale }rem`,
                 lineHeight: `${ 2.0000 * scale }rem`
             },
-        
-            '& > .invalid.value': {
-                color: `${ theme.palette.error.dark }`
+
+            '& .invalid': {
+                color: `${ theme.palette.error.dark } !important`
             }
         },
 
@@ -201,6 +202,7 @@ export default styled(Board)(
                 gridTemplateRows:       'repeat(3, 1fr)',
                 overflow:               'hidden',
 
+                // Color and Border fully transparent by default
                 '& .candidate': {
                     lineHeight:    `${ 0.625 * scale }rem`,
                     color:          alpha(theme.palette.text.secondary, 0),
@@ -213,22 +215,40 @@ export default styled(Board)(
                     transitionDuration:         `${ theme.transitions.duration.short }ms`,
                     transitionTimingFunction:   'ease',
 
-                    // '@media (hover: none) and (pointer: fine)': {
-                    //     color: theme.palette.text.secondary
-                    // }
+                    '&.selected': { color: theme.palette.text.primary }
                 },
 
-                //'@media (hover: none) and (pointer: fine)':
+                // Show all candidates and borders when .notes is hovered; use media queries to prevent hover state on
+                // touch/mobile devices.
+                '&:hover .candidate': {
+                    '@media(hover: hover) and (pointer: fine)': {
+                        color:          theme.palette.text.secondary,
+                        borderRight:   `0.0625rem solid ${ theme.palette.divider }`,
+                        borderBottom:  `0.0625rem solid ${ theme.palette.divider }`
+                    },
+
+                    '&.selected': { color: theme.palette.text.primary }
+                },
+
+                // When specific candidate is hovered over highlight it; use media queries to prevent hover state on
+                // touch/mobile devices.
+                '& .candidate:hover': {
+                    '@media(hover: hover) and (pointer: fine)': {
+                        color: theme.palette.mode === 'dark' 
+                            ? theme.palette.secondary.dark 
+                            : theme.palette.secondary.main
+                    }
+                }
             }
         },
 
         '& .cell.highlight': {
-            backgroundColor:    `${ theme.palette.action.hover }`,
+            backgroundColor:    `${ theme.palette.mode === 'dark' ? '#3a3a3a' : grey[100] }`,
             transition:         `background-color ${ theme.transitions.duration.short }ms ease`
         },
     
         '& .cell.cursor': {
-            backgroundColor: `${ theme.palette.action.selected }`
+            backgroundColor: `${ theme.palette.mode === 'dark' ? '#333' : grey[300] }`
         },
 
         // Apply board inner radius to corner cells -- alternate way of doing this involves settings 
@@ -243,7 +263,9 @@ export default styled(Board)(
         '& .cell.r3, & .cell.r6': { marginBottom:   `${ 0.1875 * scale }rem` },
 
         /* Remove borders and margins on the last column and row */
-        '& .cell.c9': { marginRight:     0, borderRight:    0 },
-        '& .cell.r9': { marginBottom:    0, borderBottom:   0 }
+        '& .cell.c9, & .last-column':   { marginRight:  0, borderRight:  '0 !important' },
+        '& .cell.r9, & .last-row':      { marginBottom: 0, borderBottom: '0 !important' },
+
+        '& .hidden': { display: 'none !important' }
     })
 );

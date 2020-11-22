@@ -70,7 +70,7 @@ export default function NewPuzzleDialog(props: NewPuzzleProps) {
 						<FormControlLabel value="easy" key="easy" control={<Radio />} label="Easy" />
 						<FormControlLabel value="medium" key="medium" control={<Radio />} label="Medium" />
 						<FormControlLabel value="hard" key="hard" control={<Radio />} label="Hard" />
-						<FormControlLabel value="custom" key="custom" control={<CustomRadio />} label="Custom" />
+						<FormControlLabel value="custom" key="custom" control={<CustomRadio />} label="Advanced" />
 					</RadioGroup>
 				</DialogContent>
 
