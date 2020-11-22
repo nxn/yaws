@@ -40,16 +40,16 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
         palette: {
             mode: 'light',
             primary: {
-                light: '#58a5f0',
-                main: '#0277bd',
-                dark: '#004c8c',
+                light: '#62727b',
+                main: '#37474f',
+                dark: '#102027',
                 contrastText: '#fff',
             },
             secondary: {
-                light: '#ffc046',
-                main: '#ff8f00',
-                dark: '#c56000',
-                contrastText: '#000',
+                light: '#666ad1',
+                main: '#303f9f',
+                dark: '#001970',
+                contrastText: '#fff',
             },
         }
     });
@@ -64,15 +64,15 @@ export function init(board: IBoard, controller: IBoardController, containerId: s
                 contrastText: '#000',
             },
             secondary: {
-                light: '#ffffe4',
-                main: '#ffe0b2',
-                dark: '#cbae82',
+                light: '#e6ceff',
+                main: '#b39ddb',
+                dark: '#836fa9',
                 contrastText: '#000',
             },
         }
     });
 
-    return () => ReactDOM.render(<Yaws model={board} controller={controller} theme={dark} />, container);
+    return () => ReactDOM.render(<Yaws model={board} controller={controller} theme={light} />, container);
 }
 
 

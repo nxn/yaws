@@ -75,10 +75,10 @@ export default function NewPuzzleDialog(props: NewPuzzleProps) {
 				</DialogContent>
 
 				<DialogActions>
-					<Button autoFocus onClick={ props.onClose }>
+					<Button color="primary" autoFocus onClick={ props.onClose }>
 						Cancel
 					</Button>
-					<Button color="primary" onClick={ props.onClose }>
+					<Button color="secondary" onClick={ props.onClose }>
 						Ok
 					</Button>
 				</DialogActions>
