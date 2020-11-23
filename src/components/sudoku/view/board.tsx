@@ -27,7 +27,7 @@ type BoardState = {
     cursorListener?:    IEventListenerKey
 };
 
-class Board extends React.Component<BoardProperties, BoardState> {
+export class Board extends React.Component<BoardProperties, BoardState> {
     constructor(props: BoardProperties) {
         super(props);
         this.state = {
@@ -172,6 +172,7 @@ export default styled(Board)(
 
         '& .cell.static': {
             '& > .value': {
+                color:              theme.palette.text.secondary,
                 boxSizing:          'border-box',
                 border:             `0.0625rem solid ${ theme.palette.action.selected }`,
                 backgroundColor:    `${ theme.palette.action.disabledBackground }`,

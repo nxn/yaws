@@ -58,7 +58,7 @@ export const Yaws = (props: ViewProperties) => <>
             <AppInterfaces />
             <div className="game-ui">
                 <Board      model={props.model} controller={props.controller} scale={2.0} />
-                {/* <Controls   board={props.model} controller={props.controller} /> */}
+                <Controls   board={props.model} controller={props.controller} scale={2.0} />
             </div>
         </div>
     </ThemeProvider>
@@ -76,7 +76,16 @@ export const View = styled(Yaws)({
         display:        'flex',
         flexFlow:       'column nowrap',
         alignItems:     'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+
+        '@media (orientation: landscape)': {
+            flexDirection:  'row',
+            justifyContent: 'space-evenly'
+        },
+
+        '@media (orientation: portrait)': {
+            flexDirection: 'column'
+        }
     },
     '& .board': { flexGrow: 0 }
 });
