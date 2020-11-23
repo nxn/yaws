@@ -166,7 +166,7 @@ export default styled(Board)(
             },
 
             '& .invalid': {
-                color: `${ theme.palette.error.dark } !important`
+                color: `${ theme.palette.error.main } !important`
             }
         },
 
@@ -183,7 +183,7 @@ export default styled(Board)(
             },
     
             '& > .invalid.value': {
-                color:              theme.palette.text.primary,
+                color:              `${ theme.palette.error.dark } !important`,
                 backgroundColor:    `${ theme.palette.error.light }`,
                 borderColor:        `${ theme.palette.error.dark }`,
                 borderWidth:        `${ 0.0625 * scale }rem`,
@@ -196,6 +196,17 @@ export default styled(Board)(
         },
 
         '& .cell.editable': {
+            '& > .invalid.value': {
+                backgroundImage: `linear-gradient(
+                    -135deg,
+                    transparent                     ${ 0.25000 * scale }rem, 
+                    ${ theme.palette.error.main }   ${ 0.25000 * scale }rem,
+                    ${ theme.palette.error.main }   ${ 0.46875 * scale }rem,
+                    transparent                     ${ 0.46875 * scale }rem,
+                    transparent                     ${ 2.00000 * scale }rem
+                )`
+            },
+
             '& > .notes': {
                 display:                'grid',
                 gridTemplateColumns:    'repeat(3, 1fr)',

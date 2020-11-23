@@ -16,7 +16,6 @@ import robotoMonoWoff2      from './fonts/robotomono-bold-digits.woff2';
 import AppInterfaces from './interfaces/interfaces';
 
 import { experimentalStyled as styled } from '@material-ui/core/styles';
-import clsx from 'clsx';
 import { Global } from '@emotion/react';
 
 
