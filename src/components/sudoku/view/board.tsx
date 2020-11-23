@@ -141,7 +141,7 @@ export default styled(Board)(
 
         backgroundColor:        theme.palette.divider,
         border:                 `${ 0.1875 * scale }rem solid ${ theme.palette.action.hover }`,
-        borderRadius:           `${ 0.25 * scale }rem`,
+        borderRadius:           `${ 0.2500 * scale }rem`,
 
         '& .cell': {
             position:           'relative',
@@ -190,9 +190,7 @@ export default styled(Board)(
                 lineHeight:         `${ 1.3125 * scale }rem`
             },
 
-            '& > .notes': {
-                display: 'none'
-            }
+            '& > .notes': { display: 'none' }
         },
 
         '& .cell.editable': {
