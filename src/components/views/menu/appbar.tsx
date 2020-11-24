@@ -9,21 +9,18 @@ import Divider from '@material-ui/core/Divider';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
-import GridIcon from '@material-ui/icons/GridOn';
+
     import NewIcon from '@material-ui/icons/AddCircleOutline';
     import OpenIcon from '@material-ui/icons/FolderOpen';
     import SaveIcon from '@material-ui/icons/SaveAlt';
     import ResetIcon from '@material-ui/icons/Replay';
     import ShareIcon from '@material-ui/icons/Share';
-import SettingsIcon from '@material-ui/icons/Settings';
+
 
 import EditIcon from '@material-ui/icons/Edit';
 import ColorIcon from '@material-ui/icons/PaletteOutlined';
 import HistoryIcon from '@material-ui/icons/History';
 import TouchIcon from '@material-ui/icons/TouchApp';
-
-import HelpIcon from '@material-ui/icons/Help';
-import PersonIcon from '@material-ui/icons/Person';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -33,7 +30,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
-const drawerWidth = 200;
+const drawerWidth = 180;
 
 const useDrawerStyles = makeStyles((theme) => ({
     drawer: {
@@ -94,13 +91,12 @@ const MenuGroupItem = withStyles((theme) => ({
     }
 }))(ListItem);
 
-type AppMenuProps = {
-    selectedView: string,
-    onSetView: (view: string) => void,
+type AppBarProperties = {
+    children: React.ReactNode,
     className?: string
 }
 
-export default function AppMenu(props: AppMenuProps) {
+export default function AppBar(props: AppBarProperties) {
     const drawerClasses = useDrawerStyles();
 
     const [open, setOpen] = React.useState(false);
@@ -157,27 +153,7 @@ export default function AppMenu(props: AppMenuProps) {
 
                 <Divider />
 
-                <MenuGroup>
-                    <MenuGroupItem button selected={ props.selectedView === 'puzzle' } key="puzzle" data-view="puzzle" onClick={ setView }>
-                        <ListItemIcon><GridIcon /></ListItemIcon>
-                        <ListItemText primary="Puzzle" />
-                    </MenuGroupItem>
-
-                    <MenuGroupItem button selected={ props.selectedView === 'account' } key="account" data-view="account" onClick={ setView }>
-                        <ListItemIcon><PersonIcon /></ListItemIcon>
-                        <ListItemText primary="Account" />
-                    </MenuGroupItem>
-
-                    <MenuGroupItem button selected={ props.selectedView === 'settings' } key="settings" data-view="settings" onClick={ setView }>
-                        <ListItemIcon><SettingsIcon /></ListItemIcon>
-                        <ListItemText primary="Settings" />
-                    </MenuGroupItem>
-
-                    <MenuGroupItem button selected={ props.selectedView === 'help' } key="help" data-view="help" onClick={ setView }>
-                        <ListItemIcon><HelpIcon /></ListItemIcon>
-                        <ListItemText primary="Help" />
-                    </MenuGroupItem>
-                </MenuGroup>
+                <List>{ props.children }</List>
 
                 <Divider />
 
@@ -201,7 +177,7 @@ export default function AppMenu(props: AppMenuProps) {
                     </MenuGroupItem>
                     <MenuGroupItem button key="touch" selected={ touch } onClick={ toggleTouch }>
                         <ListItemIcon><TouchIcon /></ListItemIcon>
-                        <ListItemText primary="Touch Menu" />
+                        <ListItemText primary="Controls" />
                     </MenuGroupItem>
 
                 </MenuGroup>

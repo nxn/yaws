@@ -24,7 +24,7 @@ const Title = styled(Box)({
 export const HelpView = (props: HelpViewProperties) => (
     <div className={ clsx('view', props.className) }>
         <Title>
-            <Typography variant="h2" component="h1" gutterBottom>Help</Typography>
+            <Typography variant="h2" component="h1" gutterBottom>Help: General Information</Typography>
         </Title>
 
         <Section>
@@ -46,21 +46,25 @@ export const HelpView = (props: HelpViewProperties) => (
                 <strong> H / J / K / L</strong> to move the cursor by a single cell. Holding <strong>Shift
                 </strong> while pressing any direction key will move the cursor over by a box.
             </Typography>
+            <br />
             <Typography variant="body1" gutterBottom>
                 To mark a candidate within a cell, first navigate to the cell, then press the <strong>number key
                 </strong> of the digit you'd like to mark as a candidate. This can be done using either the 
                 keyboard's <strong>standard number keys</strong>, or with its <strong>number pad</strong>. 
                 Pressing the number again will remove that candidate from the cell.
             </Typography>
+            <br />
             <Typography variant="body1" gutterBottom>
                 Once you are confident that you have narrowed down a given cell to a single value, you can set 
                 that value by holding <strong>Shift</strong> while inputting the desired number.
             </Typography>
+            <br />
             <Typography variant="body1" gutterBottom>
                 Using <strong>X</strong>, <strong>Backspace</strong> or <strong>Delete</strong> will clear the 
                 current cell of its value. If there is no set value, it will clear all marked candidates within 
                 the cell instead.
             </Typography>
+            <br />
             <Typography variant="body1" gutterBottom>
                 If any errors are present on the grid, pressing <strong>E</strong> will cause the cursor to
                 cycle through them. <strong>Shift + E</strong> can be used to move in the opposite direction.

@@ -26,7 +26,7 @@ export const PuzzleView = (props: PuzzleViewProperties) => {
         <div className={ clsx('view', props.className) }>
             <Board      model={ props.model } controller={ props.controller } scale={ scale } />
             <Controls   board={ props.model } controller={ props.controller } visible={ displayControls }/>
-            <SidePanel  visible={ displaySidePanel } />
+            {/* <SidePanel  visible={ displaySidePanel } /> */}
         </div>
     );
 }

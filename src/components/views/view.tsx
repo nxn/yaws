@@ -1,7 +1,7 @@
 import type { IBoardController } from '@components/sudoku/controller';
 import type { IBoard } from '@components/sudoku/board';
 
-import AppMenu      from './menu/appmenu';
+import AppBar       from './menu/appbar';
 import PuzzleView   from './puzzle/puzzleview';
 import AccountView  from './account/accountview';
 import SettingsView from './settings/settingsview';
@@ -19,6 +19,14 @@ import cabinCondensedWoff2  from './fonts/cabincondensed-bold-digits.woff2';
 import robotoMonoWoff       from './fonts/robotomono-bold-digits.woff';
 import robotoMonoWoff2      from './fonts/robotomono-bold-digits.woff2';
 
+import GridIcon from '@material-ui/icons/GridOn';
+import PersonIcon from '@material-ui/icons/Person';
+import SettingsIcon from '@material-ui/icons/Settings';
+import HelpIcon from '@material-ui/icons/Help';
+
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Global } from '@emotion/react';
@@ -37,9 +45,9 @@ type ViewProperties = {
 export const Yaws = (props: ViewProperties) => {
     const [view, setView] = React.useState('puzzle');
 
-    const switchView = (view: string) => {
-        setView(view);
-    }
+    const switchView = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        setView(event.currentTarget.dataset.view);
+    };
 
     return <>
         <Global styles={[ {
@@ -67,7 +75,28 @@ export const Yaws = (props: ViewProperties) => {
             <CssBaseline />
 
             <div className={ clsx('yaws-root', props.className) }>
-                <AppMenu selectedView={ view } onSetView={ switchView } />
+                <AppBar>
+                    <ListItem button key="puzzle" selected={ view === 'puzzle' } data-view="puzzle" onClick={ switchView }>
+                        <ListItemIcon><GridIcon /></ListItemIcon>
+                        <ListItemText primary="Puzzle" />
+                    </ListItem>
+
+                    <ListItem button disabled key="account" selected={ view === 'account' } data-view="account" onClick={ switchView }>
+                        <ListItemIcon><PersonIcon /></ListItemIcon>
+                        <ListItemText primary="Account" />
+                    </ListItem>
+
+                    <ListItem button key="settings" selected={ view === 'settings' } data-view="settings" onClick={ switchView }>
+                        <ListItemIcon><SettingsIcon /></ListItemIcon>
+                        <ListItemText primary="Settings" />
+                    </ListItem>
+
+                    <ListItem button key="help" selected={ view === 'help' } data-view="help" onClick={ switchView }>
+                        <ListItemIcon><HelpIcon /></ListItemIcon>
+                        <ListItemText primary="Help" />
+                    </ListItem>
+                </AppBar>
+
                 <div className="views">
                     <PuzzleView     className={ clsx(view !== 'puzzle' && 'hidden') } model={ props.model } controller={ props.controller } />
                     <AccountView    className={ clsx(view !== 'account' && 'hidden') } />
