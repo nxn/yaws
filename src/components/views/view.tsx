@@ -43,9 +43,24 @@ type ViewProperties = {
 export const Yaws = (props: ViewProperties) => {
     const [view, setView] = React.useState(0);
 
-    const switchView = (_: any, view: number) => {
-        setView(view);
+    const switchView = (index: number) => {
+        setView(index);
     };
+
+    const navItems = [{
+        icon: <GridIcon />,
+        label: "Puzzle"
+    },{
+        icon: <AccountIcon />,
+        label: "Account",
+        disabled: true
+    },{
+        icon: <SettingsIcon />,
+        label: "Settings"
+    },{
+        icon: <HelpIcon />,
+        label: "Help"
+    }];
 
     return <>
         <Global styles={[ {
@@ -73,14 +88,7 @@ export const Yaws = (props: ViewProperties) => {
             <CssBaseline />
 
             <div className={ clsx('yaws-root', props.className) }>
-                <AppBar>
-                    <Tabs orientation="vertical" value={ view } onChange={ switchView } aria-label="Navigation">
-                        <Tab icon={<GridIcon />} label={<TabLabel>Puzzle</TabLabel>} />
-                        <Tab icon={<AccountIcon />} label={<TabLabel>Account</TabLabel>} disabled />
-                        <Tab icon={<SettingsIcon />} label={<TabLabel>Settings</TabLabel>} />
-                        <Tab icon={<HelpIcon />} label={<TabLabel>Help</TabLabel>} />
-                    </Tabs>
-                </AppBar>
+                <AppBar tiny selectedNavIndex={ view } navItems={ navItems } onNavItemClick={ switchView } />
 
                 <div className="views">
                     <PuzzleView   className={ clsx(view !== 0 && 'hidden') } model={ props.model } controller={ props.controller } />
