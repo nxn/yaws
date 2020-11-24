@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, withStyles, useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
-import { alpha } from '@material-ui/core/styles';
+import { makeStyles, withStyles, experimentalStyled as styled } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
@@ -49,7 +49,8 @@ export const AppBarTab = styled(MuiTab)(({theme}) => ({
     // Ideally this class should not be applied
     '&.MuiTab-labelIcon': {
         minHeight: '48px',
-        '& .MuiTab-wrapper > *:first-child': {
+        // Change first-child to first-of-type due to compile time warning
+        '& .MuiTab-wrapper > *:first-of-type': {
             marginBottom: 0
         }
     },
@@ -68,6 +69,10 @@ export const AppBarTab = styled(MuiTab)(({theme}) => ({
         margin: theme.spacing(0, 2),
     }
 }));
+
+export const AppBarTabLabel = (props: { children: React.ReactChild }) => (
+    <Typography component="span" variant="body1">{ props.children }</Typography>
+);
 
 const useDrawerStyles = makeStyles((theme) => ({
     drawer: {

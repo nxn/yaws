@@ -7,10 +7,8 @@ import AccountView  from './account/accountview';
 import SettingsView from './settings/settingsview';
 import HelpView     from './help/helpview';
 
-
-import AppBar, { AppBarTab as Tab } from './menu/appbar';
 import Tabs from '@material-ui/core/Tabs';
-import Typography from '@material-ui/core/Typography';
+import AppBar, { AppBarTab as Tab, AppBarTabLabel as TabLabel } from './menu/appbar';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -31,10 +29,6 @@ import HelpIcon from '@material-ui/icons/Help';
 
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Global } from '@emotion/react';
-
-const TabLabel = (props: { children: React.ReactChild }) => (
-    <Typography component="span" variant="body1">{ props.children }</Typography>
-);
 
 type ViewProperties = {
     model:      IBoard,
