@@ -20,8 +20,10 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import EditIcon from '@material-ui/icons/Edit';
 import ColorIcon from '@material-ui/icons/PaletteOutlined';
 import HistoryIcon from '@material-ui/icons/History';
+import TouchIcon from '@material-ui/icons/TouchApp';
 
 import HelpIcon from '@material-ui/icons/Help';
+import PersonIcon from '@material-ui/icons/Person';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -31,7 +33,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
-const drawerWidth = 180;
+const drawerWidth = 200;
 
 const useDrawerStyles = makeStyles((theme) => ({
     drawer: {
@@ -92,17 +94,17 @@ const MenuGroupItem = withStyles((theme) => ({
     }
 }))(ListItem);
 
-export interface DialogMenuProps {
-    onItemClick: (dialog: string) => void;
+type AppMenuProps = {
+    selectedView: string,
+    onSetView: (view: string) => void,
+    className?: string
 }
 
-export default function AppMenu(props: DialogMenuProps) {
+export default function AppMenu(props: AppMenuProps) {
     const drawerClasses = useDrawerStyles();
 
     const [open, setOpen] = React.useState(false);
-    const toggleNavDrawer = () => {
-        setOpen(!open);
-    }
+    const toggleNavDrawer = () => setOpen(!open);
 
     const [subMenu, setSubMenu] = React.useState({ id: null, target: null });
     const subMenuOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -121,17 +123,17 @@ export default function AppMenu(props: DialogMenuProps) {
     };
 
     const [history, setHistory] = React.useState(false);
-    const toggleHistory = () => {
-        setHistory(!history);
-    }
+    const toggleHistory = () => setHistory(!history);
 
-    const openDialog = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-        props.onItemClick(event.currentTarget.dataset.dialog);
-        subMenuClose();
+    const [touch, setTouch] = React.useState(true);
+    const toggleTouch = () => setTouch(!touch);
+
+    const setView = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        props.onSetView(event.currentTarget.dataset.view);
     };
 
     return (
-        <>
+        <div className={ clsx('app-menu', props.className) }>
             <Drawer variant="permanent"
                 className={clsx(drawerClasses.drawer, {
                     [drawerClasses.drawerOpen]: open,
@@ -156,17 +158,24 @@ export default function AppMenu(props: DialogMenuProps) {
                 <Divider />
 
                 <MenuGroup>
-                    <MenuGroupItem button key="puzzle" data-submenu="puzzle-sub-menu" onClick={ subMenuOpen }>
+                    <MenuGroupItem button selected={ props.selectedView === 'puzzle' } key="puzzle" data-view="puzzle" onClick={ setView }>
                         <ListItemIcon><GridIcon /></ListItemIcon>
                         <ListItemText primary="Puzzle" />
                     </MenuGroupItem>
-                    <MenuGroupItem button key="history" selected={ history } onClick={ toggleHistory }>
-                        <ListItemIcon><HistoryIcon /></ListItemIcon>
-                        <ListItemText primary="History" />
+
+                    <MenuGroupItem button selected={ props.selectedView === 'account' } key="account" data-view="account" onClick={ setView }>
+                        <ListItemIcon><PersonIcon /></ListItemIcon>
+                        <ListItemText primary="Account" />
                     </MenuGroupItem>
-                    <MenuGroupItem button key="settings" disabled={ true }>
+
+                    <MenuGroupItem button selected={ props.selectedView === 'settings' } key="settings" data-view="settings" onClick={ setView }>
                         <ListItemIcon><SettingsIcon /></ListItemIcon>
                         <ListItemText primary="Settings" />
+                    </MenuGroupItem>
+
+                    <MenuGroupItem button selected={ props.selectedView === 'help' } key="help" data-view="help" onClick={ setView }>
+                        <ListItemIcon><HelpIcon /></ListItemIcon>
+                        <ListItemText primary="Help" />
                     </MenuGroupItem>
                 </MenuGroup>
 
@@ -186,10 +195,15 @@ export default function AppMenu(props: DialogMenuProps) {
                 <Divider />
 
                 <MenuGroup>
-                    <MenuGroupItem button key="help">
-                        <ListItemIcon><HelpIcon /></ListItemIcon>
-                        <ListItemText primary="Help" />
+                    <MenuGroupItem button key="history" selected={ history } onClick={ toggleHistory }>
+                        <ListItemIcon><HistoryIcon /></ListItemIcon>
+                        <ListItemText primary="History" />
                     </MenuGroupItem>
+                    <MenuGroupItem button key="touch" selected={ touch } onClick={ toggleTouch }>
+                        <ListItemIcon><TouchIcon /></ListItemIcon>
+                        <ListItemText primary="Touch Menu" />
+                    </MenuGroupItem>
+
                 </MenuGroup>
             </Drawer>
 
@@ -200,7 +214,7 @@ export default function AppMenu(props: DialogMenuProps) {
                 open={ subMenu.id === 'puzzle-sub-menu' }
                 onClose={ subMenuClose }>
 
-                <MenuItem data-dialog="new-puzzle" onClick={ openDialog }>
+                <MenuItem data-dialog="new-puzzle" onClick={ setView }>
                     <ListItemIcon><NewIcon /></ListItemIcon>
                     <ListItemText primary="New" />
                 </MenuItem>
@@ -225,6 +239,6 @@ export default function AppMenu(props: DialogMenuProps) {
                     <ListItemText primary="Share" />
                 </MenuItem>
             </DrawerSubMenu>
-        </>
+        </div>
     );
 }

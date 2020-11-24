@@ -1,9 +1,12 @@
-import type { ICellController } from '../controller';
-import type { ICell } from '../cell';
-import { IEventListenerKey, CommonEvents } from '../events';
-import { IBoard, BoardEvents } from '../board';
+import type { ICellController } from '@components/sudoku/controller';
+import type { ICell } from '@components/sudoku/cell';
+import { IEventListenerKey, CommonEvents } from '@components/sudoku/events';
+import { IBoard, BoardEvents } from '@components/sudoku/board';
+
+import { createPointerDoubleClickHandler } from '@components/sudoku/pointer';
+
 import Candidate from "./candidate";
-import { createPointerDoubleClickHandler } from '../pointer';
+
 import { partialEq } from '@components/utilities/misc';
 import React from 'react';
 

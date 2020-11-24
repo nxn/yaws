@@ -4,7 +4,7 @@ import { Board }            from '@components/sudoku/board';
 import { StateManager }     from '@components/sudoku/statemanager';
 import { BoardController }  from '@components/sudoku/controller';
 import { KeyboardHandler }  from '@components/sudoku/keyboard';
-import { init as initView } from '@components/sudoku/view/view';
+import { init as initView } from '@components/views/view';
 import { init as initPage } from '@components/page/page';
 import { storage, proxies } from '@components/storage/storage';
 import { waffleIron }       from '@components/web-workers/waffle-iron';

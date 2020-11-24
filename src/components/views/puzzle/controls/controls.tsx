@@ -1,8 +1,10 @@
-import type { ICellController } from '../controller';
-import type { IBoard } from '../board';
+import type { ICellController } from '@components/sudoku/controller';
+import type { IBoard } from '@components/sudoku/board';
+
 import { ValueButtons, NoteButtons } from './buttons';
+//import icons from './images/icons.svg';
+
 import React from 'react';
-import icons from './images/icons.svg';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import IconClear from '@material-ui/icons/Clear';
@@ -12,7 +14,7 @@ import clsx from 'clsx';
 type ControlProperties = { 
     board:      IBoard,
     controller: ICellController,
-    scale:      number,
+    visible?:   boolean,
     className?: string
 };
 
@@ -49,7 +51,7 @@ export class Controls extends React.Component<ControlProperties, any> {
 }
 
 export default styled(Controls)(
-    ({theme, scale}) => ({
+    ({theme}) => ({
         display: 'grid',
         gap: '2rem',
         '& .values, & .notes': {

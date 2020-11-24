@@ -1,10 +1,16 @@
-import type { IBoardController } from '../controller';
-import type { IBoard } from '../board';
-import Board from './board';
-import Controls from './controls';
+import type { IBoardController } from '@components/sudoku/controller';
+import type { IBoard } from '@components/sudoku/board';
+
+import AppMenu      from './menu/appmenu';
+import PuzzleView   from './puzzle/puzzleview';
+import AccountView  from './account/accountview';
+import SettingsView from './settings/settingsview';
+import HelpView     from './help/helpview';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { hot } from "react-hot-loader";
+import { hot } from 'react-hot-loader';
+import clsx from 'clsx';
 import { Theme, ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
@@ -13,7 +19,6 @@ import cabinCondensedWoff2  from './fonts/cabincondensed-bold-digits.woff2';
 import robotoMonoWoff       from './fonts/robotomono-bold-digits.woff';
 import robotoMonoWoff2      from './fonts/robotomono-bold-digits.woff2';
 
-import AppInterfaces from './interfaces/interfaces';
 
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Global } from '@emotion/react';
@@ -29,65 +34,59 @@ type ViewProperties = {
     className?: string
 };
 
-export const Yaws = (props: ViewProperties) => <>
-    <Global styles={[ {
-        ':focus':               { outline: 'none' },
-        '::-moz-focus-inner':   { border: 0 }
-    }, {
-        '@font-face': {
-            fontFamily: '"Cabin Condensed"',
-            fontStyle: 'normal',
-            fontWeight: 700,
-            fontDisplay: 'swap',
-            src: `url("${ cabinCondensedWoff2 }") format("woff2"), url("${ cabinCondensedWoff }") format("woff")`
-        }
-    }, {
-        '@font-face':  {
-            fontFamily: '"Roboto Mono"',
-            fontStyle: 'normal',
-            fontWeight: 700,
-            fontDisplay: 'swap',
-            src: `url("${ robotoMonoWoff2 }") format("woff2"), url("${ robotoMonoWoff }") format("woff")`
-        }
-    } ]} />
+export const Yaws = (props: ViewProperties) => {
+    const [view, setView] = React.useState('puzzle');
 
-    <ThemeProvider theme={ props.muiTheme }>
-        <CssBaseline />
+    const switchView = (view: string) => {
+        setView(view);
+    }
 
-        <div className={ props.className }>
-            <AppInterfaces />
-            <div className="game-ui">
-                <Board      model={props.model} controller={props.controller} scale={2.0} />
-                <Controls   board={props.model} controller={props.controller} scale={2.0} />
+    return <>
+        <Global styles={[ {
+            ':focus':               { outline: 'none' },
+            '::-moz-focus-inner':   { border: 0 }
+        }, {
+            '@font-face': {
+                fontFamily: '"Cabin Condensed"',
+                fontStyle: 'normal',
+                fontWeight: 700,
+                fontDisplay: 'swap',
+                src: `url("${ cabinCondensedWoff2 }") format("woff2"), url("${ cabinCondensedWoff }") format("woff")`
+            }
+        }, {
+            '@font-face':  {
+                fontFamily: '"Roboto Mono"',
+                fontStyle: 'normal',
+                fontWeight: 700,
+                fontDisplay: 'swap',
+                src: `url("${ robotoMonoWoff2 }") format("woff2"), url("${ robotoMonoWoff }") format("woff")`
+            }
+        } ]} />
+
+        <ThemeProvider theme={ props.muiTheme }>
+            <CssBaseline />
+
+            <div className={ clsx('yaws-root', props.className) }>
+                <AppMenu selectedView={ view } onSetView={ switchView } />
+                <div className="views">
+                    <PuzzleView     className={ clsx(view !== 'puzzle' && 'hidden') } model={ props.model } controller={ props.controller } />
+                    <AccountView    className={ clsx(view !== 'account' && 'hidden') } />
+                    <SettingsView   className={ clsx(view !== 'settings' && 'hidden') } />
+                    <HelpView       className={ clsx(view !== 'help' && 'hidden') } />
+                </div>
             </div>
-        </div>
-    </ThemeProvider>
-</>;
+        </ThemeProvider>
+    </>;
+}
 
 export const View = styled(Yaws)({
     display:    'flex',
     flexFlow:   'row nowrap',
 
-    '& .app-ui': { flexShrink: 0 },
-    '& .game-ui': {
-        flexGrow:       1,
-        height:         '100vh',
-
-        display:        'flex',
-        flexFlow:       'column nowrap',
-        alignItems:     'center',
-        justifyContent: 'center',
-
-        '@media (orientation: landscape)': {
-            flexDirection:  'row',
-            justifyContent: 'space-evenly'
-        },
-
-        '@media (orientation: portrait)': {
-            flexDirection: 'column'
-        }
-    },
-    '& .board': { flexGrow: 0 }
+    '& .app-menu':      { flexShrink: 0 },
+    '& .views':         { flexGrow: 1 },
+    //'& .views > .view': { height: '100vh' },
+    '& .hidden':        { display: 'none' }
 });
 
 export function init(board: IBoard, controller: IBoardController, containerId: string) {
