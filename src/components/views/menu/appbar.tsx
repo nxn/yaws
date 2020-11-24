@@ -42,8 +42,8 @@ export const AppBarTab = styled(MuiTab)(({theme}) => ({
         backgroundColor: theme.palette.action.selected
     },
     '&.MuiTab-root': {
-        padding: '0px',
-        textTransform: 'none'
+        padding: 'initial',
+        textTransform: 'initial'
     },
 
     // Ideally this class should not be applied
@@ -51,14 +51,14 @@ export const AppBarTab = styled(MuiTab)(({theme}) => ({
         minHeight: '48px',
         // Change first-child to first-of-type due to compile time warning
         '& .MuiTab-wrapper > *:first-of-type': {
-            marginBottom: 0
+            marginBottom: 'initial'
         }
     },
 
     '& .MuiTab-wrapper': {
         flexDirection: 'row',
-        alignItems: 'normal',
-        justifyContent: 'normal'
+        alignItems: 'initial',
+        justifyContent: 'initial'
     },
 
     // Margin changes so that icons and text are aligned within appbar

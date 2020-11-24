@@ -79,19 +79,28 @@ export default styled(Controls)(
             },
             '&:active, &:focus': {
                 boxShadow: 'none',
-            }
+            },
+
+            '@media (orientation: landscape)': {
+                width: 'auto'
+            },
+            '@media (orientation: portrait)': {
+                height: 'auto',
+                width: '48px' // extra restriction due to using variant="extended" -- stretches width due to content
+            },
         },
 
         '@media (orientation: landscape)': {
             gridTemplateAreas: `
-                'values'
-                'clear'
-                'notes'`
+                "values"
+                "clear"
+                "notes"
+            `
         },
 
         '@media (orientation: portrait)': {
             marginTop:          '2rem',
-            gridTemplateAreas:  'values clear notes'
+            gridTemplateAreas:  '"values clear notes"'
         },
     })
 );
