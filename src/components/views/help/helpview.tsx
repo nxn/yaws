@@ -5,6 +5,7 @@ import { experimentalStyled as styled } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 import clsx from 'clsx';
 
 type HelpViewProperties = {
@@ -32,8 +33,8 @@ export const HelpView = (props: HelpViewProperties) => (
             <Typography variant="body1" gutterBottom>
                 The objective is to fill the 9×9 grid with digits so that each column, each row, and each of the
                 nine 3×3 subgrids contain all of the digits from 1 to 9. For more information regarding Sudoku,
-                feel free to <a href="https://en.wikipedia.org/wiki/Sudoku" target="_blank" rel="noreferrer">
-                visit the wikipedia article.</a>
+                feel free to <Link href="https://en.wikipedia.org/wiki/Sudoku" target="_blank" rel="noreferrer">
+                visit the wikipedia article.</Link>
             </Typography>
         </Section>
 
@@ -77,8 +78,8 @@ export const HelpView = (props: HelpViewProperties) => (
             <Typography variant="body1" gutterBottom>
                 <strong>YAWS</strong> is a personal project to create a modern and functional web-based sudoku
                 game using standard browser technologies. It is able to solve and generate challenging puzzles 
-                in a consistant manner via the use of <a href="https://webassembly.org/" target="_blank"
-                rel="noreferrer">Web Assembly</a> for its core code. The user interface was created using 
+                in a consistant manner via the use of <Link href="https://webassembly.org/" target="_blank"
+                rel="noreferrer">Web Assembly</Link> for its core code. The user interface was created using 
                 standard HTML5, CSS, and JavaScript techniques.
             </Typography>
         </Section>

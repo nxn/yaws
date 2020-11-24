@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles, withStyles, useTheme, experimentalStyled as styled } from '@material-ui/core/styles';
 import { alpha } from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
@@ -30,7 +30,44 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import MuiTab from '@material-ui/core/Tab';
+
 const drawerWidth = 180;
+
+// Material UI's tabs only support placing icons above labels -- even when using vertical alignment. It also adds a
+// mess of random padding and margin values to position things. The following tries to remove as much of that as
+// possible by overriding these styles back to default.
+export const AppBarTab = styled(MuiTab)(({theme}) => ({
+    '&.Mui-selected': {
+        backgroundColor: theme.palette.action.selected
+    },
+    '&.MuiTab-root': {
+        padding: '0px',
+        textTransform: 'none'
+    },
+
+    // Ideally this class should not be applied
+    '&.MuiTab-labelIcon': {
+        minHeight: '48px',
+        '& .MuiTab-wrapper > *:first-child': {
+            marginBottom: 0
+        }
+    },
+
+    '& .MuiTab-wrapper': {
+        flexDirection: 'row',
+        alignItems: 'normal',
+        justifyContent: 'normal'
+    },
+
+    // Margin changes so that icons and text are aligned within appbar
+    '& .MuiSvgIcon-root': {
+        margin: theme.spacing(0, 2),
+    },
+    '& .MuiTypography-root': {
+        margin: theme.spacing(0, 2),
+    }
+}));
 
 const useDrawerStyles = makeStyles((theme) => ({
     drawer: {
@@ -124,10 +161,6 @@ export default function AppBar(props: AppBarProperties) {
     const [touch, setTouch] = React.useState(true);
     const toggleTouch = () => setTouch(!touch);
 
-    const setView = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        props.onSetView(event.currentTarget.dataset.view);
-    };
-
     return (
         <div className={ clsx('app-menu', props.className) }>
             <Drawer variant="permanent"
@@ -153,7 +186,7 @@ export default function AppBar(props: AppBarProperties) {
 
                 <Divider />
 
-                <List>{ props.children }</List>
+                { props.children }
 
                 <Divider />
 
@@ -190,7 +223,7 @@ export default function AppBar(props: AppBarProperties) {
                 open={ subMenu.id === 'puzzle-sub-menu' }
                 onClose={ subMenuClose }>
 
-                <MenuItem data-dialog="new-puzzle" onClick={ setView }>
+                <MenuItem data-dialog="new-puzzle" onClick={ () => {} }>
                     <ListItemIcon><NewIcon /></ListItemIcon>
                     <ListItemText primary="New" />
                 </MenuItem>
