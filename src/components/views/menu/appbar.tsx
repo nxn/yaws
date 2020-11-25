@@ -27,12 +27,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import Box from '@material-ui/core/Box';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import Tabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
+
+import IconButton from '@material-ui/core/IconButton';
 
 const drawerWidth = 180;
 
@@ -88,13 +89,12 @@ export const AppBarMenu = styled(Menu)(
     })
 );
 
-// Mimics AppBarTab style even though it's a single list
-const AppBarTinyTab = styled(List)(({theme}) => ({
-    borderTop: `1px solid ${ theme.palette.divider }`,
-    borderRight: `2px solid ${ theme.palette.secondary.main }`,
-    '&.MuiList-padding': {
-        paddingTop: 0, 
-        paddingBottom: 0
+// Mimics AppBarTab style for single button (tiny mode)
+const AppBarTinyTab = styled(IconButton)(({theme}) => ({
+    '&.MuiIconButton-root': {
+        borderRadius: 0,
+        borderTop: `1px solid ${ theme.palette.divider }`,
+        borderRight: `2px solid ${ theme.palette.secondary.main }`
     }
 }))
 
@@ -182,11 +182,8 @@ const TinyNav = (props: NavMenuProperties) => {
     }
 
     return <>
-        <AppBarTinyTab>
-            <ListItem button aria-controls="nav-menu" aria-haspopup="true" onClick={ open }>
-                <ListItemIcon>{ current.icon }</ListItemIcon>
-                <ListItemText>{ current.label }</ListItemText>
-            </ListItem>
+        <AppBarTinyTab aria-controls="nav-menu" aria-haspopup="true" onClick={ open }>
+            { current.icon }
         </AppBarTinyTab>
         <AppBarMenu
             id="nav-menu"
