@@ -94,7 +94,10 @@ const AppBarTinyTab = styled(IconButton)(({theme}) => ({
     '&.MuiIconButton-root': {
         borderRadius: 0,
         borderTop: `1px solid ${ theme.palette.divider }`,
-        borderRight: `2px solid ${ theme.palette.secondary.main }`
+        borderRight: `2px solid ${ theme.palette.secondary.main }`,
+        // following only to ensure centering of icon
+        borderBottom: '1px solid transparent',
+        borderLeft: '2px solid transparent'
     }
 }))
 
@@ -153,9 +156,10 @@ type NavMenuProperties = {
 
 const FullNav = (props: NavMenuProperties) => (
     <Tabs orientation="vertical" value={ props.current } onChange={ props.onItemClick } aria-label="Navigation">{
-        props.items.map(item =>
+        props.items.map((item, index) =>
             <AppBarTab 
-                icon={ item.icon } 
+                icon={ item.icon }
+                key={ `nav-full-tab-${ index }` }
                 label={<AppBarTabLabel>{ item.label }</AppBarTabLabel>} 
                 disabled={ item.disabled } />
         )
@@ -203,7 +207,12 @@ const TinyNav = (props: NavMenuProperties) => {
             keepMounted>{
 
             props.items.map((item, index) =>
-                <MenuItem onClick={ setView } data-index={ index } disabled={ item.disabled }>
+                <MenuItem 
+                    onClick={ setView } 
+                    key={ `nav-tiny-tab-${ index }` } 
+                    data-index={ index } 
+                    disabled={ item.disabled }>
+                        
                     <ListItemIcon>{ item.icon }</ListItemIcon>
                     <ListItemText>{ item.label }</ListItemText>
                 </MenuItem>

@@ -88,7 +88,7 @@ export const Yaws = (props: ViewProperties) => {
             <CssBaseline />
 
             <div className={ clsx('yaws-root', props.className) }>
-                <AppBar tiny selectedNavIndex={ view } navItems={ navItems } onNavItemClick={ switchView } />
+                <AppBar selectedNavIndex={ view } navItems={ navItems } onNavItemClick={ switchView } />
 
                 <div className="views">
                     <PuzzleView   className={ clsx(view !== 0 && 'hidden') } model={ props.model } controller={ props.controller } />
