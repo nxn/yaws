@@ -1,23 +1,24 @@
 import { IBoard }           from '@components/sudoku/board';
 import { IBoardController } from '@components/sudoku/controller';
 
+import { IViewPropertiesBase } from '../view';
 import Board        from './board/board';
 import Controls     from './controls/controls';
 import SidePanel    from './sidepanel/sidepanel';
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-type PuzzleViewProperties = {
-    model:              IBoard,
-    controller:         IBoardController,
-    displayControls?:   boolean,
-    displaySidePanel?:  boolean,
-    className?:         string
+interface IPuzzleViewProperties extends IViewPropertiesBase {
+    model:              IBoard;
+    controller:         IBoardController;
+    displayControls?:   boolean;
+    displaySidePanel?:  boolean;
 }
 
-export const PuzzleView = (props: PuzzleViewProperties) => {
+export const PuzzleView = (props: IPuzzleViewProperties) => {
     const displayControls   = props.displayControls === undefined ? true : props.displayControls;
     const displaySidePanel  = props.displaySidePanel === undefined ? false : props.displaySidePanel;
     const scale = 2.0;

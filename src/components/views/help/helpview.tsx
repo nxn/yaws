@@ -1,4 +1,4 @@
-
+import { IViewPropertiesBase } from '../view';
 
 import React from 'react';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
@@ -8,9 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import clsx from 'clsx';
 
-type HelpViewProperties = {
-    className?: string
-}
+interface IHelpViewProperties extends IViewPropertiesBase { }
 
 const Section = styled(Paper)({
     margin: '2rem',
@@ -20,9 +18,9 @@ const Section = styled(Paper)({
 const Title = styled(Box)({
     margin: '2rem 3rem',
     marginBottom: 0
-})
+});
 
-export const HelpView = (props: HelpViewProperties) => (
+export const HelpView = (props: IHelpViewProperties) => (
     <div className={ clsx('view', props.className) }>
         <Title>
             <Typography variant="h2" component="h1" gutterBottom>Help: General Information</Typography>

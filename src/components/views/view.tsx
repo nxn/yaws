@@ -7,14 +7,13 @@ import AccountView  from './account/accountview';
 import SettingsView from './settings/settingsview';
 import HelpView     from './help/helpview';
 
-import Tabs from '@material-ui/core/Tabs';
-import AppBar, { AppBarTab as Tab, AppBarTabLabel as TabLabel } from './menu/appbar';
+import AppBar from './appbar/appbar';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { hot } from 'react-hot-loader';
 import clsx from 'clsx';
-import { Theme, ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { Theme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import cabinCondensedWoff   from './fonts/cabincondensed-bold-digits.woff';
@@ -27,40 +26,40 @@ import AccountIcon from '@material-ui/icons/Person';
 import SettingsIcon from '@material-ui/icons/Settings';
 import HelpIcon from '@material-ui/icons/Help';
 
+import Divider from '@material-ui/core/Divider';
+
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Global } from '@emotion/react';
 
-type ViewProperties = {
-    model:      IBoard,
-    controller: IBoardController,
+import { NavMenu, NavItem } from './appbar/nav';
+import { ViewProvider, IViewContext } from './context';
+import { light, dark } from './theme';
+
+type YawsProperties = {
+    model:          IBoard,
+    controller:     IBoardController,
+    viewInfo: {
+        orientation:    'landscape' | 'portrait',
+        scale:         number,
+        tiny:          boolean
+    }
     // Cannot be named 'theme', otherwise it will be overwritten by material ui's 'styled' function which uses that name
     // to propagate any existing theme to the style object. As no theme has been set yet, it gets overwritten by
     // 'undefined'.
-    muiTheme:   Theme,
-    className?: string
+    muiTheme:       Theme,
+    className?:     string
 };
 
-export const Yaws = (props: ViewProperties) => {
-    const [view, setView] = React.useState(0);
+export interface IViewPropertiesBase {
+    className?:         string;
+}
 
-    const switchView = (index: number) => {
-        setView(index);
+export const Yaws = (props: YawsProperties) => {
+    const [view, setView] = React.useState('puzzle');
+
+    const switchView = (value: string) => {
+        setView(value);
     };
-
-    const navItems = [{
-        icon: <GridIcon />,
-        label: "Puzzle"
-    },{
-        icon: <AccountIcon />,
-        label: "Account",
-        disabled: true
-    },{
-        icon: <SettingsIcon />,
-        label: "Settings"
-    },{
-        icon: <HelpIcon />,
-        label: "Help"
-    }];
 
     return <>
         <Global styles={[ {
@@ -87,21 +86,31 @@ export const Yaws = (props: ViewProperties) => {
         <ThemeProvider theme={ props.muiTheme }>
             <CssBaseline />
 
-            <div className={ clsx('yaws-root', props.className) }>
-                <AppBar selectedNavIndex={ view } navItems={ navItems } onNavItemClick={ switchView } />
+            <ViewProvider value={ props.viewInfo }>
+                <div className={ clsx('yaws-root', props.className) }>
+                    <AppBar>
+                        <NavMenu value={ view } onChange={ switchView }>
+                            <NavItem value="puzzle"   label="Puzzle"   icon={ <GridIcon /> } />
+                            <NavItem value="account"  label="Account"  icon={ <AccountIcon /> } disabled />
+                            <NavItem value="settings" label="Settings" icon={ <SettingsIcon /> } />
+                            <NavItem value="help"     label="Help"     icon={ <HelpIcon /> } />
+                        </NavMenu>
+                        <Divider />
+                    </AppBar>
 
-                <div className="views">
-                    <PuzzleView   className={ clsx(view !== 0 && 'hidden') } model={ props.model } controller={ props.controller } />
-                    <AccountView  className={ clsx(view !== 1 && 'hidden') } />
-                    <SettingsView className={ clsx(view !== 2 && 'hidden') } />
-                    <HelpView     className={ clsx(view !== 3 && 'hidden') } />
+                    <div className="views">
+                        <PuzzleView   className={ clsx(view !== 'puzzle' && 'hidden') } model={ props.model } controller={ props.controller } />
+                        <AccountView  className={ clsx(view !== 'account' && 'hidden') } />
+                        <SettingsView className={ clsx(view !== 'settings' && 'hidden') } />
+                        <HelpView     className={ clsx(view !== 'help' && 'hidden') } />
+                    </div>
                 </div>
-            </div>
+            </ViewProvider>
         </ThemeProvider>
     </>;
 }
 
-export const View = styled(Yaws)({
+export const AppView = styled(Yaws)({
     display:    'flex',
     flexFlow:   'row nowrap',
 
@@ -113,65 +122,30 @@ export const View = styled(Yaws)({
 
 export function init(board: IBoard, controller: IBoardController, containerId: string) {
     const container = document.getElementById(containerId);
+    const vinfo = getViewInfo();
 
-    //scaleToViewport();
+    //vinfo.tiny = true;
     //window.addEventListener('resize', scaleToViewport);
 
-    const light  = createMuiTheme({
-        palette: {
-            mode: 'light',
-            primary: {
-                light: '#62727b',
-                main: '#37474f',
-                dark: '#102027',
-                contrastText: '#fff',
-            },
-            secondary: {
-                light: '#8e99f3',
-                main: '#5c6bc0',
-                dark: '#26418f',
-                contrastText: '#fff',
-            },
-        }
-    });
-
-    const dark = createMuiTheme({
-        palette: {
-            mode: 'dark',
-            primary: {
-                light: '#eeffff',
-                main: '#bbdefb',
-                dark: '#8aacc8',
-                contrastText: '#000',
-            },
-            secondary: {
-                light: '#e6ceff',
-                main: '#b39ddb',
-                dark: '#836fa9',
-                contrastText: '#000',
-            },
-        }
-    });
-
-    return () => ReactDOM.render(<View model={board} controller={controller} muiTheme={dark} />, container);
+    return () => ReactDOM.render(
+        <AppView model={board} controller={controller} muiTheme={dark} viewInfo={ vinfo } />,
+        container
+    );
 }
 
 
-function scaleToViewport() {
+function getViewInfo(): IViewContext {
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
     
-    const vmin = 320;
-
-    // TODO: Hardcoding dimensions of menu and controls for the time being
-    const menuSize = 57;
-    const controlsSize = 184;
+    const vsize = Math.min(vw, vh);
+    const vmin = 320; // Minimum supported resolution (smallest dimension)
     
-    const vsize = Math.max(vw, vh) - (menuSize + controlsSize);
-    
-    const scale = Math.max(1, Math.min(2, vsize/vmin));
-
-    //document.documentElement.style.setProperty('--yaws-scale', scale.toString());
+    return {
+        scale:          Math.max(1, Math.min(2, vsize/vmin)),
+        orientation:    vw > vh ? 'landscape' : 'portrait',
+        tiny:           vsize < 640
+    };
 }
 
 //export default hot(module)(View);
