@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, withStyles, experimentalStyled as styled } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
@@ -9,13 +9,9 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import { List, ListItem, ListItemIcon, ListItemText } from './list';
 
 import ViewContext from '../context';
-
 
 const drawerWidth = 180;
 
@@ -42,24 +38,6 @@ const useDrawerStyles = makeStyles((theme) => ({
     }
 }));
 
-const MenuGroup = withStyles((theme) => ({
-    padding: {
-        padding: theme.spacing(0, 1)
-    }
-}))(List);
-
-const MenuGroupItem = withStyles((theme) => ({
-    root: {
-        borderRadius: theme.shape.borderRadius,
-        margin: theme.spacing(1, 0)
-    },
-    gutters: {
-        padding: theme.spacing(0.5, 1)
-    }
-}))(ListItem);
-
-
-
 type AppBarProperties = {
     children: React.ReactNode,
     className?: string
@@ -71,42 +49,18 @@ export default (props: AppBarProperties) => {
     const [open, setOpen] = React.useState(false);
     const toggleNavDrawer = () => setOpen(!open);
 
-    const [subMenu, setSubMenu] = React.useState({ id: null, target: null });
-    const subMenuOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setSubMenu({
-            id:     event.currentTarget.dataset.submenu,
-            target: event.currentTarget
-        });
-    };
-    const subMenuClose = () => {
-        setSubMenu({ id: null, target: null });
-    };
-
-    const [mode, setMode] = React.useState('edit');
-    const changeMode = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setMode(event.currentTarget.dataset.mode);
-    };
-
-    const [history, setHistory] = React.useState(false);
-    const toggleHistory = () => setHistory(!history);
-
-    const [touch, setTouch] = React.useState(true);
-    const toggleTouch = () => setTouch(!touch);
-
-    //const onItemClick = mapEventToIndex(props.onNavItemClick);
-
     let expander;
     if (!React.useContext(ViewContext).tiny) {
         expander = (
             <>
-                <MenuGroup>
-                    <MenuGroupItem button key="drawer" onClick={ toggleNavDrawer } >
+                <List>
+                    <ListItem button key="drawer" onClick={ toggleNavDrawer } >
                         <ListItemIcon>
                             { open ? <ChevronLeftIcon /> : <ChevronRightIcon /> }
                         </ListItemIcon>
                         <ListItemText primary="YAWS" />
-                    </MenuGroupItem>
-                </MenuGroup>
+                    </ListItem>
+                </List>
 
                 <Divider />
             </>

@@ -1,11 +1,14 @@
 import type { IBoardController } from '@components/sudoku/controller';
 import type { IBoard } from '@components/sudoku/board';
 
-
-import PuzzleView   from './puzzle/puzzleview';
-import AccountView  from './account/accountview';
-import SettingsView from './settings/settingsview';
-import HelpView     from './help/helpview';
+import PuzzleView       from './puzzle/puzzleview';
+import PuzzleTools      from './puzzle/puzzletools';
+import AccountView      from './account/accountview';
+import AccountTools     from './account/accounttools';
+import SettingsView     from './settings/settingsview';
+import SettingsTools    from './settings/settingstools';
+import HelpView         from './help/helpview';
+import HelpTools        from './help/helptools';
 
 import AppBar from './appbar/appbar';
 
@@ -96,6 +99,12 @@ export const Yaws = (props: YawsProperties) => {
                             <NavItem value="help"     label="Help"     icon={ <HelpIcon /> } />
                         </NavMenu>
                         <Divider />
+                        <div className="tools">
+                            <PuzzleTools    className={ clsx(view !== 'puzzle' && 'hidden') } />
+                            <AccountTools   className={ clsx(view !== 'account' && 'hidden') } />
+                            <SettingsTools  className={ clsx(view !== 'settings' && 'hidden') } />
+                            <HelpTools      className={ clsx(view !== 'help' && 'hidden') } />
+                        </div>
                     </AppBar>
 
                     <div className="views">

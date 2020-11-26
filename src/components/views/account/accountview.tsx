@@ -27,6 +27,4 @@ export const AccountView = (props: IAccountViewProperties) => (
     </div>
 );
 
-export default styled(AccountView)({
-
-});
+export default AccountView;

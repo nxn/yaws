@@ -94,6 +94,4 @@ export const HelpView = (props: IHelpViewProperties) => (
     </div>
 );
 
-export default styled(HelpView)({
-    //margin: '5%'
-});
+export default HelpView;

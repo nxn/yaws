@@ -30,6 +30,4 @@ export const SettingsView = (props: ISettingsViewProperties) => {
     );
 }
 
-export default styled(SettingsView)({
-
-});
+export default SettingsView;

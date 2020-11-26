@@ -7,7 +7,6 @@ import Controls     from './controls/controls';
 import SidePanel    from './sidepanel/sidepanel';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
@@ -18,7 +17,7 @@ interface IPuzzleViewProperties extends IViewPropertiesBase {
     displaySidePanel?:  boolean;
 }
 
-export const PuzzleView = (props: IPuzzleViewProperties) => {
+export const PuzzleViewUnstyled = (props: IPuzzleViewProperties) => {
     const displayControls   = props.displayControls === undefined ? true : props.displayControls;
     const displaySidePanel  = props.displaySidePanel === undefined ? false : props.displaySidePanel;
     const scale = 2.0;
@@ -32,7 +31,7 @@ export const PuzzleView = (props: IPuzzleViewProperties) => {
     );
 }
 
-export default styled(PuzzleView)({
+export const PuzzleView = styled(PuzzleViewUnstyled)({
     display:        'flex',
     flexFlow:       'column nowrap',
     alignItems:     'center',
@@ -50,3 +49,5 @@ export default styled(PuzzleView)({
     
     '& .board': { flexGrow: 0 }
 });
+
+export default PuzzleView;
