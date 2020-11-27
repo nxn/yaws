@@ -9,7 +9,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 
-import { List, ListItem, ListItemIcon, ListItemText } from './list';
+import { List, ListItemFull, ListItemIcon, ListItemText } from './list';
 
 import ViewContext from '../context';
 
@@ -19,7 +19,7 @@ const useDrawerStyles = makeStyles((theme) => ({
     drawer: {
         width: drawerWidth,
         flexShrink: 0,
-        whiteSpace: 'nowrap',
+        whiteSpace: 'nowrap'
     },
     drawerOpen: {
         width: drawerWidth,
@@ -52,18 +52,14 @@ export default (props: AppBarProperties) => {
     let expander;
     if (!React.useContext(ViewContext).tiny) {
         expander = (
-            <>
-                <List>
-                    <ListItem button key="drawer" onClick={ toggleNavDrawer } >
-                        <ListItemIcon>
-                            { open ? <ChevronLeftIcon /> : <ChevronRightIcon /> }
-                        </ListItemIcon>
-                        <ListItemText primary="YAWS" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-            </>
+            <List component="div" disablePadding>
+                <ListItemFull button key="drawer" onClick={ toggleNavDrawer } disableGutters divider>
+                    <ListItemIcon>
+                        { open ? <ChevronLeftIcon /> : <ChevronRightIcon /> }
+                    </ListItemIcon>
+                    <ListItemText primary="YAWS" />
+                </ListItemFull>
+            </List>
         );
     }
 

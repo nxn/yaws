@@ -10,8 +10,7 @@ export interface IAccountToolsProperties {
 
 export const AccountTools = (props: IAccountToolsProperties) => {
     return <>
-        <Divider />
-        <List>
+        <List component="div">
             <ListItem button key="sign-out" data-mode="sign-out" disabled>
                 <ListItemIcon><SignOutIcon /></ListItemIcon>
                 <ListItemText primary="Sign Out" />

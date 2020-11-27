@@ -2,7 +2,7 @@ import React from 'react';
 
 import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
-import { List, ListFull, ListItem, ListItemFull, ListItemIcon, ListItemText } from '../appbar/list';
+import { List, ListItem, ListItemFull, ListItemIcon, ListItemText } from '../appbar/list';
 import SubMenu from '../appbar/submenu';
 
 import EditIcon from '@material-ui/icons/Edit';
@@ -47,14 +47,14 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     };
 
     return <>
-        <ListFull>
-            <ListItemFull button key="open-file-menu" data-submenu="file-menu" onClick={ subMenuOpen }>
+        <List component="div" disablePadding>
+            <ListItemFull button key="open-file-menu" data-submenu="file-menu" onClick={ subMenuOpen } divider disableGutters>
                 <ListItemIcon><MenuIcon /></ListItemIcon>
                 <ListItemText>Puzzle</ListItemText>
             </ListItemFull>
-        </ListFull>
+        </List>
 
-        <List>
+        <List component="div">
             <ListItem button key="edit" selected={ mode === 'edit' } data-mode="edit" onClick={ changeMode }>
                 <ListItemIcon><EditIcon /></ListItemIcon>
                 <ListItemText primary="Edit" />
@@ -67,7 +67,7 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
 
         <Divider variant="middle" />
 
-        <List>
+        <List component="div">
             <ListItem button key="history" selected={ history } onClick={ toggleHistory }>
                 <ListItemIcon><HistoryIcon /></ListItemIcon>
                 <ListItemText primary="History" />

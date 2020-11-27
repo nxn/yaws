@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '../appbar/list';
-import ResetIcon from '@material-ui/icons/SettingsBackupRestore';
+import CancelIcon from '@material-ui/icons/Close';
 import ApplyIcon from '@material-ui/icons/Check';
 import Divider from '@material-ui/core/Divider';
 
@@ -11,15 +11,14 @@ export interface ISettingsToolsProperties {
 
 export const SettingsTools = (props: ISettingsToolsProperties) => {
     return <>
-        <Divider />
-        <List>
+        <List component="div">
             <ListItem button key="apply" data-mode="apply">
                 <ListItemIcon><ApplyIcon /></ListItemIcon>
                 <ListItemText primary="Apply" />
             </ListItem>
-            <ListItem button key="reset" data-mode="reset">
-                <ListItemIcon><ResetIcon /></ListItemIcon>
-                <ListItemText primary="Reset" />
+            <ListItem button key="cancel" data-mode="cancel">
+                <ListItemIcon><CancelIcon /></ListItemIcon>
+                <ListItemText primary="Cancel" />
             </ListItem>
         </List>
     </>;

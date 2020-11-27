@@ -10,8 +10,7 @@ export interface IHelpToolsProperties {
 
 export const HelpTools = (props: IHelpToolsProperties) => {
     return <>
-        <Divider />
-        <List>
+        <List component="div">
             <ListItem button key="toggle-nav" selected={ true } data-mode="toggle-nav" >
                 <ListItemIcon><NavIcon /></ListItemIcon>
                 <ListItemText primary="Navigation" />

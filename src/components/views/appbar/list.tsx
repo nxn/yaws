@@ -25,30 +25,11 @@ export const ListItem = styled(MuiListItem)(({theme}) => ({
     }
 }));
 
-export const ListFull = styled(MuiList)(({theme}) => ({
-    '&.MuiList-padding': {
-        padding: theme.spacing(0)
-    }
-}));
-
 export const ListItemFull = styled(MuiListItem)(({theme}) => ({
-    '&.MuiListItem-root': {
-        //boxSizing: 'border-box',
-        borderRadius: 0,
-        borderTop: `1px solid ${ theme.palette.divider }`,
-        borderBottom: `1px solid ${ theme.palette.divider }`,
-        minHeight: '48px',
-        margin: theme.spacing(0)
-    },
-
     '& .MuiListItemIcon-root': {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(4)
     },
-    
-    '&.MuiListItem-gutters': {
-        padding: theme.spacing(0)
-    }
 }));
 
 export default List;

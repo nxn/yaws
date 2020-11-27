@@ -104,19 +104,19 @@ export const Yaws = (props: YawsProperties) => {
             <ViewProvider value={ props.viewInfo }>
                 <div className={ clsx('yaws-root', props.className) }>
                     <AppBar className="app-menu">
-                        <Tabs value={ view } onChange={ switchView }>
-                            <Tab value="board"    label="Board"   icon={ <GridIcon /> } />
-                            <Tab value="account"  label="Account"  icon={ <AccountIcon /> } />
-                            <Tab value="settings" label="Settings" icon={ <SettingsIcon /> } />
-                            <Tab value="help"     label="Help"     icon={ <HelpIcon /> } />
-                        </Tabs>
-
                         <TabPanelContainer id="tool-panel" className="tools" value={ view }>
                             <PuzzleToolTab   value="board" />
                             <AccountToolTab  value="account" />
                             <SettingsToolTab value="settings" />
                             <HelpToolTab     value="help" />
                         </TabPanelContainer>
+
+                        <Tabs value={ view } onChange={ switchView } className="nav">
+                            <Tab value="board"    label="Board"   icon={ <GridIcon /> } />
+                            <Tab value="account"  label="Account"  icon={ <AccountIcon /> } />
+                            <Tab value="settings" label="Settings" icon={ <SettingsIcon /> } />
+                            <Tab value="help"     label="Help"     icon={ <HelpIcon /> } />
+                        </Tabs>
                     </AppBar>
 
                     <TabPanelContainer id="view-panel" className="views" value={ view }>
@@ -135,7 +135,12 @@ export const AppView = styled(Yaws)({
     display:    'flex',
     flexFlow:   'row nowrap',
 
-    '& .app-menu':      { flexShrink: 0 },
+    '& .nav':           { marginTop: 'auto' },
+    '& .app-menu':      { 
+        flexShrink: 0,
+        // TODO: Move this to the drawer when styling is redone with styled
+        '& .MuiDrawer-paper': { overflowX: 'hidden' }
+     },
     '& .views':         { flexGrow: 1 }
 });
 

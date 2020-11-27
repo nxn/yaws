@@ -48,7 +48,8 @@ const TinyNavItem = (props: NavItemProperties) => {
 type NavMenuProperties = {
     value:      string, 
     children:   any[], 
-    onChange:   (id: string) => void
+    onChange:   (id: string) => void,
+    className?: string
 };
 
 const FullNav = (props: NavMenuProperties) => {
@@ -57,7 +58,7 @@ const FullNav = (props: NavMenuProperties) => {
     }
 
     return (
-        <Tabs orientation="vertical" value={ props.value } onChange={ changeHandler } aria-label="Navigation">
+        <Tabs className={ props.className } orientation="vertical" value={ props.value } onChange={ changeHandler } aria-label="Navigation">
             { props.children }
         </Tabs>
     );
@@ -82,7 +83,7 @@ const TinyNav = (props: NavMenuProperties) => {
     const current = props.children.find(c => c.props.value === props.value);
 
     return <>
-        <TinyTab aria-controls="nav-menu" aria-haspopup="true" onClick={ open }>
+        <TinyTab className={ props.className } aria-controls="nav-menu" aria-haspopup="true" onClick={ open }>
             { current.props.icon }
         </TinyTab>
         <SubMenu

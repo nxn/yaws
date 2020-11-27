@@ -52,12 +52,12 @@ export const Tab = styled(MuiTab)(({theme}) => ({
 // of tabs -- instead a single button resembling a tab is used to launch a pop-over menu that displays the other panels.
 export const TinyTab = styled(IconButton)(({theme}) => ({
     '&.MuiIconButton-root': {
-        //boxSizing: 'border-box',
         borderRadius: 0,
+        backgroundColor: theme.palette.action.selected,
         //borderTop: `1px solid ${ theme.palette.divider }`,
         borderRight: `2px solid ${ theme.palette.secondary.main }`,
         // following only to ensure centering of icon
-        //borderBottom: '1px solid transparent',
+        //borderBottom: `1px solid ${ theme.palette.divider }`,
         borderLeft: '2px solid transparent'
     }
 }))
