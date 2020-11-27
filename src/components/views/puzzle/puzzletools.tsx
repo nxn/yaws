@@ -10,7 +10,7 @@ import ColorIcon from '@material-ui/icons/PaletteOutlined';
 import HistoryIcon from '@material-ui/icons/History';
 import TouchIcon from '@material-ui/icons/TouchApp';
 
-import FolderIcon from '@material-ui/icons/Menu';
+import MenuIcon from '@material-ui/icons/Menu';
 
 import NewIcon from '@material-ui/icons/AddCircleOutline';
 import OpenIcon from '@material-ui/icons/FolderOpen';
@@ -49,8 +49,8 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     return <>
         <ListFull>
             <ListItemFull button key="open-file-menu" data-submenu="file-menu" onClick={ subMenuOpen }>
-                <ListItemIcon><FolderIcon /></ListItemIcon>
-                <ListItemText>File</ListItemText>
+                <ListItemIcon><MenuIcon /></ListItemIcon>
+                <ListItemText>Puzzle</ListItemText>
             </ListItemFull>
         </ListFull>
 

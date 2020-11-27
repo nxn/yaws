@@ -70,7 +70,7 @@ const HelpViewTab       = extend<IHelpViewProperties,       ITabPanelView>(HelpV
 const HelpToolTab       = extend<IHelpToolsProperties,      ITabPanelView>(HelpTools);
 
 export const Yaws = (props: YawsProperties) => {
-    const [view, setView] = React.useState('puzzle');
+    const [view, setView] = React.useState('board');
 
     const switchView = (value: string) => {
         setView(value);
@@ -105,14 +105,14 @@ export const Yaws = (props: YawsProperties) => {
                 <div className={ clsx('yaws-root', props.className) }>
                     <AppBar className="app-menu">
                         <Tabs value={ view } onChange={ switchView }>
-                            <Tab value="puzzle"   label="Puzzle"   icon={ <GridIcon /> } />
+                            <Tab value="board"    label="Board"   icon={ <GridIcon /> } />
                             <Tab value="account"  label="Account"  icon={ <AccountIcon /> } />
                             <Tab value="settings" label="Settings" icon={ <SettingsIcon /> } />
                             <Tab value="help"     label="Help"     icon={ <HelpIcon /> } />
                         </Tabs>
 
                         <TabPanelContainer id="tool-panel" className="tools" value={ view }>
-                            <PuzzleToolTab   value="puzzle" />
+                            <PuzzleToolTab   value="board" />
                             <AccountToolTab  value="account" />
                             <SettingsToolTab value="settings" />
                             <HelpToolTab     value="help" />
@@ -120,7 +120,7 @@ export const Yaws = (props: YawsProperties) => {
                     </AppBar>
 
                     <TabPanelContainer id="view-panel" className="views" value={ view }>
-                        <PuzzleViewTab   value="puzzle" model={ props.model } controller={ props.controller } />
+                        <PuzzleViewTab   value="board" model={ props.model } controller={ props.controller } />
                         <AccountViewTab  value="account" />
                         <SettingsViewTab value="settings" />
                         <HelpViewTab     value="help" />
