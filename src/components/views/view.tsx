@@ -111,8 +111,6 @@ export const Yaws = (props: YawsProperties) => {
                             <Tab value="help"     label="Help"     icon={ <HelpIcon /> } />
                         </Tabs>
 
-                        <Divider />
-
                         <TabPanelContainer id="tool-panel" className="tools" value={ view }>
                             <PuzzleToolTab   value="puzzle" />
                             <AccountToolTab  value="account" />

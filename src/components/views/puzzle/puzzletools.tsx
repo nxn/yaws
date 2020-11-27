@@ -1,15 +1,22 @@
 import React from 'react';
 
 import Divider from '@material-ui/core/Divider';
-import Button from '../appbar/button';
+import MenuItem from '@material-ui/core/MenuItem';
 import { List, ListFull, ListItem, ListItemFull, ListItemIcon, ListItemText } from '../appbar/list';
+import SubMenu from '../appbar/submenu';
 
 import EditIcon from '@material-ui/icons/Edit';
 import ColorIcon from '@material-ui/icons/PaletteOutlined';
 import HistoryIcon from '@material-ui/icons/History';
 import TouchIcon from '@material-ui/icons/TouchApp';
 
-import FolderIcon from '@material-ui/icons/FolderOpen';
+import FolderIcon from '@material-ui/icons/Menu';
+
+import NewIcon from '@material-ui/icons/AddCircleOutline';
+import OpenIcon from '@material-ui/icons/FolderOpen';
+import SaveIcon from '@material-ui/icons/SaveAlt';
+import ResetIcon from '@material-ui/icons/Replay';
+import ShareIcon from '@material-ui/icons/Share';
 
 
 export interface IPuzzleToolsProperties {
@@ -40,15 +47,12 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     };
 
     return <>
-
         <ListFull>
-            <ListItemFull button key="open-menu">
+            <ListItemFull button key="open-file-menu" data-submenu="file-menu" onClick={ subMenuOpen }>
                 <ListItemIcon><FolderIcon /></ListItemIcon>
                 <ListItemText>File</ListItemText>
             </ListItemFull>
         </ListFull>
-
-        <Divider />
 
         <List>
             <ListItem button key="edit" selected={ mode === 'edit' } data-mode="edit" onClick={ changeMode }>
@@ -72,8 +76,52 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
                 <ListItemIcon><TouchIcon /></ListItemIcon>
                 <ListItemText primary="Controls" />
             </ListItem>
-
         </List>
+
+        <SubMenu
+            id="file-menu"
+            anchorEl={ subMenu.target }
+            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+            marginThreshold={0}
+            elevation={0}
+            open={ subMenu.id === 'file-menu' }
+            onClose={ subMenuClose }
+            keepMounted>
+
+            {/* 
+            Material-UI tries to align the pop-over menu's first item exactly alongside the DOM element it is anchored 
+            to. In the case of components in the app-bar, things look a lot cleaner if it doesn't do that. Setting the 
+            first item in the menu to 'display: none' prevents this unwanted alignment. It also avoids some ref 
+            forwarding issues, but those aren't applicable here.
+            */}
+            <MenuItem style={{ display: 'none' }} />
+
+            <MenuItem data-dialog="new-puzzle" onClick={ () => {} }>
+                <ListItemIcon><NewIcon /></ListItemIcon>
+                <ListItemText primary="New" />
+            </MenuItem>
+
+            <MenuItem onClick={subMenuClose}>
+                <ListItemIcon><OpenIcon /></ListItemIcon>
+                <ListItemText primary="Open" />
+            </MenuItem>
+
+            <MenuItem onClick={subMenuClose}>
+                <ListItemIcon><SaveIcon /></ListItemIcon>
+                <ListItemText primary="Save" />
+            </MenuItem>
+
+            <MenuItem onClick={subMenuClose}>
+                <ListItemIcon><ResetIcon /></ListItemIcon>
+                <ListItemText primary="Reset" />
+            </MenuItem>
+
+            <MenuItem onClick={subMenuClose}>
+                <ListItemIcon><ShareIcon /></ListItemIcon>
+                <ListItemText primary="Share" />
+            </MenuItem>
+        </SubMenu>
     </>;
 }
 

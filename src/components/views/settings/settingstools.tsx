@@ -3,6 +3,7 @@ import React from 'react';
 import { List, ListItem, ListItemIcon, ListItemText } from '../appbar/list';
 import ResetIcon from '@material-ui/icons/SettingsBackupRestore';
 import ApplyIcon from '@material-ui/icons/Check';
+import Divider from '@material-ui/core/Divider';
 
 export interface ISettingsToolsProperties {
     className?: string
@@ -10,6 +11,7 @@ export interface ISettingsToolsProperties {
 
 export const SettingsTools = (props: ISettingsToolsProperties) => {
     return <>
+        <Divider />
         <List>
             <ListItem button key="apply" data-mode="apply">
                 <ListItemIcon><ApplyIcon /></ListItemIcon>

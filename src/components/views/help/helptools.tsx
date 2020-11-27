@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '../appbar/list';
-import NavIcon from '@material-ui/icons/Navigation';
+import NavIcon from '@material-ui/icons/VerticalSplit';
+import Divider from '@material-ui/core/Divider';
 
 export interface IHelpToolsProperties {
     className?: string
@@ -9,6 +10,7 @@ export interface IHelpToolsProperties {
 
 export const HelpTools = (props: IHelpToolsProperties) => {
     return <>
+        <Divider />
         <List>
             <ListItem button key="toggle-nav" selected={ true } data-mode="toggle-nav" >
                 <ListItemIcon><NavIcon /></ListItemIcon>

@@ -33,7 +33,10 @@ export const ListFull = styled(MuiList)(({theme}) => ({
 
 export const ListItemFull = styled(MuiListItem)(({theme}) => ({
     '&.MuiListItem-root': {
+        //boxSizing: 'border-box',
         borderRadius: 0,
+        borderTop: `1px solid ${ theme.palette.divider }`,
+        borderBottom: `1px solid ${ theme.palette.divider }`,
         minHeight: '48px',
         margin: theme.spacing(0)
     },

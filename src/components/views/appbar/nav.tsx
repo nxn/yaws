@@ -102,6 +102,10 @@ const TinyNav = (props: NavMenuProperties) => {
             functional wrapper components, a dummy MenuItem is added here to receive that ref. 
             
             See following for more details: https://stackoverflow.com/a/56309771/806003
+
+            This also has the added bonus of visually looking a lot better for components that are rendered within the 
+            AppBar. The menu itself will now align perfectly with the anchored element rather than having the alignment
+            be based off of the first item.
             */}
             <MenuItem style={{ display: "none" }} />
             
