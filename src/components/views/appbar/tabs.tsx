@@ -66,3 +66,26 @@ export const TinyTab = styled(IconButton)(({theme}) => ({
 export const TabLabel = (props: { children: React.ReactChild }) => (
     <Typography component="span" variant="body1">{ props.children }</Typography>
 );
+
+type TabPanelProps = {
+    current: string
+}
+
+export function asTabPanel<T extends {}>(Component: React.ComponentType<T>, value: string, idPrefix = "tabpanel") {
+    const TabPanel = (props: TabPanelProps) => {
+        const { current, ...remaining } = props;
+
+        return (
+            <div
+                role            = "tabpanel"
+                hidden          = {value !== current}
+                id              = {`${idPrefix}-${value}`}
+                aria-labelledby = {`tab-${value}`}
+            >
+                <Component { ...remaining as T } />
+            </div>
+        );
+    }
+
+    return TabPanel;
+}

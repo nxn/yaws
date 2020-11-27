@@ -11,6 +11,7 @@ import HelpView         from './help/helpview';
 import HelpTools        from './help/helptools';
 
 import AppBar from './appbar/appbar';
+import { asTabPanel } from './appbar/tabs';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -34,9 +35,18 @@ import Divider from '@material-ui/core/Divider';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Global } from '@emotion/react';
 
-import { NavMenu, NavItem } from './appbar/nav';
+import { NavMenu as Tabs, NavItem as Tab } from './appbar/nav';
 import { ViewProvider, IViewContext } from './context';
 import { light, dark } from './theme';
+
+const PuzzleViewTab     = asTabPanel(PuzzleView,    'puzzle',   'view-panel');
+const PuzzleToolsTab    = asTabPanel(PuzzleTools,   'puzzle',   'tool-panel');
+const AccountViewTab    = asTabPanel(AccountView,   'account',  'view-panel');
+const AccountToolsTab   = asTabPanel(AccountTools,  'account',  'tool-panel');
+const SettingsViewTab   = asTabPanel(SettingsView,  'settings', 'view-panel');
+const SettingsToolsTab  = asTabPanel(SettingsTools, 'settings', 'tool-panel');
+const HelpViewTab       = asTabPanel(HelpView,      'help',     'view-panel');
+const HelpToolsTab      = asTabPanel(HelpTools,     'help',     'tool-panel');
 
 type YawsProperties = {
     model:          IBoard,
@@ -92,26 +102,28 @@ export const Yaws = (props: YawsProperties) => {
             <ViewProvider value={ props.viewInfo }>
                 <div className={ clsx('yaws-root', props.className) }>
                     <AppBar>
-                        <NavMenu value={ view } onChange={ switchView }>
-                            <NavItem value="puzzle"   label="Puzzle"   icon={ <GridIcon /> } />
-                            <NavItem value="account"  label="Account"  icon={ <AccountIcon /> } disabled />
-                            <NavItem value="settings" label="Settings" icon={ <SettingsIcon /> } />
-                            <NavItem value="help"     label="Help"     icon={ <HelpIcon /> } />
-                        </NavMenu>
+                        <Tabs value={ view } onChange={ switchView }>
+                            <Tab value="puzzle"   label="Puzzle"   icon={ <GridIcon /> } />
+                            <Tab value="account"  label="Account"  icon={ <AccountIcon /> } disabled />
+                            <Tab value="settings" label="Settings" icon={ <SettingsIcon /> } />
+                            <Tab value="help"     label="Help"     icon={ <HelpIcon /> } />
+                        </Tabs>
+
                         <Divider />
+
                         <div className="tools">
-                            <PuzzleTools    className={ clsx(view !== 'puzzle' && 'hidden') } />
-                            <AccountTools   className={ clsx(view !== 'account' && 'hidden') } />
-                            <SettingsTools  className={ clsx(view !== 'settings' && 'hidden') } />
-                            <HelpTools      className={ clsx(view !== 'help' && 'hidden') } />
+                            <PuzzleToolsTab     current={ view } />
+                            <AccountToolsTab    current={ view } />
+                            <SettingsToolsTab   current={ view } />
+                            <HelpToolsTab       current={ view } />
                         </div>
                     </AppBar>
 
                     <div className="views">
-                        <PuzzleView   className={ clsx(view !== 'puzzle' && 'hidden') } model={ props.model } controller={ props.controller } />
-                        <AccountView  className={ clsx(view !== 'account' && 'hidden') } />
-                        <SettingsView className={ clsx(view !== 'settings' && 'hidden') } />
-                        <HelpView     className={ clsx(view !== 'help' && 'hidden') } />
+                        <PuzzleViewTab   current={ view } model={ props.model } controller={ props.controller } />
+                        <AccountViewTab  current={ view } />
+                        <SettingsViewTab current={ view } />
+                        <HelpViewTab     current={ view } />
                     </div>
                 </div>
             </ViewProvider>
@@ -124,9 +136,7 @@ export const AppView = styled(Yaws)({
     flexFlow:   'row nowrap',
 
     '& .app-menu':      { flexShrink: 0 },
-    '& .views':         { flexGrow: 1 },
-    //'& .views > .view': { height: '100vh' },
-    '& .hidden':        { display: 'none' }
+    '& .views':         { flexGrow: 1 }
 });
 
 export function init(board: IBoard, controller: IBoardController, containerId: string) {
