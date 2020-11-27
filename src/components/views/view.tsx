@@ -106,7 +106,7 @@ export const Yaws = (props: YawsProperties) => {
                     <AppBar className="app-menu">
                         <Tabs value={ view } onChange={ switchView }>
                             <Tab value="puzzle"   label="Puzzle"   icon={ <GridIcon /> } />
-                            <Tab value="account"  label="Account"  icon={ <AccountIcon /> } disabled />
+                            <Tab value="account"  label="Account"  icon={ <AccountIcon /> } />
                             <Tab value="settings" label="Settings" icon={ <SettingsIcon /> } />
                             <Tab value="help"     label="Help"     icon={ <HelpIcon /> } />
                         </Tabs>

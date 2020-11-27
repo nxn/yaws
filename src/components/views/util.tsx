@@ -1,5 +1,5 @@
 import React from 'react';
 
-export function extend<P1, P2>(Component: React.ComponentType<P1>) {
-    return (props: P1 & P2) => <Component { ...props } />
+export function extend<P, PExtended>(Component: React.ComponentType<P>) {
+    return (props: P & PExtended) => <Component { ...props } />;
 }

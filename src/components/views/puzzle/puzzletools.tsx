@@ -1,12 +1,15 @@
 import React from 'react';
 
 import Divider from '@material-ui/core/Divider';
-import { List, ListItem, ListItemIcon, ListItemText } from '../appbar/list';
+import Button from '../appbar/button';
+import { List, ListFull, ListItem, ListItemFull, ListItemIcon, ListItemText } from '../appbar/list';
 
 import EditIcon from '@material-ui/icons/Edit';
 import ColorIcon from '@material-ui/icons/PaletteOutlined';
 import HistoryIcon from '@material-ui/icons/History';
 import TouchIcon from '@material-ui/icons/TouchApp';
+
+import FolderIcon from '@material-ui/icons/FolderOpen';
 
 
 export interface IPuzzleToolsProperties {
@@ -37,6 +40,16 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     };
 
     return <>
+
+        <ListFull>
+            <ListItemFull button key="open-menu">
+                <ListItemIcon><FolderIcon /></ListItemIcon>
+                <ListItemText>File</ListItemText>
+            </ListItemFull>
+        </ListFull>
+
+        <Divider />
+
         <List>
             <ListItem button key="edit" selected={ mode === 'edit' } data-mode="edit" onClick={ changeMode }>
                 <ListItemIcon><EditIcon /></ListItemIcon>
@@ -48,7 +61,7 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
             </ListItem>
         </List>
 
-        <Divider />
+        <Divider variant="middle" />
 
         <List>
             <ListItem button key="history" selected={ history } onClick={ toggleHistory }>
