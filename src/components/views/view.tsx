@@ -1,17 +1,17 @@
 import type { IBoardController } from '@components/sudoku/controller';
 import type { IBoard } from '@components/sudoku/board';
 
-import PuzzleView       from './puzzle/puzzleview';
-import PuzzleTools      from './puzzle/puzzletools';
-import AccountView      from './account/accountview';
-import AccountTools     from './account/accounttools';
-import SettingsView     from './settings/settingsview';
-import SettingsTools    from './settings/settingstools';
-import HelpView         from './help/helpview';
-import HelpTools        from './help/helptools';
+import PuzzleView,      { IPuzzleViewProperties }       from './puzzle/puzzleview';
+import PuzzleTools,     { IPuzzleToolsProperties }      from './puzzle/puzzletools';
+import AccountView,     { IAccountViewProperties }      from './account/accountview';
+import AccountTools,    { IAccountToolsProperties }     from './account/accounttools';
+import SettingsView,    { ISettingsViewProperties }     from './settings/settingsview';
+import SettingsTools,   { ISettingsToolsProperties }    from './settings/settingstools';
+import HelpView,        { IHelpViewProperties }         from './help/helpview';
+import HelpTools,       { IHelpToolsProperties }        from './help/helptools';
 
 import AppBar from './appbar/appbar';
-import { asTabPanel } from './appbar/tabs';
+import { TabPanelContainer } from './appbar/tabs';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -39,14 +39,7 @@ import { NavMenu as Tabs, NavItem as Tab } from './appbar/nav';
 import { ViewProvider, IViewContext } from './context';
 import { light, dark } from './theme';
 
-const PuzzleViewTab     = asTabPanel(PuzzleView,    'puzzle',   'view-panel');
-const PuzzleToolsTab    = asTabPanel(PuzzleTools,   'puzzle',   'tool-panel');
-const AccountViewTab    = asTabPanel(AccountView,   'account',  'view-panel');
-const AccountToolsTab   = asTabPanel(AccountTools,  'account',  'tool-panel');
-const SettingsViewTab   = asTabPanel(SettingsView,  'settings', 'view-panel');
-const SettingsToolsTab  = asTabPanel(SettingsTools, 'settings', 'tool-panel');
-const HelpViewTab       = asTabPanel(HelpView,      'help',     'view-panel');
-const HelpToolsTab      = asTabPanel(HelpTools,     'help',     'tool-panel');
+import { extend } from './util';
 
 type YawsProperties = {
     model:          IBoard,
@@ -63,9 +56,18 @@ type YawsProperties = {
     className?:     string
 };
 
-export interface IViewPropertiesBase {
-    className?:         string;
+interface ITabPanelView {
+    value: string
 }
+
+const PuzzleViewTab     = extend<IPuzzleViewProperties,     ITabPanelView>(PuzzleView);
+const PuzzleToolTab     = extend<IPuzzleToolsProperties,    ITabPanelView>(PuzzleTools);
+const AccountViewTab    = extend<IAccountViewProperties,    ITabPanelView>(AccountView);
+const AccountToolTab    = extend<IAccountToolsProperties,   ITabPanelView>(AccountTools);
+const SettingsViewTab   = extend<ISettingsViewProperties,   ITabPanelView>(SettingsView);
+const SettingsToolTab   = extend<ISettingsToolsProperties,  ITabPanelView>(SettingsTools);
+const HelpViewTab       = extend<IHelpViewProperties,       ITabPanelView>(HelpView);
+const HelpToolTab       = extend<IHelpToolsProperties,      ITabPanelView>(HelpTools);
 
 export const Yaws = (props: YawsProperties) => {
     const [view, setView] = React.useState('puzzle');
@@ -101,7 +103,7 @@ export const Yaws = (props: YawsProperties) => {
 
             <ViewProvider value={ props.viewInfo }>
                 <div className={ clsx('yaws-root', props.className) }>
-                    <AppBar>
+                    <AppBar className="app-menu">
                         <Tabs value={ view } onChange={ switchView }>
                             <Tab value="puzzle"   label="Puzzle"   icon={ <GridIcon /> } />
                             <Tab value="account"  label="Account"  icon={ <AccountIcon /> } disabled />
@@ -111,20 +113,20 @@ export const Yaws = (props: YawsProperties) => {
 
                         <Divider />
 
-                        <div className="tools">
-                            <PuzzleToolsTab     current={ view } />
-                            <AccountToolsTab    current={ view } />
-                            <SettingsToolsTab   current={ view } />
-                            <HelpToolsTab       current={ view } />
-                        </div>
+                        <TabPanelContainer id="tool-panel" className="tools" value={ view }>
+                            <PuzzleToolTab   value="puzzle" />
+                            <AccountToolTab  value="account" />
+                            <SettingsToolTab value="settings" />
+                            <HelpToolTab     value="help" />
+                        </TabPanelContainer>
                     </AppBar>
 
-                    <div className="views">
-                        <PuzzleViewTab   current={ view } model={ props.model } controller={ props.controller } />
-                        <AccountViewTab  current={ view } />
-                        <SettingsViewTab current={ view } />
-                        <HelpViewTab     current={ view } />
-                    </div>
+                    <TabPanelContainer id="view-panel" className="views" value={ view }>
+                        <PuzzleViewTab   value="puzzle" model={ props.model } controller={ props.controller } />
+                        <AccountViewTab  value="account" />
+                        <SettingsViewTab value="settings" />
+                        <HelpViewTab     value="help" />
+                    </TabPanelContainer>
                 </div>
             </ViewProvider>
         </ThemeProvider>

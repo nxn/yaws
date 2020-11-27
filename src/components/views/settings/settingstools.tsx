@@ -1,10 +1,10 @@
 import React from 'react';
 
-type SettingsToolsProperties = {
+export interface ISettingsToolsProperties {
     className?: string
 };
 
-export const SettingsTools = (props: SettingsToolsProperties) => {
+export const SettingsTools = (props: ISettingsToolsProperties) => {
     return <></>;
 }
 

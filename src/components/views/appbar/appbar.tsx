@@ -68,7 +68,7 @@ export default (props: AppBarProperties) => {
     }
 
     return (
-        <div className={ clsx('app-menu', props.className) }>
+        <div className={ props.className }>
             <Drawer variant="permanent"
                 className={clsx(drawerClasses.drawer, {
                     [drawerClasses.drawerOpen]: open,

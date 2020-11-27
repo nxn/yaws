@@ -1,5 +1,3 @@
-import { IViewPropertiesBase } from '../view';
-
 import React from 'react';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -8,7 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import clsx from 'clsx';
 
-interface IHelpViewProperties extends IViewPropertiesBase { }
+export interface IHelpViewProperties {
+    className?: string
+}
 
 const Section = styled(Paper)({
     margin: '2rem',

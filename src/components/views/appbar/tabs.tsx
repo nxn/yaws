@@ -67,25 +67,28 @@ export const TabLabel = (props: { children: React.ReactChild }) => (
     <Typography component="span" variant="body1">{ props.children }</Typography>
 );
 
-type TabPanelProps = {
-    current: string
+type TabPanelChildProperties = {
+    value: string
 }
 
-export function asTabPanel<T extends {}>(Component: React.ComponentType<T>, value: string, idPrefix = "tabpanel") {
-    const TabPanel = (props: TabPanelProps) => {
-        const { current, ...remaining } = props;
+type TabPanelContainerProperties = {
+    id: string,
+    value: string,
+    children: React.ReactNode,
+    className?: string
+};
 
-        return (
+export const TabPanelContainer = (props: TabPanelContainerProperties) => (
+    <div id={ props.id } className={ props.className }>{
+        React.Children.map(props.children, (child: React.ReactElement<TabPanelChildProperties>) => (
             <div
+                id              = {`${ props.id }-${child.props.value}`}
                 role            = "tabpanel"
-                hidden          = {value !== current}
-                id              = {`${idPrefix}-${value}`}
-                aria-labelledby = {`tab-${value}`}
+                hidden          = { props.value !== child.props.value }
+                aria-labelledby = {`tab-${ child.props.value }`}
             >
-                <Component { ...remaining as T } />
+                { child }
             </div>
-        );
-    }
-
-    return TabPanel;
-}
+        ))
+    }</div>
+)

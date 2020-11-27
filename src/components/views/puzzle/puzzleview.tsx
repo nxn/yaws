@@ -1,7 +1,6 @@
 import { IBoard }           from '@components/sudoku/board';
 import { IBoardController } from '@components/sudoku/controller';
 
-import { IViewPropertiesBase } from '../view';
 import Board        from './board/board';
 import Controls     from './controls/controls';
 import SidePanel    from './sidepanel/sidepanel';
@@ -10,11 +9,12 @@ import React from 'react';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-interface IPuzzleViewProperties extends IViewPropertiesBase {
+export interface IPuzzleViewProperties {
     model:              IBoard;
     controller:         IBoardController;
     displayControls?:   boolean;
     displaySidePanel?:  boolean;
+    className?:         string;
 }
 
 export const PuzzleViewUnstyled = (props: IPuzzleViewProperties) => {

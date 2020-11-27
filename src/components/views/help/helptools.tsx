@@ -1,10 +1,10 @@
 import React from 'react';
 
-type HelpToolsProperties = {
+export interface IHelpToolsProperties {
     className?: string
 };
 
-export const HelpTools = (props: HelpToolsProperties) => {
+export const HelpTools = (props: IHelpToolsProperties) => {
     return <></>;
 }
 

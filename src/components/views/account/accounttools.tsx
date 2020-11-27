@@ -1,10 +1,10 @@
 import React from 'react';
 
-type AccountToolsProperties = {
+export interface IAccountToolsProperties {
     className?: string
 };
 
-export const AccountTools = (props: AccountToolsProperties) => {
+export const AccountTools = (props: IAccountToolsProperties) => {
     return <></>;
 }
 

@@ -9,11 +9,11 @@ import HistoryIcon from '@material-ui/icons/History';
 import TouchIcon from '@material-ui/icons/TouchApp';
 
 
-type PuzzleToolsProperties = {
+export interface IPuzzleToolsProperties {
     className?: string
 };
 
-export const PuzzleTools = (props: PuzzleToolsProperties) => {
+export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     const [mode, setMode] = React.useState('edit');
     const changeMode = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setMode(event.currentTarget.dataset.mode);
