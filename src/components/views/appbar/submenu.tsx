@@ -10,13 +10,17 @@ export default styled(Menu)(
             paddingBottom: 0
         },
         '& .MuiMenu-paper': {
+            color:                  theme.palette.text.secondary,
             border:                 `1px solid  ${ theme.palette.divider }`,
             borderLeft:             `1px dashed ${ theme.palette.divider }`,
             borderTopLeftRadius:    '0',
             borderBottomLeftRadius: '0',
         },
-        '& .MuiMenuItem-root': {
-            minHeight: '48px'
+        '& .MuiListItemIcon-root': {
+            color: theme.palette.text.secondary,
         }
+        // '& .MuiMenuItem-root': {
+        //     minHeight: '48px'
+        // }
     })
 );

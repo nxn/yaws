@@ -2,7 +2,7 @@ import React from 'react';
 
 import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
-import { List, ListItem, ListItemFull, ListItemIcon, ListItemText } from '../appbar/list';
+import { List, GroupedList, ListItem, ListItemFull, ListItemIcon, ListItemText } from '../appbar/list';
 import SubMenu from '../appbar/submenu';
 
 import EditIcon from '@material-ui/icons/Edit';
@@ -18,6 +18,7 @@ import SaveIcon from '@material-ui/icons/SaveAlt';
 import ResetIcon from '@material-ui/icons/Replay';
 import ShareIcon from '@material-ui/icons/Share';
 
+import { useTheme } from '@material-ui/core/styles';
 
 export interface IPuzzleToolsProperties {
     className?: string
@@ -50,12 +51,12 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
         <List component="div" disablePadding>
             <ListItemFull button key="open-file-menu" data-submenu="file-menu" onClick={ subMenuOpen } divider disableGutters>
                 <ListItemIcon><MenuIcon /></ListItemIcon>
-                <ListItemText>Puzzle</ListItemText>
+                <ListItemText primary="Puzzle" primaryTypographyProps={{variant: 'button'}} />
             </ListItemFull>
         </List>
 
-        <List component="div">
-            <ListItem button key="edit" selected={ mode === 'edit' } data-mode="edit" onClick={ changeMode }>
+        <GroupedList component="div" disablePadding>
+            <ListItem button key="edit" selected={ mode === 'edit' } data-mode="edit" onClick={ changeMode } divider>
                 <ListItemIcon><EditIcon /></ListItemIcon>
                 <ListItemText primary="Edit" />
             </ListItem>
@@ -63,18 +64,16 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
                 <ListItemIcon><ColorIcon /></ListItemIcon>
                 <ListItemText primary="Color" />
             </ListItem>
-        </List>
-
-        <Divider variant="middle" />
+        </GroupedList>
 
         <List component="div">
-            <ListItem button key="history" selected={ history } onClick={ toggleHistory }>
-                <ListItemIcon><HistoryIcon /></ListItemIcon>
-                <ListItemText primary="History" />
-            </ListItem>
             <ListItem button key="touch" selected={ touch } onClick={ toggleTouch }>
                 <ListItemIcon><TouchIcon /></ListItemIcon>
                 <ListItemText primary="Controls" />
+            </ListItem>
+            <ListItem button key="history" selected={ history } onClick={ toggleHistory }>
+                <ListItemIcon><HistoryIcon /></ListItemIcon>
+                <ListItemText primary="History" />
             </ListItem>
         </List>
 

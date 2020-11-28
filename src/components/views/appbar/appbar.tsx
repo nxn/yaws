@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
@@ -57,7 +57,7 @@ export default (props: AppBarProperties) => {
                     <ListItemIcon>
                         { open ? <ChevronLeftIcon /> : <ChevronRightIcon /> }
                     </ListItemIcon>
-                    <ListItemText primary="YAWS" />
+                    <ListItemText primary="YAWS" primaryTypographyProps={{ variant: 'button' }} />
                 </ListItemFull>
             </List>
         );
