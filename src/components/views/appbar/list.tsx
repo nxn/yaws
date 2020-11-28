@@ -25,6 +25,10 @@ export const ListItem = styled(MuiListItem)(({theme}) => ({
         color: theme.palette.text.secondary
     },
 
+    // TODO: The following approach to specifying text properties using a spread operator works, but it also causes
+    // typescript to lose its mind.
+    //'& .MuiListItemText-root': { ...theme.typography.button },
+
     '&.Mui-selected': {
         color: theme.palette.text.primary,
         backgroundColor: `${ theme.palette.action.selected } !important`,

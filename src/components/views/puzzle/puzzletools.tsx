@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Divider from '@material-ui/core/Divider';
 import MenuItem from '@material-ui/core/MenuItem';
 import { List, GroupedList, ListItem, ListItemFull, ListItemIcon, ListItemText } from '../appbar/list';
 import SubMenu from '../appbar/submenu';
@@ -18,13 +17,11 @@ import SaveIcon from '@material-ui/icons/SaveAlt';
 import ResetIcon from '@material-ui/icons/Replay';
 import ShareIcon from '@material-ui/icons/Share';
 
-import { useTheme } from '@material-ui/core/styles';
-
 export interface IPuzzleToolsProperties {
     className?: string
 };
 
-export const PuzzleTools = (props: IPuzzleToolsProperties) => {
+export const PuzzleTools = (_: IPuzzleToolsProperties) => {
     const [mode, setMode] = React.useState('edit');
     const changeMode = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setMode(event.currentTarget.dataset.mode);

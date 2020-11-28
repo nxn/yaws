@@ -15,7 +15,7 @@ import { TabPanelContainer } from './appbar/tabs';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { hot } from 'react-hot-loader';
+//import { hot } from 'react-hot-loader';
 import clsx from 'clsx';
 import { Theme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -29,8 +29,6 @@ import GridIcon from '@material-ui/icons/GridOn';
 import AccountIcon from '@material-ui/icons/Person';
 import SettingsIcon from '@material-ui/icons/Settings';
 import HelpIcon from '@material-ui/icons/Help';
-
-import Divider from '@material-ui/core/Divider';
 
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import { Global } from '@emotion/react';
