@@ -36,7 +36,11 @@ const AppBarUnstyled = (props: AppBarProperties) => {
 };
 
 export const AppBar = styled(AppBarUnstyled)(({theme}) => ({
+    position: 'sticky',
+    top: 0,
+    left: 0,
     display: 'flex',
+    
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
 
