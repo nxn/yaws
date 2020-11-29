@@ -1,11 +1,11 @@
 import React from 'react';
 
-type SidePanelProperties = {
+type ToolpanelProperties = {
     visible?: boolean,
     className?: string
 }
 
-export default (props: SidePanelProperties) => (
+export default (props: ToolpanelProperties) => (
     <div className={ props.className }>
 
     </div>

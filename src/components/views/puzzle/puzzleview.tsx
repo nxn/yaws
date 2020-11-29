@@ -8,7 +8,7 @@ import { IBoardController } from '@components/sudoku/controller';
 
 import Board        from './board/board';
 import Controls     from './controls/controls';
-import SidePanel    from './sidepanel/sidepanel';
+import Toolpanel    from './toolpanel/toolpanel';
 
 export interface IPuzzleViewProperties {
     model:              IBoard;

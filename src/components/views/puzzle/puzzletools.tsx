@@ -9,8 +9,9 @@ import {
 import { 
     Edit                as EditIcon,
     PaletteOutlined     as ColorIcon,
-    History             as HistoryIcon,
-    TouchApp            as TouchIcon,
+    VerticalSplit       as PanelVertical,
+    HorizontalSplit     as PanelHorizontal,
+    TouchApp            as ControlsIcon,
     Menu                as MenuIcon,
     AddCircleOutline    as NewIcon,
     FolderOpen          as OpenIcon,
@@ -19,9 +20,15 @@ import {
     Share               as ShareIcon
 } from '@material-ui/icons';
 
+import useView from '../viewcontext';
 import Toolbar from '../appbar/toolbar';
 import SubMenu from '../appbar/submenu';
-import { Button, ButtonGroup } from '../appbar/button';
+
+import { 
+    Button, 
+    ToggleButton, 
+    ToggleButtonGroup 
+} from '../appbar/button';
 
 export interface IPuzzleToolsProperties {
     className?: string
@@ -29,15 +36,17 @@ export interface IPuzzleToolsProperties {
 
 export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     const [mode, setMode] = React.useState('edit');
-    const changeMode = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setMode(event.currentTarget.dataset.mode);
+    const changeMode = (_: React.MouseEvent<HTMLElement>, mode: string | null) => {
+        if (mode) {
+            setMode(mode);
+        }
     };
 
-    const [history, setHistory] = React.useState(false);
-    const toggleHistory = () => setHistory(!history);
+    const [toolpanel, setToolpanel] = React.useState(false);
+    const toggleToolpanel = () => setToolpanel(!toolpanel);
 
-    const [touch, setTouch] = React.useState(true);
-    const toggleTouch = () => setTouch(!touch);
+    const [controls, setControls] = React.useState(true);
+    const toggleControls = () => setControls(!controls);
 
     const [subMenu, setSubMenu] = React.useState({ id: null, target: null });
     const subMenuOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -50,47 +59,32 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
         setSubMenu({ id: null, target: null });
     };
 
+    const view = useView();
+    const ToolpanelIcon = view.orientation === 'landscape' ? <PanelVertical /> : <PanelHorizontal />;
+
     return <>
         <Toolbar className={ props.className }>
             <Button icon={<MenuIcon />} label="Puzzle" variant="full" />
 
-            <ButtonGroup>
-                <Button icon={<EditIcon />} label="Edit" />
-                <Button icon={<ColorIcon />} label="Color" />
-            </ButtonGroup>
+            <ToggleButtonGroup exclusive value={ mode } onChange={ changeMode }>
+                <ToggleButton value="edit" icon={<EditIcon />} label="Edit" />
+                <ToggleButton value="color" icon={<ColorIcon />} label="Color" />
+            </ToggleButtonGroup>
 
-            <Button icon={<TouchIcon />} label="Controls" />
-            <Button icon={<HistoryIcon />} label="History" />
+            <ToggleButton 
+                value       = "controls" 
+                selected    = { controls }
+                icon        = { <ControlsIcon /> } 
+                label       = "Controls"
+                onChange    = { toggleControls } />
+
+            <ToggleButton 
+                value       = "toolpanel" 
+                selected    = { toolpanel } 
+                icon        = { ToolpanelIcon } 
+                label       = "Tools"
+                onChange    = { toggleToolpanel } />
         </Toolbar>
-
-        {/* <List component="div" disablePadding>
-            <ListItemFull button key="open-file-menu" data-submenu="file-menu" onClick={ subMenuOpen } divider disableGutters>
-                <ListItemIcon><MenuIcon /></ListItemIcon>
-                <ListItemText primary="Puzzle" primaryTypographyProps={{variant: 'button'}} />
-            </ListItemFull>
-        </List>
-
-        <GroupedList component="div" disablePadding>
-            <ListItem button key="edit" selected={ mode === 'edit' } data-mode="edit" onClick={ changeMode } divider>
-                <ListItemIcon><EditIcon /></ListItemIcon>
-                <ListItemText primary="Edit" />
-            </ListItem>
-            <ListItem button key="color" selected={ mode === 'color' } data-mode="color" onClick={ changeMode }>
-                <ListItemIcon><ColorIcon /></ListItemIcon>
-                <ListItemText primary="Color" />
-            </ListItem>
-        </GroupedList>
-
-        <List component="div">
-            <ListItem button key="touch" selected={ touch } onClick={ toggleTouch }>
-                <ListItemIcon><TouchIcon /></ListItemIcon>
-                <ListItemText primary="Controls" />
-            </ListItem>
-            <ListItem button key="history" selected={ history } onClick={ toggleHistory }>
-                <ListItemIcon><HistoryIcon /></ListItemIcon>
-                <ListItemText primary="History" />
-            </ListItem>
-        </List> */}
 
         <SubMenu
             id="file-menu"
