@@ -1,5 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+//import { hot } from 'react-hot-loader';
+
+import {
+    ThemeProvider,
+    CssBaseline,
+    experimentalStyled as styled
+} from '@material-ui/core';
+
+import {
+    GridOn      as GridIcon,
+    Person      as AccountIcon,
+    Settings    as SettingsIcon,
+    Help        as HelpIcon
+} from '@material-ui/icons';
+
+import { Global } from '@emotion/react';
+import clsx from 'clsx';
+
+import cabinCondensedWoff   from './fonts/cabincondensed-bold-digits.woff';
+import cabinCondensedWoff2  from './fonts/cabincondensed-bold-digits.woff2';
+import robotoMonoWoff       from './fonts/robotomono-bold-digits.woff';
+import robotoMonoWoff2      from './fonts/robotomono-bold-digits.woff2';
 
 import type { IBoardController } from '@components/sudoku/controller';
 import type { IBoard } from '@components/sudoku/board';
@@ -19,29 +41,6 @@ import { TabPanelContainer } from './appbar/tabs';
 import { NavMenu as Tabs, NavItem as Tab } from './appbar/nav';
 import { ViewProvider, IViewContext } from './viewcontext';
 import { light, dark } from './theme';
-
-//import { hot } from 'react-hot-loader';
-
-import {
-    ThemeProvider,
-    CssBaseline,
-    experimentalStyled as styled
-} from '@material-ui/core';
-
-import { Global } from '@emotion/react';
-import clsx from 'clsx';
-
-import cabinCondensedWoff   from './fonts/cabincondensed-bold-digits.woff';
-import cabinCondensedWoff2  from './fonts/cabincondensed-bold-digits.woff2';
-import robotoMonoWoff       from './fonts/robotomono-bold-digits.woff';
-import robotoMonoWoff2      from './fonts/robotomono-bold-digits.woff2';
-
-import {
-    GridOn      as GridIcon,
-    Person      as AccountIcon,
-    Settings    as SettingsIcon,
-    Help        as HelpIcon
-} from '@material-ui/icons';
 
 type YawsProperties = {
     model:          IBoard,
