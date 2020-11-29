@@ -109,7 +109,7 @@ export class Board extends React.Component<BoardProperties, BoardState> {
     render() {
         return (
             <div id={this.props.model.id} 
-                className={ clsx("board", { "loading": !this.state.isReady }, this.props.className) }//this.state.isReady ? "board" : "board loading" }
+                className={ clsx("board", !this.state.isReady && "loading", this.props.className) }//this.state.isReady ? "board" : "board loading" }
                 onMouseLeave={ this.resetHighlight }>{
                 this.props.model.cells.map((cell: ICell) => 
                     <Cell 

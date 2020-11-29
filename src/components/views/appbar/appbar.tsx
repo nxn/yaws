@@ -1,85 +1,64 @@
 import React from 'react';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
 
-import Drawer from '@material-ui/core/Drawer';
+import {
+    Typography,
+    experimentalStyled as styled
+} from '@material-ui/core';
 
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 
-
-import { List, ListItemFull, ListItemIcon, ListItemText } from './list';
-
-import ViewContext from '../context';
-
-const drawerWidth = 180;
-
-const useDrawerStyles = makeStyles((theme) => ({
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-        whiteSpace: 'nowrap'
-    },
-    drawerOpen: {
-        width: drawerWidth,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    drawerClose: {
-        width: `calc(${ theme.spacing(7) } + 1px)`,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        overflowX: 'hidden'
-    }
-}));
+import useView from '../viewcontext';
+import Button from './button';
 
 type AppBarProperties = {
     children: React.ReactNode,
+    title: string,
     className?: string
 }
 
-export default (props: AppBarProperties) => {
-    const drawerClasses = useDrawerStyles();
-
-    const [open, setOpen] = React.useState(false);
-    const toggleNavDrawer = () => setOpen(!open);
-
-    let expander;
-    if (!React.useContext(ViewContext).tiny) {
-        expander = (
-            <List component="div" disablePadding>
-                <ListItemFull button key="drawer" onClick={ toggleNavDrawer } disableGutters divider>
-                    <ListItemIcon>
-                        { open ? <ChevronLeftIcon /> : <ChevronRightIcon /> }
-                    </ListItemIcon>
-                    <ListItemText primary="YAWS" primaryTypographyProps={{ variant: 'button' }} />
-                </ListItemFull>
-            </List>
-        );
-    }
+const AppBarUnstyled = (props: AppBarProperties) => {
+    const view = useView();
+    const title = <Typography style={{ textTransform: 'capitalize' }} variant="h6">{ props.title }</Typography>;
 
     return (
         <div className={ props.className }>
-            <Drawer variant="permanent"
-                className={clsx(drawerClasses.drawer, {
-                    [drawerClasses.drawerOpen]: open,
-                    [drawerClasses.drawerClose]: !open,
-                })}
-                classes={{
-                    paper: clsx({
-                        [drawerClasses.drawerOpen]: open,
-                        [drawerClasses.drawerClose]: !open,
-                    }),
-                }}>
-                
-                { expander }
-
-                { props.children }
-            </Drawer>
+            { 
+                view.orientation === 'landscape' && !view.tiny &&
+                    <Button
+                        className   = { 'expander' }
+                        icon        = { view.appBar.labels ? <ChevronLeft /> : <ChevronRight /> } 
+                        label       = { title }
+                        onClick     = { view.appBar.toggleLabels } />
+            }
+            { props.children }
         </div>
     );
 };
+
+export const AppBar = styled(AppBarUnstyled)(({theme}) => ({
+    display: 'flex',
+    color: theme.palette.text.secondary,
+    backgroundColor: theme.palette.background.paper,
+
+    '.landscape &': {
+        flexFlow: 'column nowrap',
+        height: '100vh',
+        borderRight: `1px solid ${ theme.palette.divider }`,
+    },
+
+    '.portrait &': {
+        flexFlow: 'row nowrap',
+        borderBottom: `1px solid ${ theme.palette.divider }`,
+    },
+
+    '& .selected': {
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.action.selected
+    },
+
+    '& .expander': {
+        margin: `${ theme.spacing(1) } !important`
+    },
+}));
+
+export default AppBar;

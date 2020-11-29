@@ -1,12 +1,12 @@
 // Re-styles Tab components so they can be displayed within the AppBar.
-
 import React from 'react';
 
-import MuiTab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-
-import { experimentalStyled as styled } from '@material-ui/core/styles'
+import {
+    Tab as MuiTab,
+    Typography,
+    IconButton,
+    experimentalStyled as styled
+} from '@material-ui/core';
 
 // Currently no custom styling is necessary for the "Tabs" wrapper component. The stock component is re-exported through
 // here so that if changes are needed in the future they will apply to anything that imports it from this module.
@@ -19,14 +19,28 @@ export const Tab = styled(MuiTab)(({theme}) => ({
     '&.Mui-selected': {
         backgroundColor: theme.palette.action.selected
     },
+
     '&.MuiTab-root': {
-        padding: 'initial',
-        textTransform: 'initial'
+        padding: theme.spacing(1.5, 2),
+        textTransform: 'initial',
+        minWidth: 'initial',
+        minHeight: 'initial',
+
+        // Adds 1px padding to account for other items in row and/or column having a border. This keeps all icons
+        // aligned down to the pixel.
+        '.landscape &': {
+            paddingLeft: `calc(${ theme.spacing(2) } + 1px)`,
+            paddingRight: `calc(${ theme.spacing(2) } + 1px)`,
+        },
+        '.portrait &': {
+            paddingTop: `calc(${ theme.spacing(2) } + 1px)`,
+            paddingBottom: `calc(${ theme.spacing(2) } + 1px)`,
+        }
     },
 
     // Ideally this class should not be applied
     '&.MuiTab-labelIcon': {
-        minHeight: '48px',
+        minHeight: 'initial',
         // Change first-child to first-of-type due to compile time warning
         '& .MuiTab-wrapper > *:first-of-type': {
             marginBottom: 'initial'
@@ -36,15 +50,11 @@ export const Tab = styled(MuiTab)(({theme}) => ({
     '& .MuiTab-wrapper': {
         flexDirection: 'row',
         alignItems: 'initial',
-        justifyContent: 'initial'
+        justifyContent: 'initial',
     },
 
-    // Margin changes so that icons and text are aligned within appbar
-    '& .MuiSvgIcon-root': {
-        margin: theme.spacing(0, 2),
-    },
     '& .MuiTypography-root': {
-        margin: theme.spacing(0, 2),
+        padding: theme.spacing(0, 3)
     }
 }));
 

@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 import type { IBoardController } from '@components/sudoku/controller';
 import type { IBoard } from '@components/sudoku/board';
 
@@ -10,47 +13,39 @@ import SettingsTools,   { ISettingsToolsProperties }    from './settings/setting
 import HelpView,        { IHelpViewProperties }         from './help/helpview';
 import HelpTools,       { IHelpToolsProperties }        from './help/helptools';
 
+import { extend } from './util';
 import AppBar from './appbar/appbar';
 import { TabPanelContainer } from './appbar/tabs';
+import { NavMenu as Tabs, NavItem as Tab } from './appbar/nav';
+import { ViewProvider, IViewContext } from './viewcontext';
+import { light, dark } from './theme';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
 //import { hot } from 'react-hot-loader';
+
+import {
+    ThemeProvider,
+    CssBaseline,
+    experimentalStyled as styled
+} from '@material-ui/core';
+
+import { Global } from '@emotion/react';
 import clsx from 'clsx';
-import { Theme, ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 
 import cabinCondensedWoff   from './fonts/cabincondensed-bold-digits.woff';
 import cabinCondensedWoff2  from './fonts/cabincondensed-bold-digits.woff2';
 import robotoMonoWoff       from './fonts/robotomono-bold-digits.woff';
 import robotoMonoWoff2      from './fonts/robotomono-bold-digits.woff2';
 
-import GridIcon from '@material-ui/icons/GridOn';
-import AccountIcon from '@material-ui/icons/Person';
-import SettingsIcon from '@material-ui/icons/Settings';
-import HelpIcon from '@material-ui/icons/Help';
-
-import { experimentalStyled as styled } from '@material-ui/core/styles';
-import { Global } from '@emotion/react';
-
-import { NavMenu as Tabs, NavItem as Tab } from './appbar/nav';
-import { ViewProvider, IViewContext } from './context';
-import { light, dark } from './theme';
-
-import { extend } from './util';
+import {
+    GridOn      as GridIcon,
+    Person      as AccountIcon,
+    Settings    as SettingsIcon,
+    Help        as HelpIcon
+} from '@material-ui/icons';
 
 type YawsProperties = {
     model:          IBoard,
     controller:     IBoardController,
-    viewInfo: {
-        orientation:    'landscape' | 'portrait',
-        scale:         number,
-        tiny:          boolean
-    }
-    // Cannot be named 'theme', otherwise it will be overwritten by material ui's 'styled' function which uses that name
-    // to propagate any existing theme to the style object. As no theme has been set yet, it gets overwritten by
-    // 'undefined'.
-    muiTheme:       Theme,
     className?:     string
 };
 
@@ -69,10 +64,58 @@ const HelpToolTab       = extend<IHelpToolsProperties,      ITabPanelView>(HelpT
 
 export const Yaws = (props: YawsProperties) => {
     const [view, setView] = React.useState('board');
-
     const switchView = (value: string) => {
         setView(value);
     };
+
+    const viewInfo = getViewInfo();
+    const [orientation,     setOrientationState]    = React.useState(viewInfo.orientation as 'landscape' | 'portrait');
+    const [scale,           setScaleState]          = React.useState(viewInfo.scale);
+    const [tiny,            setTinyState]           = React.useState(viewInfo.tiny);
+    const [appBarLabels,    setAppBarLabelState]    = React.useState(false);
+
+    const viewContext: IViewContext = {
+        orientation: orientation,
+        setOrientation: (orientation: 'landscape' | 'portrait') => {
+            setOrientationState(orientation);
+        },
+    
+        scale: scale,
+        setScale: (scale: number) => {
+            if (scale >= 1.0 && scale <= 2.0) {
+                setScaleState(scale);
+            }
+        },
+    
+        tiny: tiny,
+        toggleTiny: () => {
+            setTinyState(!tiny);
+        },
+    
+        appBar: {
+            labels: appBarLabels,
+            toggleLabels: () => {
+                setAppBarLabelState(!appBarLabels && orientation === 'landscape' && !tiny);
+            }
+        }
+    }
+
+    React.useEffect(() => {
+        const resize = () => {
+            const vinfo = getViewInfo();
+
+            setOrientationState(vinfo.orientation);
+            setScaleState(vinfo.scale);
+            setTinyState(vinfo.tiny);
+
+            if (vinfo.orientation === 'portrait' || vinfo.tiny) {
+                setAppBarLabelState(false);
+            }
+        }
+
+        //window.addEventListener('resize', resize);
+        //return () => window.removeEventListener('resize', resize);
+    })
 
     return <>
         <Global styles={[ {
@@ -96,12 +139,12 @@ export const Yaws = (props: YawsProperties) => {
             }
         } ]} />
 
-        <ThemeProvider theme={ props.muiTheme }>
+        <ThemeProvider theme={ dark }>
             <CssBaseline />
 
-            <ViewProvider value={ props.viewInfo }>
-                <div className={ clsx('yaws-root', props.className) }>
-                    <AppBar className="app-menu">
+            <ViewProvider value={ viewContext }>
+                <div className={ clsx(props.className, viewInfo.orientation) }>
+                    <AppBar className="app-menu" title={ view }>
                         <TabPanelContainer id="tool-panel" className="tools" value={ view }>
                             <PuzzleToolTab   value="board" />
                             <AccountToolTab  value="account" />
@@ -131,41 +174,55 @@ export const Yaws = (props: YawsProperties) => {
 
 export const AppView = styled(Yaws)({
     display:    'flex',
-    flexFlow:   'row nowrap',
 
-    '& .nav':           { marginTop: 'auto' },
-    '& .app-menu':      { 
-        flexShrink: 0,
-        // TODO: Move this to the drawer when styling is redone with styled
-        '& .MuiDrawer-paper': { overflowX: 'hidden' }
-     },
-    '& .views':         { flexGrow: 1 }
+    '&.landscape': {
+        flexFlow: 'row nowrap',
+        '& .nav': {
+            marginTop: 'auto'
+        }
+    },
+
+    '&.portrait': {
+        flexFlow: 'column nowrap',
+        '& .nav': {
+            marginLeft: 'auto'
+        }
+    },
+
+    '& .app-menu':  { flexShrink: 0 },
+    '& .views':     { flexGrow: 1 },
 });
 
 export function init(board: IBoard, controller: IBoardController, containerId: string) {
     const container = document.getElementById(containerId);
-    const vinfo = getViewInfo();
-
-    //vinfo.tiny = true;
-    //window.addEventListener('resize', scaleToViewport);
 
     return () => ReactDOM.render(
-        <AppView model={board} controller={controller} muiTheme={dark} viewInfo={ vinfo } />,
-        container
+        <AppView model={board} controller={controller} />, container
     );
 }
 
-
-function getViewInfo(): IViewContext {
+function getViewInfo() {
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
     const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
     
     const vsize = Math.min(vw, vh);
     const vmin = 320; // Minimum supported resolution (smallest dimension)
-    
+
+    // return {
+    //     width:          vw,
+    //     height:         vh,
+    //     size:           vsize,
+    //     scale:          Math.max(1, Math.min(2, vsize/vmin)),
+    //     orientation:    'portrait' as 'landscape' | 'portrait',
+    //     tiny:           vsize < 640
+    // };
+
     return {
+        width:          vw,
+        height:         vh,
+        size:           vsize,
         scale:          Math.max(1, Math.min(2, vsize/vmin)),
-        orientation:    vw > vh ? 'landscape' : 'portrait',
+        orientation:    vw > vh ? 'landscape' : 'portrait' as 'landscape' | 'portrait',
         tiny:           vsize < 640
     };
 }

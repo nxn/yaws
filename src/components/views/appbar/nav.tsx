@@ -1,13 +1,15 @@
 import React from 'react';
 
-import ViewContext from '../context';
+import {
+    MenuItem,
+    ListItemIcon,
+    ListItemText
+} from '@material-ui/core';
+
+import useView from '../viewcontext';
 
 import { Tabs, Tab, TinyTab, TabLabel } from './tabs';
 import SubMenu from './submenu';
-
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 
 type NavItemProperties = {
     value:      string,
@@ -21,11 +23,13 @@ const FullNavItem = (props: NavItemProperties) => {
     // Tab's label needs to be modified by being wrapped with "<TabLabel>"; the rest of the props can be passed through
     // as they are.
     const { label, ...remaining } = props;
+
+    const view = useView();
     return (
         <Tab 
             key         = { `nav-full-tab-${ props.value }` }
             data-value  = { props.value }
-            label       = { <TabLabel>{ label }</TabLabel> }
+            label       = { view.appBar.labels && <TabLabel>{ label }</TabLabel> }
             { ... remaining } />
     );
 }
@@ -131,9 +135,9 @@ const TinyNav = (props: NavMenuProperties) => {
 };
 
 export const NavItem = (props: NavItemProperties) =>
-    React.useContext(ViewContext).tiny ? TinyNavItem(props) : FullNavItem(props);
+    useView().tiny ? TinyNavItem(props) : FullNavItem(props);
 
 export const NavMenu = (props: NavMenuProperties) => 
-    React.useContext(ViewContext).tiny ? TinyNav(props) : FullNav(props);
+    useView().tiny ? TinyNav(props) : FullNav(props);
 
 export default NavMenu;

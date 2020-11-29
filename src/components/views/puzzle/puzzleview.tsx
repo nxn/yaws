@@ -1,13 +1,14 @@
+import React from 'react';
+
+import { experimentalStyled as styled } from '@material-ui/core/styles';
+import clsx from 'clsx';
+
 import { IBoard }           from '@components/sudoku/board';
 import { IBoardController } from '@components/sudoku/controller';
 
 import Board        from './board/board';
 import Controls     from './controls/controls';
 import SidePanel    from './sidepanel/sidepanel';
-
-import React from 'react';
-import { experimentalStyled as styled } from '@material-ui/core/styles';
-import clsx from 'clsx';
 
 export interface IPuzzleViewProperties {
     model:              IBoard;

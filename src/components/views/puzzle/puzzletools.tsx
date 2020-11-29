@@ -1,27 +1,33 @@
 import React from 'react';
 
-import MenuItem from '@material-ui/core/MenuItem';
-import { List, GroupedList, ListItem, ListItemFull, ListItemIcon, ListItemText } from '../appbar/list';
+import {
+    MenuItem,
+    ListItemIcon,
+    ListItemText
+} from '@material-ui/core';
+
+import { 
+    Edit                as EditIcon,
+    PaletteOutlined     as ColorIcon,
+    History             as HistoryIcon,
+    TouchApp            as TouchIcon,
+    Menu                as MenuIcon,
+    AddCircleOutline    as NewIcon,
+    FolderOpen          as OpenIcon,
+    SaveAlt             as SaveIcon,
+    Replay              as ResetIcon,
+    Share               as ShareIcon
+} from '@material-ui/icons';
+
+import Toolbar from '../appbar/toolbar';
 import SubMenu from '../appbar/submenu';
-
-import EditIcon from '@material-ui/icons/Edit';
-import ColorIcon from '@material-ui/icons/PaletteOutlined';
-import HistoryIcon from '@material-ui/icons/History';
-import TouchIcon from '@material-ui/icons/TouchApp';
-
-import MenuIcon from '@material-ui/icons/Menu';
-
-import NewIcon from '@material-ui/icons/AddCircleOutline';
-import OpenIcon from '@material-ui/icons/FolderOpen';
-import SaveIcon from '@material-ui/icons/SaveAlt';
-import ResetIcon from '@material-ui/icons/Replay';
-import ShareIcon from '@material-ui/icons/Share';
+import { Button, ButtonGroup } from '../appbar/button';
 
 export interface IPuzzleToolsProperties {
     className?: string
 };
 
-export const PuzzleTools = (_: IPuzzleToolsProperties) => {
+export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     const [mode, setMode] = React.useState('edit');
     const changeMode = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         setMode(event.currentTarget.dataset.mode);
@@ -45,7 +51,19 @@ export const PuzzleTools = (_: IPuzzleToolsProperties) => {
     };
 
     return <>
-        <List component="div" disablePadding>
+        <Toolbar className={ props.className }>
+            <Button icon={<MenuIcon />} label="Puzzle" variant="full" />
+
+            <ButtonGroup>
+                <Button icon={<EditIcon />} label="Edit" />
+                <Button icon={<ColorIcon />} label="Color" />
+            </ButtonGroup>
+
+            <Button icon={<TouchIcon />} label="Controls" />
+            <Button icon={<HistoryIcon />} label="History" />
+        </Toolbar>
+
+        {/* <List component="div" disablePadding>
             <ListItemFull button key="open-file-menu" data-submenu="file-menu" onClick={ subMenuOpen } divider disableGutters>
                 <ListItemIcon><MenuIcon /></ListItemIcon>
                 <ListItemText primary="Puzzle" primaryTypographyProps={{variant: 'button'}} />
@@ -72,7 +90,7 @@ export const PuzzleTools = (_: IPuzzleToolsProperties) => {
                 <ListItemIcon><HistoryIcon /></ListItemIcon>
                 <ListItemText primary="History" />
             </ListItem>
-        </List>
+        </List> */}
 
         <SubMenu
             id="file-menu"
