@@ -175,6 +175,7 @@ export const Yaws = (props: YawsProperties) => {
 
 export const AppView = styled(Yaws)({
     display:    'flex',
+    minHeight:  '100vh',
 
     '&.landscape': {
         flexFlow: 'row nowrap',
@@ -191,7 +192,14 @@ export const AppView = styled(Yaws)({
     },
 
     '& .app-menu':  { flexShrink: 0 },
-    '& .views':     { flexGrow: 1 },
+    '& .views':     { 
+        flexGrow: 1, 
+        display: 'inherit',
+        // TODO: Not sure why this is necessary
+        '& .tabpanel-wrapper': {
+            width: '100%'
+        }
+    },
 });
 
 export function init(board: IBoard, controller: IBoardController, containerId: string) {

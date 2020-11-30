@@ -1,24 +1,23 @@
+import React from 'react';
+
+import { experimentalStyled as styled } from '@material-ui/core/styles';
+import IconClear from '@material-ui/icons/Clear';
+import clsx from 'clsx';
+
 import type { ICellController } from '@components/sudoku/controller';
 import type { IBoard } from '@components/sudoku/board';
 
-import { ValueButtons, NoteButtons } from './buttons';
-//import icons from './images/icons.svg';
+import { range } from '@components/utilities/misc';
 
-import React from 'react';
-import { experimentalStyled as styled } from '@material-ui/core/styles';
-import Fab from '@material-ui/core/Fab';
-import IconClear from '@material-ui/icons/Clear';
-import { grey } from '@material-ui/core/colors';
-import clsx from 'clsx';
+import { Fab } from './button';
 
 type ControlProperties = { 
     board:      IBoard,
     controller: ICellController,
+    scale:      number,
     visible?:   boolean,
     className?: string
 };
-
-
 
 export class Controls extends React.Component<ControlProperties, any> {
     constructor(props: ControlProperties) {
@@ -40,9 +39,39 @@ export class Controls extends React.Component<ControlProperties, any> {
     render() {
         return (
             <div className={ clsx('control-panel', this.props.className) }>
-                <ValueButtons onClick={ this.setCellValue } />
-                <NoteButtons  onClick={ this.toggleCandidate } />
-                <Fab variant="extended" aria-label="Clear" className="btn-clear" onClick={ this.clear  }>
+                <div className="values">{
+                    range(1, 9).map(n => (
+                        <Fab
+                            key         = { n }
+                            variant     = "value"
+                            scale       = { this.props.scale }
+                            aria-label  = { n.toString() }
+                            onClick     = { this.setCellValue.bind(this, n) }>
+                                { n }
+                            </Fab>
+                    ))
+                }</div>
+
+                <div className="notes">{
+                    range(1, 9).map(n => (
+                        <Fab
+                            key         = { n }
+                            variant     = "candidate"
+                            scale       = { this.props.scale }
+                            aria-label  = { n.toString() }
+                            onClick     = { this.toggleCandidate.bind(this, n) }>
+                                { n }
+                            </Fab>
+                    ))
+                }</div>
+
+                <Fab 
+                    variant     = "clear"
+                    className   = "btn-clear"
+                    scale       = { this.props.scale }
+                    aria-label  = "Clear"
+                    onClick     = { this.clear }>
+
                     <IconClear />
                 </Fab>
             </div>
@@ -51,46 +80,32 @@ export class Controls extends React.Component<ControlProperties, any> {
 }
 
 export default styled(Controls)(
-    ({theme}) => ({
+    ({scale}) => ({
         display: 'grid',
-        gap: '2rem',
+        gap: `${ scale }rem`,
         '& .values, & .notes': {
             display:                'grid',
             gridTemplateColumns:    'repeat(3, 1fr)',
             gridTemplateRows:       'repeat(3, 1fr)',
-            gap:                    '1rem',
+            gap:                    `${ 0.25 * scale }rem`,
         },
         '& .notes':     { gridArea: 'notes' },
         '& .values':    { 
-            gridArea: 'values',
-            '& button': {
-                fontFamily: '"Cabin Condensed", sans-serif',
-                fontSize:   '2.25rem',
-            }
+            gridArea: 'values'
         },
         '& .btn-clear': { 
             gridArea: 'clear',
 
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.mode === 'dark' ? grey[900] : grey[300],
-            boxShadow: 'none',
-            '&:hover': {
-                backgroundColor: theme.palette.action.hover
-            },
-            '&:active, &:focus': {
-                boxShadow: 'none',
-            },
-
-            '@media (orientation: landscape)': {
+            '.landscape &': {
                 width: 'auto'
             },
-            '@media (orientation: portrait)': {
+            '.portrait &': {
                 height: 'auto',
-                width: '48px' // extra restriction due to using variant="extended" -- stretches width due to content
+                //width: '48px' // extra restriction due to using variant="extended" -- stretches width due to content
             },
         },
 
-        '@media (orientation: landscape)': {
+        '.landscape &': {
             gridTemplateAreas: `
                 "values"
                 "clear"
@@ -98,8 +113,7 @@ export default styled(Controls)(
             `
         },
 
-        '@media (orientation: portrait)': {
-            marginTop:          '2rem',
+        '.portrait &': {
             gridTemplateAreas:  '"values clear notes"'
         },
     })

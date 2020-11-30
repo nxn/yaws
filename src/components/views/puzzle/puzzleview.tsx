@@ -23,12 +23,11 @@ export const PuzzleViewUnstyled = (props: IPuzzleViewProperties) => {
     const view = useView();
     const displayControls   = props.displayControls === undefined ? true : props.displayControls;
     const displaySidePanel  = props.displaySidePanel === undefined ? false : props.displaySidePanel;
-    const scale = view.scale;
 
     return (
-        <div className={ clsx('view', props.className) }>
-            <Board      model={ props.model } controller={ props.controller } scale={ scale } />
-            <Controls   board={ props.model } controller={ props.controller } visible={ displayControls }/>
+        <div className={ clsx(props.className) }>
+            <Board      model={ props.model } controller={ props.controller } scale={ view.scale } />
+            <Controls   board={ props.model } controller={ props.controller } scale={ view.scale } visible={ displayControls }/>
             {/* <SidePanel  visible={ displaySidePanel } /> */}
         </div>
     );
@@ -39,7 +38,8 @@ export const PuzzleView = styled(PuzzleViewUnstyled)({
     flexFlow:       'column nowrap',
     alignItems:     'center',
     justifyContent: 'center',
-    height:         '100vh',
+    height:         '100%',
+    width:          '100%',
 
     '.landscape &': {
         flexDirection:  'row',
@@ -47,7 +47,8 @@ export const PuzzleView = styled(PuzzleViewUnstyled)({
     },
 
     '.portrait &': {
-        flexDirection: 'column'
+        flexDirection: 'column',
+        justifyContent: 'space-evenly'
     },
     
     '& .board': { flexGrow: 0 }
