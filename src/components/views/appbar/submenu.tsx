@@ -1,6 +1,4 @@
 // Modifies the standard menu so that it appears attached to the AppBar
-import React from 'react';
-
 import {
     Menu,
     experimentalStyled as styled
