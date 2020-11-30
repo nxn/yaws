@@ -213,7 +213,7 @@ function getViewInfo() {
     //     size:           vsize,
     //     scale:          Math.max(1, Math.min(2, vsize/vmin)),
     //     orientation:    'portrait' as 'landscape' | 'portrait',
-    //     tiny:           vsize < 640
+    //     tiny:           true
     // };
 
     return {

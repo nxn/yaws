@@ -57,12 +57,20 @@ type NavMenuProperties = {
 };
 
 const FullNav = (props: NavMenuProperties) => {
+    const view = useView();
+
     const changeHandler = (_: React.SyntheticEvent<Element, Event>, value: any) => {
         props.onChange(value);
     }
 
     return (
-        <Tabs className={ props.className } orientation="vertical" value={ props.value } onChange={ changeHandler } aria-label="Navigation">
+        <Tabs 
+            className   = { props.className } 
+            orientation = { view.orientation === 'landscape' ? 'vertical' : 'horizontal' }
+            value       = { props.value } 
+            onChange    = { changeHandler } 
+            aria-label  = "Navigation">
+
             { props.children }
         </Tabs>
     );

@@ -17,6 +17,7 @@ export { default as Tabs } from '@material-ui/core/Tabs';
 // possible by overriding these styles back to default.
 export const Tab = styled(MuiTab)(({theme}) => ({
     '&.Mui-selected': {
+        color: theme.palette.text.primary,
         backgroundColor: theme.palette.action.selected
     },
 
@@ -64,11 +65,21 @@ export const TinyTab = styled(IconButton)(({theme}) => ({
     '&.MuiIconButton-root': {
         borderRadius: 0,
         backgroundColor: theme.palette.action.selected,
-        //borderTop: `1px solid ${ theme.palette.divider }`,
-        borderRight: `2px solid ${ theme.palette.secondary.main }`,
-        // following only to ensure centering of icon
-        //borderBottom: `1px solid ${ theme.palette.divider }`,
-        borderLeft: '2px solid transparent'
+        //padding: theme.spacing(1.5, 2),
+
+        '.landscape &': {
+            borderRight: `2px solid ${ theme.palette.secondary.main }`,
+            borderLeft: '2px solid transparent',
+            paddingTop: theme.spacing(1.5),
+            paddingBottom: theme.spacing(1.5),
+        },
+
+        '.portrait &': {
+            borderBottom: `2px solid ${ theme.palette.secondary.main }`,
+            borderTop: '2px solid transparent',
+            paddingLeft: theme.spacing(2),
+            paddingRight: theme.spacing(2),
+        }
     }
 }))
 

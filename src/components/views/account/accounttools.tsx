@@ -17,12 +17,6 @@ export const AccountTools = (props: IAccountToolsProperties) => {
             <Button icon={<SignOutIcon />} label="Sign Out" />
         </Toolbar>
     );
-        // <List component="div">
-        //     <ListItem button key="sign-out" data-mode="sign-out" disabled>
-        //         <ListItemIcon><SignOutIcon /></ListItemIcon>
-        //         <ListItemText primary="Sign Out" />
-        //     </ListItem>
-        // </List>
 }
 
 export default AccountTools;

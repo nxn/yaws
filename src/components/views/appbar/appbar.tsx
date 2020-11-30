@@ -39,6 +39,7 @@ export const AppBar = styled(AppBarUnstyled)(({theme}) => ({
     position: 'sticky',
     top: 0,
     left: 0,
+    zIndex: 1,
     display: 'flex',
     
     color: theme.palette.text.secondary,
@@ -55,10 +56,10 @@ export const AppBar = styled(AppBarUnstyled)(({theme}) => ({
         borderBottom: `1px solid ${ theme.palette.divider }`,
     },
 
-    '& .selected': {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.action.selected
-    },
+    // '& .selected': {
+    //     color: theme.palette.text.primary,
+    //     backgroundColor: theme.palette.action.selected
+    // },
 
     '& .expander': {
         margin: `${ theme.spacing(1) } !important`

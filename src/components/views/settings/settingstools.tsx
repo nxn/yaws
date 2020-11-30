@@ -21,16 +21,6 @@ export const SettingsTools = (props: ISettingsToolsProperties) => {
             <Button icon={<CancelIcon />} label="Cancel" />
         </Toolbar>
     );
-        // <List component="div">
-        //     <ListItem button key="apply" data-mode="apply">
-        //         <ListItemIcon><ApplyIcon /></ListItemIcon>
-        //         <ListItemText primary="Apply" />
-        //     </ListItem>
-        //     <ListItem button key="cancel" data-mode="cancel">
-        //         <ListItemIcon><CancelIcon /></ListItemIcon>
-        //         <ListItemText primary="Cancel" />
-        //     </ListItem>
-        // </List>
 }
 
 export default SettingsTools;
