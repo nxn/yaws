@@ -9,6 +9,7 @@ import { IBoardController } from '@components/sudoku/controller';
 import Board        from './board/board';
 import Controls     from './controls/controls';
 import Toolpanel    from './toolpanel/toolpanel';
+import useView      from '../viewcontext';
 
 export interface IPuzzleViewProperties {
     model:              IBoard;
@@ -19,9 +20,10 @@ export interface IPuzzleViewProperties {
 }
 
 export const PuzzleViewUnstyled = (props: IPuzzleViewProperties) => {
+    const view = useView();
     const displayControls   = props.displayControls === undefined ? true : props.displayControls;
     const displaySidePanel  = props.displaySidePanel === undefined ? false : props.displaySidePanel;
-    const scale = 2.0;
+    const scale = view.scale;
 
     return (
         <div className={ clsx('view', props.className) }>
@@ -39,12 +41,12 @@ export const PuzzleView = styled(PuzzleViewUnstyled)({
     justifyContent: 'center',
     height:         '100vh',
 
-    '@media (orientation: landscape)': {
+    '.landscape &': {
         flexDirection:  'row',
         justifyContent: 'space-evenly'
     },
 
-    '@media (orientation: portrait)': {
+    '.portrait &': {
         flexDirection: 'column'
     },
     
