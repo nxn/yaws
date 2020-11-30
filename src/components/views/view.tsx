@@ -165,6 +165,8 @@ export const Yaws = (props: YawsProperties) => {
                         <SettingsViewTab value="settings" />
                         <HelpViewTab     value="help" />
                     </TabPanelContainer>
+
+                    <div id="modal-root" className={ viewInfo.orientation } />
                 </div>
             </ViewProvider>
         </ThemeProvider>
@@ -212,7 +214,7 @@ function getViewInfo() {
     //     height:         vh,
     //     size:           vsize,
     //     scale:          Math.max(1, Math.min(2, vsize/vmin)),
-    //     orientation:    'portrait' as 'landscape' | 'portrait',
+    //     orientation:    'landscape' as 'landscape' | 'portrait',
     //     tiny:           true
     // };
 

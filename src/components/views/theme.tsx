@@ -1,6 +1,22 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
+let modalRoot: null | HTMLElement = null;
+
+const defaultProps = {
+    MuiPopover: {
+        defaultProps: {
+            container: () => {
+                if (!modalRoot) {
+                    modalRoot = document.getElementById("modal-root")
+                }
+                return modalRoot;
+            }
+        }
+    }
+};
+
 export const light  = createMuiTheme({
+    components: defaultProps,
     palette: {
         mode: 'light',
         primary: {
@@ -19,6 +35,7 @@ export const light  = createMuiTheme({
 });
 
 export const dark = createMuiTheme({
+    components: defaultProps,
     palette: {
         mode: 'dark',
         primary: {

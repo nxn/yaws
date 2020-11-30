@@ -3,7 +3,8 @@ import React from 'react';
 import {
     MenuItem,
     ListItemIcon,
-    ListItemText
+    ListItemText,
+    PopoverOrigin
 } from '@material-ui/core';
 
 import useView from '../viewcontext';
@@ -94,19 +95,25 @@ const TinyNav = (props: NavMenuProperties) => {
 
     const current = props.children.find(c => c.props.value === props.value);
 
+    const view = useView();
+
+    const transformOrigin: PopoverOrigin = view.orientation === 'landscape'
+        ? { vertical: 'bottom', horizontal: 'left' }
+        : { vertical: 'top',    horizontal: 'right' };
+
     return <>
         <TinyTab className={ props.className } aria-controls="nav-menu" aria-haspopup="true" onClick={ open }>
             { current.props.icon }
         </TinyTab>
         <SubMenu
-            id="nav-menu"
-            anchorEl={ anchor }
-            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-            marginThreshold={0}
-            elevation={0}
-            open={ Boolean(anchor) }
-            onClose={ close }
+            anchorEl            = { anchor }
+            anchorOrigin        = { { vertical: 'bottom', horizontal: 'right' } }
+            transformOrigin     = { transformOrigin }
+            open                = { Boolean(anchor) }
+            onClose             = { close }
+            elevation           = { 0 }
+            marginThreshold     = { 0 }
+            getContentAnchorEl  = { null }
             keepMounted>
 
             {/* 

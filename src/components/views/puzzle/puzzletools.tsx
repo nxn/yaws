@@ -3,7 +3,8 @@ import React from 'react';
 import {
     MenuItem,
     ListItemIcon,
-    ListItemText
+    ListItemText,
+    PopoverOrigin
 } from '@material-ui/core';
 
 import { 
@@ -48,23 +49,26 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     const [controls, setControls] = React.useState(true);
     const toggleControls = () => setControls(!controls);
 
-    const [subMenu, setSubMenu] = React.useState({ id: null, target: null });
-    const subMenuOpen = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setSubMenu({
-            id:     event.currentTarget.dataset.submenu,
-            target: event.currentTarget
-        });
+    const [anchor, setAnchor] = React.useState<null | HTMLElement>(null);
+    const openPuzzleMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        setAnchor(event.currentTarget);
     };
-    const subMenuClose = () => {
-        setSubMenu({ id: null, target: null });
+    const closePuzzleMenu = () => {
+        setAnchor(null);
     };
 
     const view = useView();
-    const ToolpanelIcon = view.orientation === 'landscape' ? <PanelVertical /> : <PanelHorizontal />;
+    const ToolpanelIcon = view.orientation === 'landscape' 
+        ? <PanelVertical /> 
+        : <PanelHorizontal />;
+
+    const anchorOrigin: PopoverOrigin = view.orientation === 'landscape'
+        ? { vertical: 'top',    horizontal: 'right' }
+        : { vertical: 'bottom', horizontal: 'left' };
 
     return <>
         <Toolbar className={ props.className }>
-            <Button icon={<MenuIcon />} label="Puzzle" variant="full" />
+            <Button icon={<MenuIcon />} label="Puzzle" variant="full" onClick={ openPuzzleMenu } />
 
             <ToggleButtonGroup exclusive value={ mode } onChange={ changeMode }>
                 <ToggleButton value="edit" icon={<EditIcon />} label="Edit" />
@@ -87,14 +91,14 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
         </Toolbar>
 
         <SubMenu
-            id="file-menu"
-            anchorEl={ subMenu.target }
-            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-            marginThreshold={0}
-            elevation={0}
-            open={ subMenu.id === 'file-menu' }
-            onClose={ subMenuClose }
+            anchorEl            = { anchor }
+            anchorOrigin        = { anchorOrigin }
+            transformOrigin     = { { vertical: 'top', horizontal: 'left' } }
+            open                = { Boolean(anchor) }
+            onClose             = { closePuzzleMenu }
+            elevation           = { 0 }
+            marginThreshold     = { 0 }
+            getContentAnchorEl  = { null }
             keepMounted>
 
             {/* 
@@ -105,27 +109,27 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
             */}
             <MenuItem style={{ display: 'none' }} />
 
-            <MenuItem data-dialog="new-puzzle" onClick={ () => {} }>
+            <MenuItem data-dialog="new-puzzle" onClick={ closePuzzleMenu }>
                 <ListItemIcon><NewIcon /></ListItemIcon>
                 <ListItemText primary="New" />
             </MenuItem>
 
-            <MenuItem onClick={subMenuClose}>
+            <MenuItem onClick={closePuzzleMenu}>
                 <ListItemIcon><OpenIcon /></ListItemIcon>
                 <ListItemText primary="Open" />
             </MenuItem>
 
-            <MenuItem onClick={subMenuClose}>
+            <MenuItem onClick={closePuzzleMenu}>
                 <ListItemIcon><SaveIcon /></ListItemIcon>
                 <ListItemText primary="Save" />
             </MenuItem>
 
-            <MenuItem onClick={subMenuClose}>
+            <MenuItem onClick={closePuzzleMenu}>
                 <ListItemIcon><ResetIcon /></ListItemIcon>
                 <ListItemText primary="Reset" />
             </MenuItem>
 
-            <MenuItem onClick={subMenuClose}>
+            <MenuItem onClick={closePuzzleMenu}>
                 <ListItemIcon><ShareIcon /></ListItemIcon>
                 <ListItemText primary="Share" />
             </MenuItem>
