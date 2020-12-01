@@ -7,7 +7,7 @@ import {
     PopoverOrigin
 } from '@material-ui/core';
 
-import useView from '../viewcontext';
+import useView from '../context';
 
 import { Tabs, Tab, TinyTab, TabLabel } from './tabs';
 import SubMenu from './submenu';

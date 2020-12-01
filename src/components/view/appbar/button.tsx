@@ -21,7 +21,7 @@ import { Interpolation } from '@emotion/react';
 
 import clsx from 'clsx';
 
-import useView from '../viewcontext';
+import useView from '../context';
 
 type AppBarButtonProperties = {
     icon: JSX.Element,

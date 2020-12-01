@@ -7,7 +7,7 @@ import {
 
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 
-import useView from '../viewcontext';
+import useView from '../context';
 import Button from './button';
 
 type AppBarProperties = {

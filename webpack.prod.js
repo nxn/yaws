@@ -90,23 +90,24 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({ template: 'src/components/page/index.ejs' }),
     new FaviconsWebpackPlugin({
-      logo: './logo.svg', // svg works too!
-      mode: 'webapp', // optional can be 'webapp' or 'light' - 'webapp' by default
-      devMode: 'webapp', // optional can be 'webapp' or 'light' - 'light' by default 
+      logo: './logo.svg',
+      mode: 'webapp',
+      devMode: 'webapp',
       cache: true,
       inject: true,
+      prefix: 'assets/app-icon',
       favicons: {
-        appName: 'Aw Yaws - Yet Another Web Sudoku',
         appShortName: 'Yaws',
+        appName: 'Aw Yaws - Yet Another Web Sudoku',
         appDescription: 'Sudoku puzzle generator for all your devices.',
         developerName: 'ernie@nxn.io',
         developerURL: 'https://nxn.io/', // prevent retrieving from the nearest package.json
         background: '#222',
         theme_color: '#333',
-        icons: {
-          coast: false,
-          yandex: false
-        }
+        // icons: {
+        //   coast: false,
+        //   yandex: false
+        // }
       }
     }),
   ],

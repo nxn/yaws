@@ -39,7 +39,7 @@ import { extend } from './util';
 import AppBar from './appbar/appbar';
 import { TabPanelContainer } from './appbar/tabs';
 import { NavMenu as Tabs, NavItem as Tab } from './appbar/nav';
-import { ViewProvider, IViewContext } from './viewcontext';
+import { ViewProvider, IViewContext } from './context';
 import { light, dark } from './theme';
 
 type YawsProperties = {

@@ -44,6 +44,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
+    "start-https": "webpack-dev-server --config webpack.dev.js --https --key localhost-key.pem --cert localhost.pem",
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --watch",
     "preview": "http-server dist -S -C localhost.pem -K localhost-key.pem -o -c-1"
@@ -60,5 +61,5 @@
   "author": "Ernie Wieczorek",
   "email": "ernie@nxn.io",
   "license": "MIT",
-  "description": ""
+  "description": "Sudoku puzzle generator for all your devices."
 }

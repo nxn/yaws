@@ -21,7 +21,7 @@ import {
     Share               as ShareIcon
 } from '@material-ui/icons';
 
-import useView from '../viewcontext';
+import useView from '../context';
 import Toolbar from '../appbar/toolbar';
 import SubMenu from '../appbar/submenu';
 

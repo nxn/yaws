@@ -2,7 +2,7 @@ import React from 'react';
 
 import MuiDivider, { DividerProps } from '@material-ui/core/Divider';
 
-import useView from '../viewcontext';
+import useView from '../context';
 
 export const Divider = (props: DividerProps) => {
     const view = useView();
