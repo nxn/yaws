@@ -99,7 +99,9 @@ export const Yaws = (props: YawsProperties) => {
         }
     }
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
+        let timeout: null | any = null;
+
         const resize = () => {
             const vinfo = getViewInfo();
 
@@ -110,10 +112,22 @@ export const Yaws = (props: YawsProperties) => {
             if (vinfo.orientation === 'portrait' || vinfo.tiny) {
                 setAppBarLabelState(false);
             }
+            else {
+                //setAppBarLabelState(savedState);
+            }
         }
 
-        //window.addEventListener('resize', resize);
-        //return () => window.removeEventListener('resize', resize);
+        const resizeHandler = () => {
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+
+            timeout = setTimeout(resize, 100);
+        }
+
+        window.addEventListener('resize', resizeHandler);
+
+        return () => window.removeEventListener('resize', resizeHandler);
     })
 
     return <>
@@ -153,7 +167,7 @@ export const Yaws = (props: YawsProperties) => {
 
                         <Tabs value={ view } onChange={ switchView } className="nav">
                             <Tab value="board"    label="Board"   icon={ <GridIcon /> } />
-                            <Tab value="account"  label="Account"  icon={ <AccountIcon /> } />
+                            <Tab value="account"  label="Account"  icon={ <AccountIcon /> } disabled />
                             <Tab value="settings" label="Settings" icon={ <SettingsIcon /> } />
                             <Tab value="help"     label="Help"     icon={ <HelpIcon /> } />
                         </Tabs>
@@ -195,7 +209,7 @@ export const AppView = styled(Yaws)({
     '& .views':     { 
         flexGrow: 1, 
         display: 'inherit',
-        // TODO: Not sure why this is necessary
+        // TODO: Not sure why this is necessary, need to look into why the tab wrapper isn't automatically full width.
         '& .tabpanel-wrapper': {
             width: '100%'
         }
@@ -232,7 +246,7 @@ function getViewInfo() {
         size:           vsize,
         scale:          Math.max(1, Math.min(2, vsize/vmin)),
         orientation:    vw > vh ? 'landscape' : 'portrait' as 'landscape' | 'portrait',
-        tiny:           vsize < 640
+        tiny:           vsize < 500
     };
 }
 

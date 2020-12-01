@@ -21,11 +21,12 @@ type NavItemProperties = {
 }
 
 const FullNavItem = (props: NavItemProperties) => {
+    const view = useView();
+    
     // Tab's label needs to be modified by being wrapped with "<TabLabel>"; the rest of the props can be passed through
     // as they are.
     const { label, ...remaining } = props;
 
-    const view = useView();
     return (
         <Tab 
             key         = { `nav-full-tab-${ props.value }` }
@@ -78,6 +79,8 @@ const FullNav = (props: NavMenuProperties) => {
 }
 
 const TinyNav = (props: NavMenuProperties) => {
+    const view = useView();
+
     const [anchor, setAnchor] = React.useState<null | HTMLElement>(null);
 
     const open = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -94,8 +97,6 @@ const TinyNav = (props: NavMenuProperties) => {
     }
 
     const current = props.children.find(c => c.props.value === props.value);
-
-    const view = useView();
 
     const transformOrigin: PopoverOrigin = view.orientation === 'landscape'
         ? { vertical: 'bottom', horizontal: 'left' }

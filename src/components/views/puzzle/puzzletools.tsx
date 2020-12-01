@@ -72,7 +72,7 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
 
             <ToggleButtonGroup exclusive value={ mode } onChange={ changeMode }>
                 <ToggleButton value="edit" icon={<EditIcon />} label="Edit" />
-                <ToggleButton value="color" icon={<ColorIcon />} label="Color" />
+                <ToggleButton value="color" icon={<ColorIcon />} label="Color" disabled />
             </ToggleButtonGroup>
 
             <ToggleButton 

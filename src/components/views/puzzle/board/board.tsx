@@ -67,9 +67,10 @@ export class Board extends React.Component<BoardProperties, BoardState> {
         }));
     }
 
-    shouldComponentUpdate(_: BoardProperties, nextState: BoardState) {
-        return !partialEq(this.state, nextState);
-    }
+    // TODO: Since scaling is now done via dynamic CSS, re-renders are necessary in order to update it. :(
+    // shouldComponentUpdate(_: BoardProperties, nextState: BoardState) {
+    //     return !partialEq(this.state, nextState);
+    // }
 
     updateReadyState = (board: IBoard) => {
         if (this.props.model === board && this.state.isReady !== board.isReady()) {

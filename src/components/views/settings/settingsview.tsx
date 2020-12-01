@@ -4,6 +4,8 @@ import {
     Box,
     Paper,
     Typography,
+    Tab,
+    Tabs,
     experimentalStyled as styled
 } from '@material-ui/core';
 
@@ -25,10 +27,15 @@ const Title = styled(Box)({
 
 export const SettingsView = (props: ISettingsViewProperties) => {
     return (
-        <div className={ clsx('view', props.className) }>
+        <div className={ clsx(props.className) }>
             <Title>
                 <Typography variant="h2" component="h1" gutterBottom>Settings</Typography>
             </Title>
+            {/* <Tabs value="game-settings">
+                <Tab label="Game" value="game-settings" />
+                <Tab label="View" value="view-settings" />
+                <Tab label="Controls" value="control-settings" />
+            </Tabs> */}
         </div>
     );
 }
