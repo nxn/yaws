@@ -39,6 +39,7 @@ export const Fab = styled(FabUnstyled)(({ theme, scale }) => {
             color:              theme.palette.text.secondary,
             backgroundColor:    theme.palette.mode === 'dark' ? grey[800] : grey[200],
             boxShadow:          'none',
+            lineHeight:         'initial',
             width:              width,
             height:             width,
             
