@@ -68,11 +68,11 @@ function asAppBarButtonGroup<P extends MuiButtonGroupProps | MuiToggleButtonGrou
     }
 }
 
-export const IconButton = styled(MuiIconButton)(({theme}) => ({
+export const IconButton = styled(MuiIconButton)({
     '&.MuiIconButton-root': {
         borderRadius: 0
     }
-}));
+});
 
 const appBarButtonStyle: Interpolation<{ theme?: Theme }> = ({theme}) => ({
     '&.MuiButtonBase-root': {

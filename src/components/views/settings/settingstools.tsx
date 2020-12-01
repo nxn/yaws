@@ -6,7 +6,6 @@ import {
     ChromeReaderModeOutlined as NavIcon
 } from '@material-ui/icons';
 
-import useView from '../viewcontext';
 import Toolbar from '../appbar/toolbar';
 import Divider from '../appbar/divider';
 import { Button, ToggleButton } from '../appbar/button';
@@ -16,8 +15,6 @@ export interface ISettingsToolsProperties {
 };
 
 export const SettingsTools = (props: ISettingsToolsProperties) => {
-    const view = useView();
-
     const [content, setContent] = React.useState(false);
     const toggleContent = () => {
         setContent(!content);

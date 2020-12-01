@@ -2,7 +2,6 @@ import React from 'react';
 
 import NavIcon from '@material-ui/icons/ChromeReaderModeOutlined';
 
-import useView from '../viewcontext';
 import Toolbar from '../appbar/toolbar';
 import Divider from '../appbar/divider';
 import { ToggleButton } from '../appbar/button';
@@ -12,7 +11,6 @@ export interface IHelpToolsProperties {
 };
 
 export const HelpTools = (props: IHelpToolsProperties) => {
-    const view = useView();
     const [content, setContent] = React.useState(false);
     const toggleContent = () => {
         setContent(!content);
