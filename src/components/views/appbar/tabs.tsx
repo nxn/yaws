@@ -108,8 +108,8 @@ export const TabPanelContainer = (props: TabPanelContainerProperties) => (
                 role            = "tabpanel"
                 className       = "tabpanel-wrapper"
                 hidden          = { props.value !== child.props.value }
-                aria-labelledby = {`tab-${ child.props.value }`}
-            >
+                aria-labelledby = {`tab-${ child.props.value }`}>
+
                 { child }
             </div>
         ))

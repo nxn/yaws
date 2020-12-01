@@ -45,6 +45,7 @@ const TinyNavItem = (props: NavItemProperties) => {
             key         = { `nav-tiny-tab-${ props.value }` } 
             data-value  = { props.value }
             { ... remaining }>
+
             <ListItemIcon>{ icon }</ListItemIcon>
             <ListItemText>{ label }</ListItemText>
         </MenuItem>
