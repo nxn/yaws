@@ -151,9 +151,9 @@ const TinyNav = (props: NavMenuProperties) => {
 };
 
 export const NavItem = (props: NavItemProperties) =>
-    useView().tiny ? TinyNavItem(props) : FullNavItem(props);
+    useView().tiny ? <TinyNavItem { ...props } /> : <FullNavItem { ...props } />;
 
 export const NavMenu = (props: NavMenuProperties) => 
-    useView().tiny ? TinyNav(props) : FullNav(props);
+    useView().tiny ? <TinyNav { ...props } /> : <FullNav { ...props } />;
 
 export default NavMenu;
