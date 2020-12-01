@@ -99,6 +99,15 @@ export const Yaws = (props: YawsProperties) => {
         }
     }
 
+    React.useEffect(() => {
+        const install = () => {
+            console.log("INSTALL");
+        }
+
+        window.addEventListener('beforeinstallprompt', install);
+        return () => window.removeEventListener('beforeinstallprompt', install);
+    });
+
     React.useLayoutEffect(() => {
         let timeout: null | any = null;
 

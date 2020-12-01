@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 313 256" style="enable-background:new 0 0 313 256;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+	.st1{fill:#006ABA;}
+</style>
+<polygon id="Inner_Fill" class="st0" points="143.5,158.1 13,233.4 13,22.6 260.8,165.6 260.8,90.4 208.7,120.5 169.5,97.9 
+	300,22.6 300,233.4 52.2,90.4 52.2,165.6 104.3,135.5 "/>
+<g id="Stripe_1_">
+	<polygon class="st1" points="52.2,180.7 52.2,195.8 130.4,150.6 117.4,143.1 	"/>
+	<polygon class="st1" points="260.8,60.2 182.6,105.4 195.6,112.9 260.8,75.3 	"/>
+</g>
+<path id="Outline" d="M65.2,143.1l0-30.1L91.3,128L65.2,143.1z M13,233.4l0-210.8l247.8,143.1l0-75.3l-52.2,30.1l-39.1-22.6
+	L300,22.6l0,210.8L52.2,90.4l0,75.3l52.2-30.1l39.1,22.6L13,233.4z M156.5,165.6L313,256l0-256L156.5,90.4L0,0l0,256L156.5,165.6z
+	 M247.8,112.9l0,30.1L221.7,128L247.8,112.9z"/>
+</svg>

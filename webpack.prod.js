@@ -6,6 +6,7 @@ const HtmlWebpackPlugin       = require('html-webpack-plugin');
 const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
 const MiniCssExtractPlugin    = require('mini-css-extract-plugin');
 const CopyPlugin              = require('copy-webpack-plugin');
+const FaviconsWebpackPlugin   = require('favicons-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin            = require('terser-webpack-plugin');
 
@@ -87,7 +88,27 @@ module.exports = {
       filename: "[name].[contenthash].css", 
       chunkFilename: "[id].[contenthash].css"
     }),
-    new HtmlWebpackPlugin({ template: 'src/components/page/index.ejs' })
+    new HtmlWebpackPlugin({ template: 'src/components/page/index.ejs' }),
+    new FaviconsWebpackPlugin({
+      logo: './logo.svg', // svg works too!
+      mode: 'webapp', // optional can be 'webapp' or 'light' - 'webapp' by default
+      devMode: 'webapp', // optional can be 'webapp' or 'light' - 'light' by default 
+      cache: true,
+      inject: true,
+      favicons: {
+        appName: 'Aw Yaws - Yet Another Web Sudoku',
+        appShortName: 'Yaws',
+        appDescription: 'Sudoku puzzle generator for all your devices.',
+        developerName: 'ernie@nxn.io',
+        developerURL: 'https://nxn.io/', // prevent retrieving from the nearest package.json
+        background: '#222',
+        theme_color: '#333',
+        icons: {
+          coast: false,
+          yandex: false
+        }
+      }
+    }),
   ],
   optimization: {
     minimize: true,
