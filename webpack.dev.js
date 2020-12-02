@@ -127,7 +127,8 @@ module.exports = {
       maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
       exclude: [
         /(?:assets[\/\\].*)$/,
-        /\.map$/
+        /\.map$/,
+        /CNAME/
       ],
       runtimeCaching: [{
         urlPattern: /(?:\/assets\/.*)$/,
