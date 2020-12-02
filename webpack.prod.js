@@ -7,6 +7,7 @@ const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
 const MiniCssExtractPlugin    = require('mini-css-extract-plugin');
 const CopyPlugin              = require('copy-webpack-plugin');
 const FaviconsWebpackPlugin   = require('favicons-webpack-plugin');
+const WorkboxPlugin           = require('workbox-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin            = require('terser-webpack-plugin');
 
@@ -88,7 +89,7 @@ module.exports = {
       filename: "[name].[contenthash].css", 
       chunkFilename: "[id].[contenthash].css"
     }),
-    new HtmlWebpackPlugin({ template: 'src/components/page/index.ejs' }),
+    new HtmlWebpackPlugin({ template: 'src/components/shell/index.ejs' }),
     new FaviconsWebpackPlugin({
       logo: './logo.svg',
       mode: 'webapp',
@@ -110,6 +111,14 @@ module.exports = {
         // }
       }
     }),
+    new WorkboxPlugin.GenerateSW({
+      // these options encourage the ServiceWorkers to get in there fast
+      // and not allow any straggling "old" SWs to hang around
+      clientsClaim: true,
+      skipWaiting: true,
+      // swSrc: 'src/components/workers/service-worker',
+      // swDest: 'service-worker.js',
+    })
   ],
   optimization: {
     minimize: true,

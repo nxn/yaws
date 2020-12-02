@@ -58,7 +58,7 @@ export const Fab = styled(FabUnstyled)(({ theme, scale }) => {
         },
 
         '&.candidate': {
-            fontFamily: '"Roboto Mono", monospace',
+            fontFamily: '"Roboto", sans-serif',
             fontSize:   `${ 0.65625 * scale }rem`
         },
 

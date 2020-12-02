@@ -15,13 +15,7 @@ import {
     Help        as HelpIcon
 } from '@material-ui/icons';
 
-import { Global } from '@emotion/react';
 import clsx from 'clsx';
-
-import cabinCondensedWoff   from './fonts/cabincondensed-bold-digits.woff';
-import cabinCondensedWoff2  from './fonts/cabincondensed-bold-digits.woff2';
-import robotoMonoWoff       from './fonts/robotomono-bold-digits.woff';
-import robotoMonoWoff2      from './fonts/robotomono-bold-digits.woff2';
 
 import type { IBoardController } from '@components/sudoku/controller';
 import type { IBoard } from '@components/sudoku/board';
@@ -140,27 +134,6 @@ export const Yaws = (props: YawsProperties) => {
     })
 
     return <>
-        <Global styles={[ {
-            ':focus':               { outline: 'none' },
-            '::-moz-focus-inner':   { border: 0 }
-        }, {
-            '@font-face': {
-                fontFamily: '"Cabin Condensed"',
-                fontStyle: 'normal',
-                fontWeight: 700,
-                fontDisplay: 'swap',
-                src: `url("${ cabinCondensedWoff2 }") format("woff2"), url("${ cabinCondensedWoff }") format("woff")`
-            }
-        }, {
-            '@font-face':  {
-                fontFamily: '"Roboto Mono"',
-                fontStyle: 'normal',
-                fontWeight: 700,
-                fontDisplay: 'swap',
-                src: `url("${ robotoMonoWoff2 }") format("woff2"), url("${ robotoMonoWoff }") format("woff")`
-            }
-        } ]} />
-
         <ThemeProvider theme={ dark }>
             <CssBaseline />
 

@@ -5,7 +5,6 @@ import { StateManager }     from '@components/sudoku/statemanager';
 import { BoardController }  from '@components/sudoku/controller';
 import { KeyboardHandler }  from '@components/sudoku/keyboard';
 import { init as initView } from '@components/view/view';
-import { init as initPage } from '@components/page/page';
 import { storage, proxies } from '@components/storage/storage';
 import { waffleIron }       from '@components/workers/waffle-iron';
 
@@ -17,7 +16,6 @@ function init() {
     const state         = StateManager.create(board);
     const puzzleStore   = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
 
-    initPage();
     const render = initView(board, controller, 'sudoku');
     document.addEventListener(
         'keydown', event => { keyboard.onKey(event); }

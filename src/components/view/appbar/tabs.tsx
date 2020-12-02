@@ -55,7 +55,8 @@ export const Tab = styled(MuiTab)(({theme}) => ({
     },
 
     '& .MuiTypography-root': {
-        padding: theme.spacing(0, 3)
+        padding: theme.spacing(0, 3),
+        lineHeight: 1.43
     }
 }));
 

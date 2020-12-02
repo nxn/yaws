@@ -18,7 +18,7 @@ type AppBarProperties = {
 
 const AppBarUnstyled = (props: AppBarProperties) => {
     const view = useView();
-    const title = <Typography style={{ textTransform: 'capitalize' }} variant="h6">{ props.title }</Typography>;
+    const title = <Typography style={{ textTransform: 'capitalize' }} variant="body1">{ props.title }</Typography>;
 
     return (
         <div className={ props.className }>

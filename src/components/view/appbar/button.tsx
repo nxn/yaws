@@ -82,11 +82,10 @@ const appBarButtonStyle: Interpolation<{ theme?: Theme }> = ({theme}) => ({
     '&.MuiButton-root, &.MuiToggleButton-root': {
         padding: theme.spacing(1),
         minWidth: 'initial',
-        lineHeight: 'initial',
+        lineHeight: 1.43,
         '& .label': {
             padding: theme.spacing(0, 3),
             '& .MuiTypography-root': {
-                lineHeight: 'initial',
                 textTransform: 'initial'
             }
         }

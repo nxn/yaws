@@ -218,7 +218,7 @@ export default styled(Board)(
                 '& .candidate': {
                     lineHeight:    `${ 0.625 * scale }rem`,
                     color:          alpha(theme.palette.text.secondary, 0),
-                    fontFamily:     '"Roboto Mono", monospace',
+                    fontFamily:     '"Roboto", sans-serif',
                     fontSize:       `${ 0.625 + (0.8125 - 0.625) * (scale - 1.0) }rem`,
                     borderRight:    `0.0625rem solid ${ alpha(theme.palette.divider, 0) }`,
                     borderBottom:   `0.0625rem solid ${ alpha(theme.palette.divider, 0) }`,
