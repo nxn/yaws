@@ -124,7 +124,19 @@ module.exports = {
       skipWaiting: true,
       // swSrc: 'src/components/workers/service-worker',
       // swDest: 'service-worker.js',
-      maximumFileSizeToCacheInBytes: 20 * 1024 * 1024
+      maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
+      exclude: [
+        /(?:assets[\/\\].*)$/,
+        /\.map$/
+      ],
+      runtimeCaching: [{
+        urlPattern: /(?:\/assets\/.*)$/,
+        handler: 'CacheFirst',
+
+        options: {
+          cacheName: 'assets',
+        },
+      }],
     }),
     new webpack.HotModuleReplacementPlugin()
   ]

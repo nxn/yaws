@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                        console.log('SW registered: ', registration);
+                    }).catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+                });
+            }
+        </script>
+        
         <title>Aw Yaws - Yet Another Web Sudoku</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
@@ -18,19 +30,6 @@
             as="font" type="font/woff2" crossorigin>
         <link rel="preload" href="<%= require('@components/view/fonts/cabincondensed-bold-digits.woff2').default %>"
             as="font" type="font/woff2" crossorigin>
-
-        <script>
-            if ('serviceWorker' in navigator) {
-                console.log('huh');
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/service-worker.js').then(registration => {
-                        console.log('SW registered: ', registration);
-                    }).catch(registrationError => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-                });
-            }
-        </script>
 
         <style type="text/css">
             :focus { outline: none }
@@ -106,9 +105,9 @@
             #logo .blue { fill: #006ABA; }
             @keyframes pulse-animation {
                 0%  { transform: scale( 1 ); }
-                20% { transform: scale( .75 ); }
+                20% { transform: scale( .85 ); }
                 40% { transform: scale( 1 ); }
-                60% { transform: scale( .75 ); }
+                60% { transform: scale( .85 ); }
                 80% { transform: scale( 1 ); }
             }
         </style>
