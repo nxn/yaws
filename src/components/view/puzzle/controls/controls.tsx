@@ -90,18 +90,16 @@ export default styled(Controls)(
             gap:                    `${ 0.25 * scale }rem`,
         },
         '& .notes':     { gridArea: 'notes' },
-        '& .values':    { 
-            gridArea: 'values'
-        },
+        '& .values':    {  gridArea: 'values' },
         '& .btn-clear': { 
             gridArea: 'clear',
 
             '.landscape &': {
                 width: 'auto'
             },
+
             '.portrait &': {
-                height: 'auto',
-                //width: '48px' // extra restriction due to using variant="extended" -- stretches width due to content
+                height: 'auto'
             },
         },
 
@@ -112,7 +110,6 @@ export default styled(Controls)(
                 "notes"
             `
         },
-
         '.portrait &': {
             gridTemplateAreas:  '"values clear notes"'
         },

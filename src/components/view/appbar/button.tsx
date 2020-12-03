@@ -17,8 +17,6 @@ import {
     experimentalStyled as styled
 } from '@material-ui/core';
 
-import { lighten, darken } from '@material-ui/core/styles';
-
 import { Interpolation } from '@emotion/react';
 
 import clsx from 'clsx';
