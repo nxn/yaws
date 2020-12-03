@@ -14,7 +14,7 @@ export const AccountTools = (props: IAccountToolsProperties) => {
     return (
         <Toolbar className={ props.className }>
             <Divider />
-            <Button icon={<SignOutIcon />} label="Sign Out" />
+            <Button guttered icon={<SignOutIcon />} label="Sign Out" />
         </Toolbar>
     );
 }

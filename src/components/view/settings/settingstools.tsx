@@ -23,12 +23,13 @@ export const SettingsTools = (props: ISettingsToolsProperties) => {
         <Toolbar className={ props.className }>
             <Divider />
 
-            <Button icon={<ApplyIcon />} label="Apply" />
-            <Button icon={<CancelIcon />} label="Cancel" />
+            <Button guttered icon={<ApplyIcon />} label="Apply" />
+            <Button guttered icon={<CancelIcon />} label="Cancel" />
 
             <Divider />
 
             <ToggleButton 
+                guttered
                 value       = "content" 
                 selected    = { content }
                 icon        = { <NavIcon /> } 

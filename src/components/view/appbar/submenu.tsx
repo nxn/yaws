@@ -4,6 +4,8 @@ import {
     experimentalStyled as styled
 } from '@material-ui/core';
 
+import { lighten, darken } from '@material-ui/core/styles';
+
 export const SubMenu = styled(Menu)(
     ({theme}) => ({
         '& .MuiList-padding': {
@@ -11,25 +13,34 @@ export const SubMenu = styled(Menu)(
             paddingBottom: 0
         },
         '& .MuiMenu-paper': {
-            color:  theme.palette.text.secondary,
-            border: `1px solid  ${ theme.palette.divider }`,
+            color: theme.palette.text.secondary,
+            backgroundColor: theme.palette.mode === "dark" 
+                ? lighten(theme.palette.background.paper, 0.08) 
+                : darken(theme.palette.background.paper, 0.08),
+
             '.landscape &': {
-                borderLeft:             `1px dashed ${ theme.palette.divider }`,
-                borderTopLeftRadius:    '0',
-                borderBottomLeftRadius: '0',
+                borderLeft:             theme.palette.mode === 'dark' ? 0 : `1px solid ${ theme.palette.divider }`,
+                borderTopLeftRadius:    0,
+                borderBottomLeftRadius: 0,
             },
             '.portrait &': {
-                borderTop:             `1px dashed ${ theme.palette.divider }`,
-                borderTopLeftRadius:    '0',
-                borderTopRightRadius:   '0',
+                borderTop:              theme.palette.mode === 'dark' ? 0 : `1px solid ${ theme.palette.divider }`,
+                borderTopLeftRadius:    0,
+                borderTopRightRadius:   0,
             }
         },
+
+        '& .MuiPaper-elevation':{
+            /* offset-x | offset-y | blur-radius | spread-radius | color */
+            boxShadow: 
+                '1px 1px 1px -2px rgba(0,0,0,0.2),'+
+                '1px 1px 1px 0px rgba(0,0,0,0.14),'+
+                '3px 3px 3px 0px rgba(0,0,0,0.12)'
+        },
+
         '& .MuiListItemIcon-root': {
             color: theme.palette.text.secondary,
         }
-        // '& .MuiMenuItem-root': {
-        //     minHeight: '48px'
-        // }
     })
 );
 

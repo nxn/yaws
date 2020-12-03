@@ -134,7 +134,7 @@ export const Yaws = (props: YawsProperties) => {
     })
 
     return <>
-        <ThemeProvider theme={ dark }>
+        <ThemeProvider theme={ light }>
             <CssBaseline />
 
             <ViewProvider value={ viewContext }>

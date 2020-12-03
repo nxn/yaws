@@ -113,7 +113,7 @@ const TinyNav = (props: NavMenuProperties) => {
             transformOrigin     = { transformOrigin }
             open                = { Boolean(anchor) }
             onClose             = { close }
-            elevation           = { 0 }
+            elevation           = { 3 }
             marginThreshold     = { 0 }
             getContentAnchorEl  = { null }
             keepMounted>

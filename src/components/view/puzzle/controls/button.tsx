@@ -9,7 +9,7 @@ import {
 import clsx from 'clsx';
 
 //import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { grey } from '@material-ui/core/colors';
+import { lighten, darken  } from '@material-ui/core/styles';
 
 type ButtonProperties = {
     variant: 'value' | 'candidate' | 'clear',
@@ -33,23 +33,44 @@ export const FabUnstyled = (props: ButtonProperties & Omit<MuiFabProps, 'variant
 const normalize = (min: number, max: number, scale: number) => min + (max - min) * (scale - 1);
 
 export const Fab = styled(FabUnstyled)(({ theme, scale }) => {
-    const width = `${ normalize(2.25, 3.5, scale) }rem`;
+    const width = normalize(2.25, 3.5, scale);
     return {
         '&.MuiFab-root': {
             color:              theme.palette.text.secondary,
-            backgroundColor:    theme.palette.mode === 'dark' ? grey[800] : grey[200],
+            backgroundColor:    theme.palette.mode === 'dark' 
+                                    ? lighten(theme.palette.background.default, 0.12) 
+                                    : darken(theme.palette.background.default, 0.12),
             boxShadow:          'none',
             lineHeight:         'initial',
-            width:              width,
-            height:             width,
-            
-            '&:hover': {
-                backgroundColor: theme.palette.action.hover
-            },
+            width:              `${ width }rem`,
+            height:             `${ width }rem`,
     
-            '&:active, &:focus': {
+            '&:active': {
                 boxShadow: 'none',
+                backgroundColor: theme.palette.mode === 'dark'
+                    ? lighten(theme.palette.background.default, 0.12) 
+                    : darken(theme.palette.background.default, 0.12),
             },
+
+            '&:focus': {
+                boxShadow: 'none',
+                backgroundColor: theme.palette.mode === 'dark'
+                    ? lighten(theme.palette.background.default, 0.12) 
+                    : darken(theme.palette.background.default, 0.12),
+            },
+
+            '&:hover': {
+                '@media(hover: hover) and (pointer: fine)': {
+                    backgroundColor: theme.palette.mode === 'dark'
+                        ? lighten(theme.palette.background.default, 0.16) 
+                        : darken(theme.palette.background.default, 0.16),
+                }
+            },
+        },
+
+        '&.MuiFab-extended': {
+            borderRadius: `${ width/2 }rem`,
+            minWidth: 'initial'
         },
 
         '&.value': {
@@ -62,16 +83,23 @@ export const Fab = styled(FabUnstyled)(({ theme, scale }) => {
             fontSize:   `${ 0.65625 * scale }rem`
         },
 
-        '&.clear': {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.mode === 'dark' ? grey[900] : grey[300],
-            boxShadow: 'none',
-            '&:hover': {
-                backgroundColor: theme.palette.action.hover
-            },
-            '&:active, &:focus': {
-                boxShadow: 'none',
-            },
-        }
+        // '&.clear': {
+        //     backgroundColor: theme.palette.mode === 'dark' ? '#222' : grey[400],
+        //     boxShadow: 'none',
+
+        //     '&:active': {
+        //         boxShadow: 'none',
+        //         backgroundColor: theme.palette.mode === 'dark' ? '#222' : grey[400]
+        //     },
+        //     '&:focus': {
+        //         boxShadow: 'none',
+        //         backgroundColor: theme.palette.mode === 'dark' ? '#222' : grey[400]
+        //     },
+        //     '&:hover': {
+        //         '@media(hover: hover) and (pointer: fine)': {
+        //             backgroundColor: theme.palette.mode === 'dark' ? '#111' : grey[500]
+        //         }
+        //     },
+        // }
     };
 });

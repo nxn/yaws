@@ -18,14 +18,24 @@ const AppBarToolbar = (props: ToolbarProperties) => {
 
 export const Toolbar = styled(AppBarToolbar)(({theme}) => ({
     display: 'flex',
-    gap: theme.spacing(1),
-
+    
+    '.landscape &': {
+        flexFlow: 'column nowrap'
+    },
     '.portrait &': {
         flexFlow: 'row nowrap'
     },
 
-    '.landscape &': {
-        flexFlow: 'column nowrap'
+    // Nasty CSS Hacks to get around lack of support for flex gaps
+    margin: theme.spacing(-1, 0, 0, -1),
+    '& > *': {
+        margin: `${ theme.spacing(1, 0, 0, 1) } !important`,
+        '.landscape &.gutters': {
+            margin: `${ theme.spacing(1, 1, 0, 2) } !important`
+        },
+        '.portrait &.gutters': {
+            margin: `${ theme.spacing(2, 0, 1, 1) } !important`
+        },
     },
 }));
 

@@ -70,19 +70,19 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
         <Toolbar className={ props.className }>
             <Button icon={<MenuIcon />} label="Puzzle" variant="full" onClick={ openPuzzleMenu } />
 
-            <ToggleButtonGroup exclusive value={ mode } onChange={ changeMode }>
+            <ToggleButtonGroup exclusive guttered value={ mode } onChange={ changeMode }>
                 <ToggleButton value="edit" icon={<EditIcon />} label="Edit" />
                 <ToggleButton value="color" icon={<ColorIcon />} label="Color" disabled />
             </ToggleButtonGroup>
 
-            <ToggleButton 
+            <ToggleButton guttered
                 value       = "controls" 
                 selected    = { controls }
                 icon        = { <ControlsIcon /> } 
                 label       = "Controls"
                 onChange    = { toggleControls } />
 
-            <ToggleButton 
+            <ToggleButton guttered
                 value       = "toolpanel" 
                 selected    = { toolpanel } 
                 icon        = { ToolpanelIcon } 
@@ -96,7 +96,7 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
             transformOrigin     = { { vertical: 'top', horizontal: 'left' } }
             open                = { Boolean(anchor) }
             onClose             = { closePuzzleMenu }
-            elevation           = { 0 }
+            elevation           = { 3 }
             marginThreshold     = { 0 }
             getContentAnchorEl  = { null }
             keepMounted>

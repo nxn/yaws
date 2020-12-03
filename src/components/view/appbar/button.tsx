@@ -17,6 +17,8 @@ import {
     experimentalStyled as styled
 } from '@material-ui/core';
 
+import { lighten, darken } from '@material-ui/core/styles';
+
 import { Interpolation } from '@emotion/react';
 
 import clsx from 'clsx';
@@ -26,6 +28,7 @@ import useView from '../context';
 type AppBarButtonProperties = {
     icon: JSX.Element,
     label: string | JSX.Element,
+    guttered?: boolean,
     variant?: "standard" | "outlined" | "full",
     className?: string
 }
@@ -35,13 +38,13 @@ function asAppBarButton<P extends MuiButtonProps | MuiToggleButtonProps>(
 ) {
     return (props: AppBarButtonProperties & Omit<P, 'variant'>) => {
         const view = useView();
-        const { icon, label, color, className, variant = 'standard', ...remaining } = props;
+        const { icon, label, color, className, guttered, variant = 'standard', ...remaining } = props;
 
         return (
             // TODO: Use discriminated union instead of casting the props object? The issue is that 'variant' is a
             // MuiButtonProps member, but it does not exist on MuiToggleButtonProps.
             <MuiButtonComponent 
-                className   = { clsx(className, variant) }
+                className   = { clsx(className, variant, guttered && 'gutters') }
                 color       = "inherit" 
                 variant     = { variant === 'outlined' ? variant : 'text' }
                 { ...remaining as any }>
@@ -53,16 +56,21 @@ function asAppBarButton<P extends MuiButtonProps | MuiToggleButtonProps>(
     };
 }
 
+type AppBarButtonGroupProperties = {
+    guttered?: boolean,
+    className?: string
+};
 function asAppBarButtonGroup<P extends MuiButtonGroupProps | MuiToggleButtonGroupProps>(
     MuiButtonGroupComponent: React.ComponentType<P>
 ) {
-    return (props: P) => {
+    return (props: AppBarButtonGroupProperties & P) => {
         const view = useView();
-        const { color, orientation, ...remaining } = props;
+        const { color, orientation, className, guttered, ...remaining } = props;
         return (
             <MuiButtonGroupComponent
-                color="inherit"
-                orientation={ view.orientation === 'landscape' ? 'vertical' : 'horizontal' }
+                className   = { clsx(className, guttered && 'gutters') }
+                color       = "inherit"
+                orientation = { view.orientation === 'landscape' ? 'vertical' : 'horizontal' }
                 { ...remaining as any } />
         );
     }
@@ -91,45 +99,13 @@ const appBarButtonStyle: Interpolation<{ theme?: Theme }> = ({theme}) => ({
         }
     },
 
-    '&.standard': {
-        '.landscape &': {
-            margin: theme.spacing(0, 1)
-        },
-        '.portrait &': {
-            margin: theme.spacing(1, 0)
-        }
-    },
-
-    '&.outlined': { },
-
     '&.full': {
         borderRadius: 0,
-        padding: theme.spacing(1.5, 2),
-        '.landscape &': {
-            borderTop: `1px solid ${ theme.palette.divider }`,
-            borderBottom: `1px solid ${ theme.palette.divider }`,
-            paddingLeft: `calc(${ theme.spacing(2) } + 1px)`,
-            paddingRight: `calc(${ theme.spacing(2) } + 1px)`,
-        },
-        '.portrait &': {
-            borderLeft: `1px solid ${ theme.palette.divider }`,
-            borderRight: `1px solid ${ theme.palette.divider }`,
-            paddingTop: `calc(${ theme.spacing(2) } + 1px)`,
-            paddingBottom: `calc(${ theme.spacing(2) } + 1px)`,
-        }
+        padding: theme.spacing(1.5, 2)
     }
 });
 
 const appBarButtonGroupStyle: Interpolation<{ theme?: Theme }> = ({theme}) => ({
-    '&.MuiButtonGroup-root': {
-        '.landscape &': {
-            margin: theme.spacing(0, 1)
-        },
-        '.portrait &': {
-            margin: theme.spacing(1, 0)
-        }
-    },
-
     '& .MuiButton-colorInherit': {
         borderColor: theme.palette.divider
     }
