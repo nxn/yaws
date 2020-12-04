@@ -1,5 +1,5 @@
-import type { IBoard } from "./board";
-import type { IBoardController } from './controller';
+import type { IBoard } from "./models/board";
+import type { IBoardController } from './controllers/board';
 
 const rxNumberInput = /(?:Digit|Numpad)([1-9])/i;
 

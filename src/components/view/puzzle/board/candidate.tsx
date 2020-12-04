@@ -1,8 +1,8 @@
-import type { ICandidateController } from '@components/sudoku/controller';
-import type { ICandidate } from '@components/sudoku/candidate';
-import type { ICell } from '@components/sudoku/cell';
+import type { ICandidateController } from '@components/sudoku/controllers/board';
+import type { ICandidate } from '@components/sudoku/models/candidate';
+import type { ICell } from '@components/sudoku/models/cell';
 import { IEventListenerKey, CommonEvents } from '@components/sudoku/events';
-import { IBoard, BoardEvents } from '@components/sudoku/board';
+import { IBoard, BoardEvents } from '@components/sudoku/models/board';
 import { createPointerDoubleClickHandler } from '@components/sudoku/pointer';
 
 import { partialEq } from '@components/utilities/misc';

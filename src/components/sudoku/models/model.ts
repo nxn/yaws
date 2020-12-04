@@ -1,4 +1,4 @@
-import type { IEventStore } from './events';
+import type { IEventStore } from '../events';
 
 export type ModelType = "Board" | "Cell" | "Candidate";
 export const ModelType = {

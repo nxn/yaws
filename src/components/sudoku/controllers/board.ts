@@ -1,7 +1,7 @@
-import type { ICandidate } from './candidate';
-import type { ICell } from './cell';
-import type { ISet } from './set';
-import { IBoard, Constants as gc } from './board';
+import type { ICandidate } from '../models/candidate';
+import type { ICell } from '../models/cell';
+import type { ISet } from '../models/set';
+import { IBoard, Constants as gc } from '../models/board';
 
 export interface ICandidateController {
     toggleCandidate:    (board: IBoard, cell: ICell, candidate: ICandidate | number) => void;

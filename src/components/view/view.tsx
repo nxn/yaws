@@ -17,8 +17,8 @@ import {
 
 import clsx from 'clsx';
 
-import type { IBoardController } from '@components/sudoku/controller';
-import type { IBoard } from '@components/sudoku/board';
+import type { IBoardController } from '@components/sudoku/controllers/board';
+import type { IBoard } from '@components/sudoku/models/board';
 
 import PuzzleView,      { IPuzzleViewProperties }       from './puzzle/puzzleview';
 import PuzzleTools,     { IPuzzleToolsProperties }      from './puzzle/puzzletools';

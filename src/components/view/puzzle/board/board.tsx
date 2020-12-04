@@ -1,7 +1,7 @@
-import type { IBoardController } from '@components/sudoku/controller';
+import type { IBoardController } from '@components/sudoku/controllers/board';
 import type { IEventListenerKey } from '@components/sudoku/events';
-import type { ICell } from '@components/sudoku/cell';
-import { IBoard, BoardEvents } from '@components/sudoku/board';
+import type { ICell } from '@components/sudoku/models/cell';
+import { IBoard, BoardEvents } from '@components/sudoku/models/board';
 
 import Cell from './cell';
 import React from 'react';

@@ -1,4 +1,4 @@
-import type { IEventManager, IEventStore } from './events';
+import type { IEventManager, IEventStore } from '../events';
 import type { IBoard } from './board';
 import type { ISet } from './set';
 import { IModel, ModelType } from './model';
@@ -220,7 +220,7 @@ export class Cell implements ICell {
                     if (!valid) { break; }
 
                     valid = valid && localCell[pivot].cells.filter(
-                        c => c.getValue() === localCellValue
+                        (c: ICell) => c.getValue() === localCellValue
                     ).length <= 1;
                 }
                 localCell.setValid(valid);

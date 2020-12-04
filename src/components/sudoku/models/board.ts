@@ -1,4 +1,4 @@
-import type { IEventManager, IEventStore } from './events';
+import type { IEventManager, IEventStore } from '../events';
 import { IModel, ModelType } from './model';
 import { ISet, Set } from './set';
 import { ICell, Cell } from './cell';

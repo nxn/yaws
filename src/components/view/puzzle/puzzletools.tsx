@@ -114,12 +114,12 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
                 <ListItemText primary="New" />
             </MenuItem>
 
-            <MenuItem onClick={closePuzzleMenu}>
+            <MenuItem onClick={closePuzzleMenu} disabled>
                 <ListItemIcon><OpenIcon /></ListItemIcon>
                 <ListItemText primary="Open" />
             </MenuItem>
 
-            <MenuItem onClick={closePuzzleMenu}>
+            <MenuItem onClick={closePuzzleMenu} disabled>
                 <ListItemIcon><SaveIcon /></ListItemIcon>
                 <ListItemText primary="Save" />
             </MenuItem>

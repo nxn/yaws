@@ -1,7 +1,7 @@
-import type { ICellController } from '@components/sudoku/controller';
-import type { ICell } from '@components/sudoku/cell';
+import type { ICellController } from '@components/sudoku/controllers/board';
+import type { ICell } from '@components/sudoku/models/cell';
 import { IEventListenerKey, CommonEvents } from '@components/sudoku/events';
-import { IBoard, BoardEvents } from '@components/sudoku/board';
+import { IBoard, BoardEvents } from '@components/sudoku/models/board';
 
 import { createPointerDoubleClickHandler } from '@components/sudoku/pointer';
 

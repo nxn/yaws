@@ -1,8 +1,8 @@
 import config               from './config';
 import { EventManager }     from '@components/sudoku/events';
-import { Board }            from '@components/sudoku/board';
+import { Board }            from '@components/sudoku/models/board';
 import { StateManager }     from '@components/sudoku/statemanager';
-import { BoardController }  from '@components/sudoku/controller';
+import { BoardController }  from '@components/sudoku/controllers/board';
 import { KeyboardHandler }  from '@components/sudoku/keyboard';
 import { init as initView } from '@components/view/view';
 import { storage, proxies } from '@components/storage/storage';

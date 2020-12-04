@@ -1,7 +1,7 @@
-import { ModelType } from './model';
-import { StateChangeEvents as BoardStateChangeEvents } from './board';
-import { StateChangeEvents as CellStateChangeEvents } from './cell';
-import { StateChangeEvents as CandidateStateChangeEvents } from './candidate';
+import { ModelType } from './models/model';
+import { StateChangeEvents as BoardStateChangeEvents } from './models/board';
+import { StateChangeEvents as CellStateChangeEvents } from './models/cell';
+import { StateChangeEvents as CandidateStateChangeEvents } from './models/candidate';
 
 export type EventListener = (...args: any[]) => void;
 

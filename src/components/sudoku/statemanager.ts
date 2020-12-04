@@ -1,5 +1,5 @@
-import type { IBoard } from './board';
-import { ICell, ICellData, Constants as CellConstants } from './cell';
+import type { IBoard } from './models/board';
+import { ICell, ICellData, Constants as CellConstants } from './models/cell';
 import { deflateRaw as compress, inflateRaw as expand } from '@lib/pako/pako';
 
 export interface IStateManager {
