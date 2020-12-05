@@ -1,5 +1,5 @@
 import { WaffleIronProxy } from "./waffle-iron-proxy";
-import { Task, Request, Response } from "./interfaces";
+import { Task, Request, Response } from "@components/contracts/sudokuprovider";
 
 function assertNever(x: never): never {
     throw new Error("Unexpected object: " + x);

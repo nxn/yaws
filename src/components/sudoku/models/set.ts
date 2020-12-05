@@ -1,6 +1,12 @@
 import type { IBoard } from './board';
 import type { ICell } from './cell'; 
 
+/* Data structure for validating uniqueness of cell members in a group such as a row, column, or box. It is not a
+ * primary model in the sense that it does not require its own event store -- it's more in line of being a sub-component.
+ *
+ * Despite being named a set, it is not intended to prohibit non-distinct values from existing within it. Instead,
+ * duplicate values should trigger an invalid state along with a reference to all non-unique cells.
+ * */
 export interface ISet {
     id:         string;
     name:       string;
@@ -14,11 +20,6 @@ export interface ISetValidationResult {
     errors?:    ICell[];
 }
 
-/* Data structure for validating uniqueness of cell members in a group such as a row, column, or box.
- *
- * Despite being named a set, it is not intended to prohibit non-distinct values from existing within it. Instead,
- * duplicate values should trigger an invalid state along with a reference to all non-unique cells.
- * */
 export class Set implements ISet {
     private constructor(
         readonly id:        string,

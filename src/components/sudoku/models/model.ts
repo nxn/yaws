@@ -1,5 +1,6 @@
 import type { IEventStore } from '../events';
 
+// List of primary model types that contain their own event stores
 export type ModelType = "Board" | "Cell" | "Candidate";
 export const ModelType = {
     get Board(): ModelType      { return "Board"; },

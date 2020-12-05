@@ -42,6 +42,8 @@ export interface ICell extends IModel {
     setStatic:      (value: boolean, silent?: boolean) => void;
     isValid:        () => boolean;
     setValid:       (value: boolean, silent?: boolean) => void;
+    // getData:        (ignoreHiddenCandidates?: boolean) => ICellData;
+    // setData:        (data: ICellData, silent?: boolean, validate?: boolean) => void;
     clear:          (silent?: boolean) => void;
 };
 
@@ -171,6 +173,38 @@ export class Cell implements ICell {
             this.events.get(CellEvents.StaticChanged).fire(this, value);
         }
     }
+
+    // // @ignoreHiddenCandidates: Determines whether selected candidates are ignored if the cell has a set value.
+    // getData(ignoreHiddenCandidates = false) {
+    //     const skip = this.value > 0 && ignoreHiddenCandidates;
+    
+    //     return { v: this.value
+    //            , s: this.static
+    //            , c: this.candidates.filter(c => c.isSelected() && !skip).map(c => c.value)
+    //            };
+    // }
+    // setData(data: ICellData, silent = false, validate = true) {
+    //     if (typeof data !== 'object') {
+    //         return;
+    //     }
+    
+    //     // Set cell as non-static so we can update its values
+    //     this.setStatic(false, true);
+    
+    //     if (data.v >= 0 && data.v < 10) {
+    //         this.setValue(data.v, silent, validate);
+    //     }
+    
+    //     if (Array.isArray(data.c)) {
+    //         this.candidates.forEach(
+    //             candidate => candidate.setSelected(data.c.indexOf(candidate.value) >= 0, silent)
+    //         );
+    //     }
+    
+    //     if (typeof data.s === 'boolean') {
+    //         this.setStatic(data.s, silent);
+    //     }
+    // }
 
     clear(silent = false) {
         this.static = false;

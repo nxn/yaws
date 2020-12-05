@@ -8,16 +8,16 @@ import {
     IGenerateResponseData,
     ISolveRequestData, 
     ISolveResponseData,
-} from "./interfaces";
+} from "@components/contracts/sudokuprovider";
 
-export interface IWaffleIron {
+export interface ISudokuProvider {
     generate(request?: IGenerateRequestData): Promise<IGenerateResponseData>;
     solve(request: ISolveRequestData): Promise<ISolveResponseData>;
 }
 
 type Callback = (response: any) => void;
 
-class WaffleIronWorker implements IWaffleIron {
+class WaffleIronWorker implements ISudokuProvider {
     private pending: Map<number, Callback>;
     private worker: Worker;
     private request_id = 0;
@@ -60,7 +60,7 @@ class WaffleIronWorker implements IWaffleIron {
     }
 }
 
-class WaffleIronModule implements IWaffleIron {
+class WaffleIronModule implements ISudokuProvider {
     private proxy: WaffleIronProxy;
     private pending: [Request, Callback][];
 
@@ -116,4 +116,4 @@ class WaffleIronModule implements IWaffleIron {
     }
 }
 
-export const waffleIron: IWaffleIron = self.Worker ? new WaffleIronWorker() : new WaffleIronModule;
+export const waffleIron: ISudokuProvider = self.Worker ? new WaffleIronWorker() : new WaffleIronModule;

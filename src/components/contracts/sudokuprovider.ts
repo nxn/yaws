@@ -48,17 +48,7 @@ export interface IGenerateResponseData {
     difficulty: number;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export interface ISudokuProvider {
+    generate(request?: IGenerateRequestData): Promise<IGenerateResponseData>;
+    solve(request: ISolveRequestData): Promise<ISolveResponseData>;
+}

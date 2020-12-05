@@ -3,6 +3,10 @@ import type { ICell } from '../models/cell';
 import type { ISet } from '../models/set';
 import { IBoard, Constants as gc } from '../models/board';
 
+/* The board controller encompoasses Cell, Candidate, and Cursor controller functionality. While those could be
+ * made into their own distinct controllers, their individual action sets are minimal enough that they do not
+ * warrant the additional complexity of having to propagate multiple controllers through React's component tree.
+ * */
 export interface ICandidateController {
     toggleCandidate:    (board: IBoard, cell: ICell, candidate: ICandidate | number) => void;
 }

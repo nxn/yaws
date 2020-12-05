@@ -3,7 +3,7 @@ import {
     IGenerateResponseData,
     ISolveRequestData,
     ISolveResponseData,
-} from "./interfaces";
+} from "@components/contracts/sudokuprovider";
 
 type WaffleIron = typeof import("../../lib/waffle-iron/waffle_iron");
 

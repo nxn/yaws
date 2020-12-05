@@ -1,7 +1,7 @@
 import type { IEventManager, IEventStore } from '../events';
 import { IModel, ModelType } from './model';
 import { ISet, Set } from './set';
-import { ICell, Cell } from './cell';
+import { ICell, ICellData, Cell } from './cell';
 
 let boardCount = 1;
 
@@ -37,6 +37,8 @@ export interface IBoard extends IModel {
     rows:           ISet[];
     columns:        ISet[];
     boxes:          ISet[];
+    // getState:       (ignoreHiddenCandidates?: boolean) => ICellData[];
+    // setState:       (puzzle: ICellData[], silent?: boolean) => IBoard;
     getCursor:      () => ICell;
     setCursor:      (to: ICell, silent?: boolean) => void;
     isReady:        () => boolean;
@@ -117,6 +119,32 @@ export class Board implements IBoard {
             this.events.get(BoardEvents.ReadyStateChanged).fire(this);
         }
     }
+
+    // getState(ignoreHiddenCandidates = false) {
+    //     return this.cells.map(c => c.getData(ignoreHiddenCandidates));
+    // }
+
+    // // Note: Cell updates and validation will be silent regardless of the value of the @silent flag. In this context, the @silent
+    // // flag is only applicable to the BoardEvents.ReadyStateChanged event.
+    // setState(puzzle: ICellData[], silent = false) {
+    //     if (!puzzle) {
+    //         return this;
+    //     }
+
+    //     if (!(Array.isArray(puzzle) && puzzle.length === this.cells.length)) {
+    //         return this;
+    //     }
+
+    //     this.setReady(false, silent);
+    
+    //     const iter = puzzle[Symbol.iterator]();
+    //     this.cells.forEach(cell => cell.setData(iter.next().value, true, false));
+    
+    //     this.validate(true);
+    //     this.setReady(true, silent);
+
+    //     return this;
+    // }
 
     private cursor: ICell;
     getCursor() { return this.cursor };
