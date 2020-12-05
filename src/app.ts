@@ -1,7 +1,7 @@
 import config               from './config';
 import { EventManager }     from '@components/sudoku/events';
 import { Board }            from '@components/sudoku/models/board';
-import { StateManager }     from '@components/sudoku/statemanager';
+import { PuzzleManager }     from '@components/sudoku/models/puzzle';
 import { BoardController }  from '@components/sudoku/controllers/board';
 import { KeyboardHandler }  from '@components/sudoku/keyboard';
 import { init as initView } from '@components/view/view';
@@ -13,8 +13,9 @@ function init() {
     const board         = Board.create(events);
     const controller    = BoardController.create();
     const keyboard      = KeyboardHandler.create(board, controller);
-    const state         = StateManager.create(board);
     const puzzleStore   = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
+    const puzzle        = PuzzleManager.create(board, puzzleStore, waffleIron);
+    
 
     const render = initView(board, controller, 'sudoku');
     document.addEventListener(
@@ -23,41 +24,13 @@ function init() {
 
     // check if URL contains puzzle
     if (false) {
-        state.loadLink(location.toString())
+        puzzle.openLink(location.toString())
     }
     else if (!puzzleStore.empty) {
-        state.loadBinary(puzzleStore.mostRecent.buffer)
+        puzzle.openMostRecent();
     }
     else {
-        const generateStart = 'generate start';
-        performance.mark(generateStart);
-
-        waffleIron.generate(
-            { samples: 15, iterations: 29, removals: 2}
-        ).then(response => {
-            const generateEnd = 'generate end';
-            performance.mark(generateEnd);
-            performance.measure("Generate", generateStart, generateEnd);
-
-            const loadStart = 'load start';
-            performance.mark(loadStart);
-
-            state.loadTypedArray(response.puzzle);
-
-            const loadEnd = 'load end';
-            performance.mark(loadEnd);
-            performance.measure("Load", loadStart, loadEnd);
-
-            const measurements = performance.getEntriesByType("measure");
-            performance.clearMarks();
-            performance.clearMeasures();
-
-            let output = "";
-            for(const m of measurements) {
-                output += (`- ${m.name}: ${m.duration} -`);
-            }
-            document.appendChild(document.createComment(output));
-        });
+        puzzle.generate({ samples: 15, iterations: 29, removals: 2 });
     }
 
     const renderStart = 'render start';

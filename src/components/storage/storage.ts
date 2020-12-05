@@ -1,10 +1,10 @@
-import { 
+import type { 
     IStorageRoot, 
     IStorageCollection, 
     IStorageEntityRecord, 
     IStorageProxy, 
     IStorageProxyPicker
-} from './interfaces';
+} from '@components/contracts/storageprovider';
 
 import { encodeBytes as encode, decodeBytes as decode } from '@lib/base32k/base32k';
 

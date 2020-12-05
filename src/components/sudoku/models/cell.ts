@@ -47,12 +47,6 @@ export interface ICell extends IModel {
     clear:          (silent?: boolean) => void;
 };
 
-export interface ICellData {
-    v: number;
-    c: number[];
-    s: boolean;
-};
-
 export class Cell implements ICell {
     readonly type = "Cell";
 
