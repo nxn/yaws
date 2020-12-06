@@ -1,7 +1,8 @@
 import type { IEventManager, IEventStore } from '../events';
+import type { IGenerateRequestData as IPuzzleSettings } from '@components/contracts/sudokuprovider';
 import { IModel, ModelType } from './model';
 import { ISet, Set } from './set';
-import { ICell, ICellData, Cell } from './cell';
+import { ICell, Cell } from './cell';
 
 let boardCount = 1;
 
@@ -30,6 +31,18 @@ export const StateChangeEvents = [
     BoardEvents.Cleared
 ];
 
+export interface IPuzzleInfo {
+    storageId?:     number,
+
+    name:           string;
+    created:        number;
+    modified:       number;
+
+    difficulty?:    number;
+    solution?:      Uint8Array;
+    settings?:      IPuzzleSettings;
+}
+
 export interface IBoard extends IModel {
     type:           "Board";
     id:             string;
@@ -41,6 +54,8 @@ export interface IBoard extends IModel {
     // setState:       (puzzle: ICellData[], silent?: boolean) => IBoard;
     getCursor:      () => ICell;
     setCursor:      (to: ICell, silent?: boolean) => void;
+    getPuzzleInfo:  () => IPuzzleInfo | null;
+    setPuzzleInfo:  (info: IPuzzleInfo) => void;
     isReady:        () => boolean;
     setReady:       (value: boolean, silent?: boolean) => void;
     validate:       (silent?: boolean) => IBoard;
@@ -160,6 +175,12 @@ export class Board implements IBoard {
             this.events.get(BoardEvents.CursorMoved).fire(this, to, from);
         }
     };
+
+    private puzzle: IPuzzleInfo = null;
+    getPuzzleInfo() { return this.puzzle; }
+    setPuzzleInfo(info: IPuzzleInfo) {
+        this.puzzle = info;
+    }
 
     clear(silent = false): IBoard {
         this.cells.forEach(c => c.clear(silent));

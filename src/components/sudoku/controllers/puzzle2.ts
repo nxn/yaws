@@ -1,6 +1,6 @@
-import { IBoard } from "./board";
-import { ICell, Constants as CellConstants } from "./cell";
+import { ICell, Constants as CellConstants } from "../models/cell";
 
+import type { IBoard, IPuzzleInfo } from "../models/board";
 import type { IStorageCollection } from "@components/contracts/storageprovider";
 import type { ISudokuProvider, IGenerateRequestData as IPuzzleSettings } from "@components/contracts/sudokuprovider";
 
@@ -12,97 +12,78 @@ export interface ICellData {
     s: boolean;
 };
 
-export interface IPuzzleInfo {
-    storageId?:      number,
-
-    name:           string;
-    created:        number;
-    modified:       number;
-
-    difficulty?:    number;
-    solution?:      Uint8Array;
-    settings?:      IPuzzleSettings;
-}
-
 export interface ILocation {
     origin: string;
     pathname: string;
 }
 
-export interface IPuzzleManager {
+export interface IPuzzleController {
     listSaved(): { id: number, info: IPuzzleInfo }[];
 
-    open(id: number): IPuzzleInfo;
-    openLink(link: string): IPuzzleInfo;
-    openMostRecent(): IPuzzleInfo;
-    generate(settings: IPuzzleSettings): Promise<IPuzzleInfo>;
+    open(board: IBoard, id: number): void;
+    openLink(board: IBoard, link: string): void;
+    openMostRecent(board: IBoard): void;
+    generate(board: IBoard, settings: IPuzzleSettings): void;
 
-    getLink(includeProgress: boolean, location: ILocation): string;
+    getLink(board: IBoard, includeProgress: boolean, location: ILocation): string;
 
-    save(info?: IPuzzleInfo): void;
-    delete(id: number): void;
+    save(board: IBoard, info?: IPuzzleInfo): void;
     rename(id: number, name: string):  void;
+    delete(id: number): void;
 }
 
-export class PuzzleManager implements IPuzzleManager {
+export class PuzzleController implements IPuzzleController {
     private constructor(
-        readonly board:     IBoard, 
         readonly storage:   IStorageCollection<Uint8Array>, 
         readonly sudoku:    ISudokuProvider
     ) { }
 
-    private current: IPuzzleInfo;
-
-    static create(board: IBoard, storage: IStorageCollection<Uint8Array>, provider: ISudokuProvider): IPuzzleManager {
-        return new PuzzleManager(board, storage, provider);
+    static create(storage: IStorageCollection<Uint8Array>, provider: ISudokuProvider): IPuzzleController {
+        return new PuzzleController(storage, provider);
     }
 
     listSaved() {
-        return this.storage.list().map(r => ({ id: r.id, info: r.meta }))
+        return this.storage.list().map(r => ({ id: r.id, info: r.meta }));
     }
 
-    save(info: IPuzzleInfo = this.current) {
+    save(board: IBoard, info: IPuzzleInfo = board.getPuzzleInfo()) {
         if (info.storageId) {
-            this.storage.update(info.storageId, this.getBinary())
+            this.storage.update(info.storageId, this.getBinary(board))
         }
         else {
-            const rec = this.storage.save(this.getBinary());
+            const rec = this.storage.save(this.getBinary(board));
             info.storageId = rec.id;
         }
+
         this.storage.meta(info.storageId, info);
-        this.current = info;
+        board.setPuzzleInfo(info);
     }
 
-    open(id: number) {
+    open(board: IBoard, id: number) {
         const puzzle = this.storage.get(id);
 
         if (!puzzle) {
             throw new Error(`[Error] PuzzleManager::open(${ id }): Puzzle with given id not found`);
         }
 
-        this.loadBinary(puzzle.buffer);
-
-        this.current = this.storage.meta(id);
-
-        return this.current;
+        this.loadBinary(board, puzzle.buffer);
+        board.setPuzzleInfo(this.storage.meta(id));
     }
 
-    openMostRecent() {
+    openMostRecent(board: IBoard) {
         const list = this.storage.list()
         const mostRecentId = Math.max(...list.map(r => r.id));
 
-        this.loadBinary(this.storage.get(mostRecentId));
-        this.current = this.storage.meta(mostRecentId);
-
-        return this.current;
+        this.loadBinary(board, this.storage.get(mostRecentId));
+        board.setPuzzleInfo(this.storage.meta(mostRecentId));
     }
 
-    async generate(settings: IPuzzleSettings): Promise<IPuzzleInfo> {
+    async generate(board: IBoard, settings: IPuzzleSettings) {
         const response = await this.sudoku.generate(settings);
-        this.loadValueArray(response.puzzle);
+        this.loadValueArray(board, response.puzzle);
 
         const now = Date.now();
-        this.current = {
+        board.setPuzzleInfo({
             name: `Generated Puzzle [${response.difficulty}]`,
             created: now,
             modified: now,
@@ -110,24 +91,22 @@ export class PuzzleManager implements IPuzzleManager {
             difficulty: response.difficulty,
             solution: response.solution,
             settings: settings
-        };
-
-        return this.current;
+        });
     }
 
-    getLink(includeProgress: boolean, locationObj: ILocation = location): string {
+    getLink(board: IBoard, includeProgress: boolean, locationObj: ILocation = location): string {
         const l = locationObj;
         // In the case of an 81 digit number, simply substituting sequences of 0s that are 3 units of length or greater is
         // more effective than pako/zlib compression. The latter requires base64 encoding and, as a result, loses any
         // compression gains due to added overhead.
         const p = includeProgress
-            ? btoa(compress(this.getBinary(true), { level: 9, to: 'string' }) as string)
-            : this.getValueString().replace(/(0{3,})/g, m => `(${m.length})`);
+            ? btoa(compress(this.getBinary(board, true), { level: 9, to: 'string' }) as string)
+            : this.getValueString(board).replace(/(0{3,})/g, m => `(${m.length})`);
     
         return `${ l.origin }${ l.pathname }?p=${ encodeURIComponent(p) }`;
     }
     
-    openLink(link: string): IPuzzleInfo {
+    openLink(board: IBoard, link: string) {
         const url    = new URL(link);
         const params = new URLSearchParams(url.search);
         let p = params.get('p');
@@ -145,20 +124,18 @@ export class PuzzleManager implements IPuzzleManager {
     
         // Verify 81 digit number, otherwise assume base64 binary.
         if (/^\d{81}$/.test(p)) {
-            this.loadValueString(p);
+            this.loadValueString(board, p);
         }
         else {
-            this.loadBinary((expand(atob(p)) as Uint8Array).buffer);
+            this.loadBinary(board, (expand(atob(p)) as Uint8Array).buffer);
         }
     
         const now = Date.now();
-        this.current = {
+        board.setPuzzleInfo({
             name: 'Linked Puzzle',
             created: now,
             modified: now
-        };
-
-        return this.current;
+        });
     }
 
     delete(id: number) {
@@ -171,58 +148,56 @@ export class PuzzleManager implements IPuzzleManager {
         this.storage.meta(id, info);
     }
 
-    private getValueArray(): Uint8Array {
+    private getValueArray(board: IBoard): Uint8Array {
         return Uint8Array.from(
-            this.board.cells.map(c => c.isStatic() ? c.getValue() : 0)
+            board.cells.map(c => c.isStatic() ? c.getValue() : 0)
         );
     }
 
-    private loadValueArray(array: Uint8Array) {
-        if (array.length !== this.board.cells.length) {
+    private loadValueArray(board: IBoard, array: Uint8Array) {
+        if (array.length !== board.cells.length) {
             throw new Error(`[Error] PuzzleManager::loadValueArray(array: Uint8Array): Unexpected array.length (${ array.length })`);
         }
 
-        this.board.setReady(false);
+        board.setReady(false);
     
-        for (let i = 0; i < this.board.cells.length; i++) {
+        for (let i = 0; i < board.cells.length; i++) {
             let value = array[i];
-            let cell = this.board.cells[i];
+            let cell = board.cells[i];
             this.loadCellData(cell, { v: value, s: value !== 0, c: [] });
         }
     
-        this.board.validate(true);
-        this.board.setReady(true);
-
-        return this.board;
+        board.validate(true);
+        board.setReady(true);
     }
     
-    private getData(ignoreHiddenCandidates?: boolean): ICellData[] {
-        return this.board.cells.map(cell => this.getCellData(cell, ignoreHiddenCandidates));
+    private getData(board: IBoard, ignoreHiddenCandidates?: boolean): ICellData[] {
+        return board.cells.map(cell => this.getCellData(cell, ignoreHiddenCandidates));
     }
     
-    private loadData(data: ICellData[]) {
+    private loadData(board: IBoard, data: ICellData[]) {
         if (!Array.isArray(data)) {
             throw new Error(`[Error] PuzzleManager::loadData(data: ICellData[]): Unexpected data (not array)`);
         }
 
-        if (data.length !== this.board.cells.length) {
+        if (data.length !== board.cells.length) {
             throw new Error(`[Error] PuzzleManager::loadData(data: ICellData[]): Unexpected data.length (${ data.length })`);
         }
 
-        this.board.setReady(false);
+        board.setReady(false);
     
         const iter = data[Symbol.iterator]();
-        this.board.cells.forEach(cell => this.loadCellData(cell, iter.next().value));
+        board.cells.forEach(cell => this.loadCellData(cell, iter.next().value));
     
-        this.board.validate(true);
-        this.board.setReady(true);
+        board.validate(true);
+        board.setReady(true);
     }
     
-    private getValueString(): string {
-        return this.board.cells.map(c => c.isStatic ? c.getValue() : 0).join('');
+    private getValueString(board: IBoard): string {
+        return board.cells.map(c => c.isStatic ? c.getValue() : 0).join('');
     }
     
-    private loadValueString(puzzle: string) {
+    private loadValueString(board: IBoard, puzzle: string) {
         puzzle = puzzle && typeof puzzle.toString === 'function'
             ? puzzle.toString().trim()
             : "";
@@ -232,20 +207,20 @@ export class PuzzleManager implements IPuzzleManager {
             throw new Error(`[Error] PuzzleManager::loadValueString(puzzle: string): Unexpected puzzle string format (${ puzzle })`);
         }
 
-        this.board.setReady(false);
+        board.setReady(false);
     
         const iter = puzzle[Symbol.iterator]();
-        this.board.cells.forEach(cell => {
+        board.cells.forEach(cell => {
             let v = parseInt(iter.next().value);
             this.loadCellData(cell, { v: v, s: v !== 0, c: [] });
         });
     
-        this.board.validate(true);
-        this.board.setReady(true);
+        board.validate(true);
+        board.setReady(true);
     }
     
-    private getBinary(ignoreHiddenCandidates?: boolean): Uint8Array { 
-        const cells = this.board.cells;
+    private getBinary(board: IBoard, ignoreHiddenCandidates?: boolean): Uint8Array { 
+        const cells = board.cells;
         // 9 columns * 9 rows * 2 bytes per cell = 162 bytes
         const buffer = new ArrayBuffer(
             cells.length * CellConstants.byteLength
@@ -261,22 +236,22 @@ export class PuzzleManager implements IPuzzleManager {
         return new Uint8Array(buffer);
     }
     
-    private loadBinary(buffer: ArrayBuffer) {
-        const cells = this.board.cells;
+    private loadBinary(board: IBoard, buffer: ArrayBuffer) {
+        const cells = board.cells;
         const view16 = new Uint16Array(buffer);
         
         if (cells.length !== view16.length) {
             throw new Error(`[Error] PuzzleManager::loadBinary(buffer: ArrayBuffer): Unexpected buffer.length (${ view16.length })`);
         }
 
-        this.board.setReady(false);
+        board.setReady(false);
     
         for (let i = 0; i < view16.length; i++) {
             this.loadCellBinary(cells[i], view16[i]);
         }
     
-        this.board.validate(true);
-        this.board.setReady(true);
+        board.validate(true);
+        board.setReady(true);
     }
     
     private getCellData(cell: ICell, ignoreHiddenCandidates: boolean): ICellData {

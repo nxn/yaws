@@ -8,26 +8,26 @@ import { IBoard, Constants as gc } from '../models/board';
  * warrant the additional complexity of having to propagate multiple controllers through React's component tree.
  * */
 export interface ICandidateController {
-    toggleCandidate:    (cell: ICell, candidate: ICandidate | number) => void;
+    toggleCandidate:    (board: IBoard, cell: ICell, candidate: ICandidate | number) => void;
 }
 
 export interface ICellController extends ICandidateController {
-    setCellValue:       (cell: ICell, value: number) => void;
-    clear:              (cell: ICell) => void;
+    setCellValue:       (board: IBoard, cell: ICell, value: number) => void;
+    clear:              (board: IBoard, cell: ICell) => void;
 }
 
 export interface ICursorController {
-    setCursor:      (cell: ICell) => void;
-    columnLeft:     () => void;
-    columnRight:    () => void;
-    rowUp:          () => void;
-    rowDown:        () => void;
-    boxLeft:        () => void;
-    boxRight:       () => void;
-    boxUp:          () => void;
-    boxDown:        () => void;
-    previousError:  () => void;
-    nextError:      () => void;
+    setCursor:      (board: IBoard, cell: ICell) => void;
+    columnLeft:     (board: IBoard) => void;
+    columnRight:    (board: IBoard) => void;
+    rowUp:          (board: IBoard) => void;
+    rowDown:        (board: IBoard) => void;
+    boxLeft:        (board: IBoard) => void;
+    boxRight:       (board: IBoard) => void;
+    boxUp:          (board: IBoard) => void;
+    boxDown:        (board: IBoard) => void;
+    previousError:  (board: IBoard) => void;
+    nextError:      (board: IBoard) => void;
 }
 
 export interface IBoardController extends ICellController, ICursorController { }
@@ -35,15 +35,15 @@ export interface IBoardController extends ICellController, ICursorController { }
 type TCellSelector = (set: ISet) => ICell;
 
 export class BoardController implements IBoardController {
-    private constructor(readonly board: IBoard) { }
+    private constructor() { }
 
-    static create(board: IBoard): IBoardController {
-        return new BoardController(board);
+    static create(): IBoardController {
+        return new BoardController();
     }
 
-    toggleCandidate = (cell: ICell, candidate: ICandidate | number) => {
-        if (this.board.getCursor() !== cell) {
-            this.setCursor(cell);
+    toggleCandidate = (board: IBoard, cell: ICell, candidate: ICandidate | number) => {
+        if (board.getCursor() !== cell) {
+            this.setCursor(board, cell);
         }
 
         let model = typeof candidate === "number"
@@ -53,18 +53,18 @@ export class BoardController implements IBoardController {
         model.setSelected(!model.isSelected());
     };
     
-    setCellValue = (cell: ICell, value: number) => {
-        if (this.board.getCursor() !== cell) {
-            this.setCursor(cell);
+    setCellValue = (board: IBoard, cell: ICell, value: number) => {
+        if (board.getCursor() !== cell) {
+            this.setCursor(board, cell);
         }
 
         // if there is already a set value in the cursor cell and the new one is the same, clear the value instead.
         cell.setValue(cell.getValue() > 0 && cell.getValue() === value ? 0 : value);
     };
     
-    clear = (cell: ICell) => {
-        if (this.board.getCursor() !== cell) {
-            this.setCursor(cell);
+    clear = (board: IBoard, cell: ICell) => {
+        if (board.getCursor() !== cell) {
+            this.setCursor(board, cell);
         }
 
         if (cell.getValue() > 0) {
@@ -77,108 +77,108 @@ export class BoardController implements IBoardController {
         }
     };
 
-    setCursor = (cell: ICell) => {
-        if (this.board.getCursor() === cell) {
+    setCursor = (board: IBoard, cell: ICell) => {
+        if (board.getCursor() === cell) {
             return;
         }
 
-        this.board.setCursor(cell);
+        board.setCursor(cell);
     };
 
-    previousError = () => {
+    previousError = (board: IBoard) => {
         // Starting from the previous index, return the first invalid cell occurence
-        for (let i = this.board.getCursor().index - 1; i >= 0; i--) {
-            let cell = this.board.cells[i];
+        for (let i = board.getCursor().index - 1; i >= 0; i--) {
+            let cell = board.cells[i];
             if (!cell.isStatic && !cell.isValid) {
-                this.board.setCursor(cell);
+                board.setCursor(cell);
                 return;
             }
         }
     
         // Loop around and repeat from the end of the array
-        for (let i = this.board.cells.length - 1; i > this.board.getCursor().index; i--) {
-            let cell = this.board.cells[i];
+        for (let i = board.cells.length - 1; i > board.getCursor().index; i--) {
+            let cell = board.cells[i];
             if (!cell.isStatic && !cell.isValid) {
-                this.board.setCursor(cell);
+                board.setCursor(cell);
                 return;
             }
         }
     };
     
-    nextError = () => {
+    nextError = (board: IBoard) => {
         // Starting from the next index, return the first invalid cell occurence
-        for (let i = this.board.getCursor().index + 1; i < this.board.cells.length; i++) {
-            let cell = this.board.cells[i];
+        for (let i = board.getCursor().index + 1; i < board.cells.length; i++) {
+            let cell = board.cells[i];
             if (!cell.isStatic && !cell.isValid) {
-                this.board.setCursor(cell);
+                board.setCursor(cell);
                 return;
             }
         }
     
         // Loop around and repeat from the beginning of the array 
-        for (let i = 0; i < this.board.getCursor().index; i++) {
-            let cell = this.board.cells[i];
+        for (let i = 0; i < board.getCursor().index; i++) {
+            let cell = board.cells[i];
             if (!cell.isStatic && !cell.isValid) {
-                this.board.setCursor(cell);
+                board.setCursor(cell);
                 return;
             }
         }
     };
     
-    rowUp = () => {
-        const cursor = this.offset(this.board.getCursor().row.index).by(-1).in(this.board.rows).select(
-            row => row.cells[this.board.getCursor().column.index]
+    rowUp = (board: IBoard) => {
+        const cursor = this.offset(board.getCursor().row.index).by(-1).in(board.rows).select(
+            row => row.cells[board.getCursor().column.index]
         );
-        this.board.setCursor(cursor);
+        board.setCursor(cursor);
     };
     
-    columnLeft = () => {
-        const cursor = this.offset(this.board.getCursor().column.index).by(-1).in(this.board.columns).select(
-            col => col.cells[this.board.getCursor().row.index]
+    columnLeft = (board: IBoard) => {
+        const cursor = this.offset(board.getCursor().column.index).by(-1).in(board.columns).select(
+            col => col.cells[board.getCursor().row.index]
         );
-        this.board.setCursor(cursor);
+        board.setCursor(cursor);
     };
     
-    rowDown = () => {
-        const cursor = this.offset(this.board.getCursor().row.index).by(+1).in(this.board.rows).select(
-            row => row.cells[this.board.getCursor().column.index]
+    rowDown = (board: IBoard) => {
+        const cursor = this.offset(board.getCursor().row.index).by(+1).in(board.rows).select(
+            row => row.cells[board.getCursor().column.index]
         );
-        this.board.setCursor(cursor)
+        board.setCursor(cursor)
     };
     
-    columnRight = () => {
-        const cursor = this.offset(this.board.getCursor().column.index).by(+1).in(this.board.columns).select(
-            col => col.cells[this.board.getCursor().row.index]
+    columnRight = (board: IBoard) => {
+        const cursor = this.offset(board.getCursor().column.index).by(+1).in(board.columns).select(
+            col => col.cells[board.getCursor().row.index]
         );
-        this.board.setCursor(cursor);
+        board.setCursor(cursor);
     };
     
-    boxUp = () => {
-        const cursor = this.offset(this.board.getCursor().row.index).by(-gc.boxRowCount).in(this.board.rows).select(
-            row => row.cells[this.board.getCursor().column.index]
+    boxUp = (board: IBoard) => {
+        const cursor = this.offset(board.getCursor().row.index).by(-gc.boxRowCount).in(board.rows).select(
+            row => row.cells[board.getCursor().column.index]
         );
-        this.board.setCursor(cursor);
+        board.setCursor(cursor);
     };
     
-    boxLeft = () => {
-        const cursor = this.offset(this.board.getCursor().column.index).by(-gc.boxColumnCount).in(this.board.columns).select(
-            col => col.cells[this.board.getCursor().row.index]
+    boxLeft = (board: IBoard) => {
+        const cursor = this.offset(board.getCursor().column.index).by(-gc.boxColumnCount).in(board.columns).select(
+            col => col.cells[board.getCursor().row.index]
         );
-        this.board.setCursor(cursor);
+        board.setCursor(cursor);
     };
     
-    boxDown = () => {
-        const cursor = this.offset(this.board.getCursor().row.index).by(+gc.boxRowCount).in(this.board.rows).select(
-            row => row.cells[this.board.getCursor().column.index]
+    boxDown = (board: IBoard) => {
+        const cursor = this.offset(board.getCursor().row.index).by(+gc.boxRowCount).in(board.rows).select(
+            row => row.cells[board.getCursor().column.index]
         );
-        this.board.setCursor(cursor);
+        board.setCursor(cursor);
     };
     
-    boxRight = () => {
-        const cursor = this.offset(this.board.getCursor().column.index).by(+gc.boxColumnCount).in(this.board.columns).select(
-            col => col.cells[this.board.getCursor().row.index]
+    boxRight = (board: IBoard) => {
+        const cursor = this.offset(board.getCursor().column.index).by(+gc.boxColumnCount).in(board.columns).select(
+            col => col.cells[board.getCursor().row.index]
         );
-        this.board.setCursor(cursor);
+        board.setCursor(cursor);
     }
 
     private offset(position: number) {

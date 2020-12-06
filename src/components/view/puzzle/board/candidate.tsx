@@ -35,7 +35,7 @@ export default class Candidate extends React.Component<CandidateProperties, Cand
         }
 
         const handler = createPointerDoubleClickHandler(
-            () => props.controller.toggleCandidate(props.board, props.cell, props.model),
+            () => props.controller.toggleCandidate(props.cell, props.model),
             () => props.onDoubleClick(props.model.value)
         );
 

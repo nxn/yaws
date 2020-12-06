@@ -46,7 +46,7 @@ export default class Cell extends React.Component<CellProperties, CellState>{
 
         const handler = createPointerDoubleClickHandler(
             () => { }, // No action for single click
-            () => props.controller.clear(props.board, props.model)
+            () => props.controller.clear(props.model)
         );
 
         this.valuePointerDown   = (event: React.SyntheticEvent) => handler(event.nativeEvent);
@@ -134,7 +134,7 @@ export default class Cell extends React.Component<CellProperties, CellState>{
     }
 
     setCellValue = (value: number) => {
-        this.props.controller.setCellValue(this.props.board, this.props.model, value);
+        this.props.controller.setCellValue(this.props.model, value);
     }
 
     render() {

@@ -104,7 +104,7 @@ export class Board extends React.Component<BoardProperties, BoardState> {
     }
 
     setCursor = (cell: ICell) => {
-        this.props.controller.setCursor(this.props.model, cell);
+        this.props.controller.setCursor(cell);
     }
 
     render() {
