@@ -17,8 +17,8 @@ import {
 
 import clsx from 'clsx';
 
-import type { IBoardController } from '@components/sudoku/controllers/board';
 import type { IBoard } from '@components/sudoku/models/board';
+import type { IActions } from '@components/sudoku/actions/actions';
 
 import PuzzleView,      { IPuzzleViewProperties }       from './puzzle/puzzleview';
 import PuzzleTools,     { IPuzzleToolsProperties }      from './puzzle/puzzletools';
@@ -38,7 +38,7 @@ import { light, dark } from './theme';
 
 type YawsProperties = {
     model:          IBoard,
-    controller:     IBoardController,
+    actions:        IActions,
     className?:     string
 };
 
@@ -90,7 +90,9 @@ export const Yaws = (props: YawsProperties) => {
             toggleLabels: () => {
                 setAppBarLabelState(!appBarLabels && orientation === 'landscape' && !tiny);
             }
-        }
+        },
+
+        actions: props.actions
     }
 
     React.useEffect(() => {
@@ -156,7 +158,7 @@ export const Yaws = (props: YawsProperties) => {
                     </AppBar>
 
                     <TabPanelContainer id="view-panel" className="views" value={ view }>
-                        <PuzzleViewTab   value="board" model={ props.model } controller={ props.controller } />
+                        <PuzzleViewTab   value="board" model={ props.model } />
                         <AccountViewTab  value="account" />
                         <SettingsViewTab value="settings" />
                         <HelpViewTab     value="help" />
@@ -198,11 +200,11 @@ export const AppView = styled(Yaws)({
     },
 });
 
-export function init(board: IBoard, controller: IBoardController, containerId: string) {
+export function init(board: IBoard, actions: IActions, containerId: string) {
     const container = document.getElementById(containerId);
 
     return () => ReactDOM.render(
-        <AppView model={board} controller={controller} />, container
+        <AppView model={board} actions={actions} />, container
     );
 }
 

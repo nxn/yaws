@@ -3,8 +3,7 @@ import React from 'react';
 import { experimentalStyled as styled } from '@material-ui/core/styles';
 import clsx from 'clsx';
 
-import { IBoard }           from '@components/sudoku/board';
-import { IBoardController } from '@components/sudoku/controller';
+import { IBoard }   from '@components/sudoku/models/board';
 
 import Board        from './board/board';
 import Controls     from './controls/controls';
@@ -13,7 +12,6 @@ import useView      from '../context';
 
 export interface IPuzzleViewProperties {
     model:              IBoard;
-    controller:         IBoardController;
     displayControls?:   boolean;
     displaySidePanel?:  boolean;
     className?:         string;
@@ -26,8 +24,8 @@ export const PuzzleViewUnstyled = (props: IPuzzleViewProperties) => {
 
     return (
         <div className={ clsx(props.className) }>
-            <Board      model={ props.model } controller={ props.controller } scale={ view.scale } />
-            <Controls   board={ props.model } controller={ props.controller } scale={ view.scale } visible={ displayControls }/>
+            <Board      model={ props.model } actions={ view.actions } scale={ view.scale } />
+            <Controls   board={ props.model } actions={ view.actions } scale={ view.scale } visible={ displayControls }/>
             {/* <SidePanel  visible={ displaySidePanel } /> */}
         </div>
     );

@@ -1,8 +1,8 @@
 import type { IEventManager, IEventStore } from '../events';
-import type { IGenerateRequestData as IPuzzleSettings } from '@components/contracts/sudokuprovider';
 import { IModel, ModelType } from './model';
 import { ISet, Set } from './set';
 import { ICell, Cell } from './cell';
+import { IPuzzleInfo } from './puzzleinfo';
 
 let boardCount = 1;
 
@@ -14,11 +14,12 @@ export const Constants = Object.freeze({
     boxRowCount:    3
 });
 
-export type BoardEvents = "CursorMoved" | "ReadyStateChanged" | "Solved" | "Cleared" | "Reset";
+export type BoardEvents = "CursorMoved" | "ReadyStateChanged" | "PuzzleChanged" | "Solved" | "Cleared" | "Reset";
 
 export const BoardEvents = {
     get CursorMoved(): BoardEvents          { return "CursorMoved" },
     get ReadyStateChanged(): BoardEvents    { return "ReadyStateChanged" },
+    get PuzzleChanged(): BoardEvents        { return "PuzzleChanged" },
     get Solved(): BoardEvents               { return "Solved" },
     get Cleared(): BoardEvents              { return "Cleared" },
     get Reset(): BoardEvents                { return "Reset" }
@@ -26,22 +27,11 @@ export const BoardEvents = {
 
 export const StateChangeEvents = [
     BoardEvents.CursorMoved, 
-    BoardEvents.ReadyStateChanged, 
+    BoardEvents.ReadyStateChanged,
+    BoardEvents.PuzzleChanged,
     BoardEvents.Reset, 
     BoardEvents.Cleared
 ];
-
-export interface IPuzzleInfo {
-    storageId?:     number,
-
-    name:           string;
-    created:        number;
-    modified:       number;
-
-    difficulty?:    number;
-    solution?:      Uint8Array;
-    settings?:      IPuzzleSettings;
-}
 
 export interface IBoard extends IModel {
     type:           "Board";
@@ -50,12 +40,10 @@ export interface IBoard extends IModel {
     rows:           ISet[];
     columns:        ISet[];
     boxes:          ISet[];
-    // getState:       (ignoreHiddenCandidates?: boolean) => ICellData[];
-    // setState:       (puzzle: ICellData[], silent?: boolean) => IBoard;
     getCursor:      () => ICell;
     setCursor:      (to: ICell, silent?: boolean) => void;
     getPuzzleInfo:  () => IPuzzleInfo | null;
-    setPuzzleInfo:  (info: IPuzzleInfo) => void;
+    setPuzzleInfo:  (info: IPuzzleInfo, silent?: boolean) => void;
     isReady:        () => boolean;
     setReady:       (value: boolean, silent?: boolean) => void;
     validate:       (silent?: boolean) => IBoard;
@@ -135,32 +123,6 @@ export class Board implements IBoard {
         }
     }
 
-    // getState(ignoreHiddenCandidates = false) {
-    //     return this.cells.map(c => c.getData(ignoreHiddenCandidates));
-    // }
-
-    // // Note: Cell updates and validation will be silent regardless of the value of the @silent flag. In this context, the @silent
-    // // flag is only applicable to the BoardEvents.ReadyStateChanged event.
-    // setState(puzzle: ICellData[], silent = false) {
-    //     if (!puzzle) {
-    //         return this;
-    //     }
-
-    //     if (!(Array.isArray(puzzle) && puzzle.length === this.cells.length)) {
-    //         return this;
-    //     }
-
-    //     this.setReady(false, silent);
-    
-    //     const iter = puzzle[Symbol.iterator]();
-    //     this.cells.forEach(cell => cell.setData(iter.next().value, true, false));
-    
-    //     this.validate(true);
-    //     this.setReady(true, silent);
-
-    //     return this;
-    // }
-
     private cursor: ICell;
     getCursor() { return this.cursor };
     setCursor(to: ICell, silent = false) {
@@ -178,8 +140,11 @@ export class Board implements IBoard {
 
     private puzzle: IPuzzleInfo = null;
     getPuzzleInfo() { return this.puzzle; }
-    setPuzzleInfo(info: IPuzzleInfo) {
+    setPuzzleInfo(info: IPuzzleInfo, silent = false) {
         this.puzzle = info;
+        if (!silent) {
+            this.events.get(BoardEvents.PuzzleChanged).fire(this);
+        }
     }
 
     clear(silent = false): IBoard {

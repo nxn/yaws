@@ -1,4 +1,4 @@
-import type { ICellController } from '@components/sudoku/controllers/board';
+import type { IActions } from '@components/sudoku/actions/actions';
 import type { ICell } from '@components/sudoku/models/cell';
 import { IEventListenerKey, CommonEvents } from '@components/sudoku/events';
 import { IBoard, BoardEvents } from '@components/sudoku/models/board';
@@ -13,7 +13,7 @@ import React from 'react';
 type CellProperties = { 
     model:          ICell,
     board:          IBoard,
-    controller:     ICellController,
+    actions:        IActions,
     onClick:        (cell: ICell) => void,
     onMouseMove:    (cell: ICell) => void,
     highlight?:     boolean
@@ -46,7 +46,7 @@ export default class Cell extends React.Component<CellProperties, CellState>{
 
         const handler = createPointerDoubleClickHandler(
             () => { }, // No action for single click
-            () => props.controller.clear(props.model)
+            () => props.actions.cell.clear(this.props.board, props.model)
         );
 
         this.valuePointerDown   = (event: React.SyntheticEvent) => handler(event.nativeEvent);
@@ -134,7 +134,7 @@ export default class Cell extends React.Component<CellProperties, CellState>{
     }
 
     setCellValue = (value: number) => {
-        this.props.controller.setCellValue(this.props.model, value);
+        this.props.actions.cell.setValue(this.props.board, this.props.model, value);
     }
 
     render() {
@@ -181,7 +181,7 @@ export default class Cell extends React.Component<CellProperties, CellState>{
                     <Candidate
                         key             = { candidate.value }
                         model           = { candidate }
-                        controller      = { this.props.controller }
+                        actions         = { this.props.actions }
                         board           = { this.props.board }
                         cell            = { this.props.model }
                         onDoubleClick   = { this.setCellValue } />

@@ -1,4 +1,4 @@
-import type { IBoardController } from '@components/sudoku/controllers/board';
+import type { IActions } from '@components/sudoku/actions/actions';
 import type { IEventListenerKey } from '@components/sudoku/events';
 import type { ICell } from '@components/sudoku/models/cell';
 import { IBoard, BoardEvents } from '@components/sudoku/models/board';
@@ -15,7 +15,7 @@ import clsx from 'clsx';
 
 type BoardProperties = { 
     model:      IBoard,
-    controller: IBoardController,
+    actions:    IActions,
     scale:      number,
     className?: string
 };
@@ -104,7 +104,7 @@ export class Board extends React.Component<BoardProperties, BoardState> {
     }
 
     setCursor = (cell: ICell) => {
-        this.props.controller.setCursor(cell);
+        this.props.actions.cursor.setCursor(this.props.model, cell);
     }
 
     render() {
@@ -116,7 +116,7 @@ export class Board extends React.Component<BoardProperties, BoardState> {
                     <Cell 
                         key         = { cell.index }
                         model       = { cell } 
-                        controller  = { this.props.controller }
+                        actions     = { this.props.actions }
                         board       = { this.props.model }
                         onClick     = { this.setCursor }
                         onMouseMove = { this.setHighlight }

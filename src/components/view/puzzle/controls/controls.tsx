@@ -4,8 +4,8 @@ import { experimentalStyled as styled } from '@material-ui/core/styles';
 import IconClear from '@material-ui/icons/Clear';
 import clsx from 'clsx';
 
-import type { ICellController } from '@components/sudoku/controller';
-import type { IBoard } from '@components/sudoku/board';
+import type { IActions } from '@components/sudoku/actions/actions';
+import type { IBoard } from '@components/sudoku/models/board';
 
 import { range } from '@components/utilities/misc';
 
@@ -13,7 +13,7 @@ import { Fab } from './button';
 
 type ControlProperties = { 
     board:      IBoard,
-    controller: ICellController,
+    actions:    IActions,
     scale:      number,
     visible?:   boolean,
     className?: string
@@ -25,15 +25,15 @@ export class Controls extends React.Component<ControlProperties, any> {
     }
 
     setCellValue = (value: number) => {
-        this.props.controller.setCellValue(this.props.board, this.props.board.getCursor(), value);
+        this.props.actions.cell.setValue(this.props.board, this.props.board.getCursor(), value);
     }
 
     toggleCandidate = (value: number) => {
-        this.props.controller.toggleCandidate(this.props.board, this.props.board.getCursor(), value);
+        this.props.actions.candidate.toggle(this.props.board, this.props.board.getCursor(), value);
     }
 
     clear = () => {
-        this.props.controller.clear(this.props.board, this.props.board.getCursor());
+        this.props.actions.cell.clear(this.props.board, this.props.board.getCursor());
     }
 
     render() {

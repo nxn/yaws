@@ -1,4 +1,4 @@
-import type { ICandidateController } from '@components/sudoku/controllers/board';
+import type { IActions } from '@components/sudoku/actions/actions';
 import type { ICandidate } from '@components/sudoku/models/candidate';
 import type { ICell } from '@components/sudoku/models/cell';
 import { IEventListenerKey, CommonEvents } from '@components/sudoku/events';
@@ -10,7 +10,7 @@ import React from 'react';
 
 type CandidateProperties = {
     model:          ICandidate,
-    controller:     ICandidateController,
+    actions:        IActions,
     board:          IBoard,
     cell:           ICell,
     onDoubleClick:  (value: number) => any;
@@ -35,7 +35,7 @@ export default class Candidate extends React.Component<CandidateProperties, Cand
         }
 
         const handler = createPointerDoubleClickHandler(
-            () => props.controller.toggleCandidate(props.cell, props.model),
+            () => props.actions.candidate.toggle(this.props.board, props.cell, props.model),
             () => props.onDoubleClick(props.model.value)
         );
 

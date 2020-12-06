@@ -1,5 +1,7 @@
 import React from 'react';
 
+import type { IActions } from '@components/sudoku/actions/actions';
+
 type Orientation = 'landscape' | 'portrait';
 
 export interface IViewContext {
@@ -15,7 +17,9 @@ export interface IViewContext {
     appBar: {
         labels: boolean;
         toggleLabels: () => void;
-    }
+    },
+
+    actions: IActions
 }
 
 export const ViewContext = React.createContext<IViewContext>({
@@ -25,13 +29,15 @@ export const ViewContext = React.createContext<IViewContext>({
     scale: 1.0,
     setScale: (_: number) => {},
 
-    tiny:           false,
+    tiny: false,
     toggleTiny: () => {},
 
     appBar: {
         labels: false,
         toggleLabels: () => {}
-    }
+    },
+
+    actions: null
 });
 
 export const ViewProvider = ViewContext.Provider;
