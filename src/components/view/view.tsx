@@ -143,14 +143,14 @@ export const Yaws = (props: YawsProperties) => {
                 <div className={ clsx(props.className, viewInfo.orientation) }>
                     <AppBar className="app-menu" title={ view }>
                         <TabPanelContainer id="tool-panel" className="tools" value={ view }>
-                            <PuzzleToolTab   value="board" />
+                            <PuzzleToolTab   value="board" model={ props.model } />
                             <AccountToolTab  value="account" />
                             <SettingsToolTab value="settings" />
                             <HelpToolTab     value="help" />
                         </TabPanelContainer>
 
                         <Tabs value={ view } onChange={ switchView } className="nav">
-                            <Tab value="board"    label="Board"   icon={ <GridIcon /> } />
+                            <Tab value="board"    label="Board"    icon={ <GridIcon /> } />
                             <Tab value="account"  label="Account"  icon={ <AccountIcon /> } disabled />
                             <Tab value="settings" label="Settings" icon={ <SettingsIcon /> } />
                             <Tab value="help"     label="Help"     icon={ <HelpIcon /> } />

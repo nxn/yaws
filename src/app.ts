@@ -6,6 +6,7 @@ import { init as initView } from '@components/view/view';
 import { storage, proxies } from '@components/storage/storage';
 import { waffleIron }       from '@components/workers/waffle-iron';
 
+import { createBoardActions }       from '@components/sudoku/actions/board';
 import { createPuzzleActions  }     from '@components/sudoku/actions/puzzle';
 import { createCandidateActions }   from '@components/sudoku/actions/candidate';
 import { createCellActions }        from '@components/sudoku/actions/cell';
@@ -20,6 +21,7 @@ function init() {
     }
 
     const actions = {
+        board:      createBoardActions(),
         puzzle:     createPuzzleActions(puzzles, waffleIron),
         cell:       createCellActions(),
         cursor:     createCursorActions(),
@@ -34,13 +36,17 @@ function init() {
     );
 
     // check if URL contains puzzle
-    if (false) {
-        actions.puzzle.openLink(models.board, location.toString())
+    let loaded = false;
+    
+    if (new URLSearchParams(location.search).has('p')) {
+        loaded = actions.puzzle.openLink(models.board, location.toString())
     }
-    else if (!puzzles.empty) {
-        actions.puzzle.openMostRecent(models.board);
+
+    if (!loaded && !puzzles.empty) {
+        loaded = actions.puzzle.openMostRecent(models.board);
     }
-    else {
+    
+    if (!loaded) {
         actions.puzzle.generate(models.board, { samples: 15, iterations: 29, removals: 2 });
     }
 

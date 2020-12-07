@@ -1,13 +1,15 @@
 import type { IPuzzleActions } from '@components/sudoku/actions/puzzle';
-import type { ICellActions } from '@components/sudoku/actions/cell';
-import type { ICursorActions } from '@components/sudoku/actions/cursor';
-import type { ICandidateActions } from '@components/sudoku/actions/candidate';
+import type { ICellActions }        from './cell';
+import type { ICursorActions }      from './cursor';
+import type { ICandidateActions }   from './candidate';
+import type { IBoardActions }       from './board';
 
 export interface IActions {
+    board:      IBoardActions
     puzzle:     IPuzzleActions,
     cell:       ICellActions,
     cursor:     ICursorActions,
     candidate:  ICandidateActions
 }
 
-export type { IPuzzleActions, ICellActions, ICursorActions, ICandidateActions };
+export type { IBoardActions, IPuzzleActions, ICellActions, ICursorActions, ICandidateActions };

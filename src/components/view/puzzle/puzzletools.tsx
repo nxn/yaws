@@ -21,9 +21,12 @@ import {
     Share               as ShareIcon
 } from '@material-ui/icons';
 
+import type { IBoard } from "@components/sudoku/models/board";
 import useView from '../context';
 import Toolbar from '../appbar/toolbar';
 import SubMenu from '../appbar/submenu';
+import NewPuzzleDialog from './dialogs/newpuzzle';
+import ShareDialog from './dialogs/share';
 
 import { 
     Button, 
@@ -32,6 +35,7 @@ import {
 } from '../appbar/button';
 
 export interface IPuzzleToolsProperties {
+    model: IBoard,
     className?: string
 };
 
@@ -53,9 +57,19 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     const openPuzzleMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
         setAnchor(event.currentTarget);
     };
+
     const closePuzzleMenu = () => {
         setAnchor(null);
     };
+
+    const [dialog, setDialog] = React.useState(null);
+    const openDialog = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        setDialog(event.currentTarget.dataset.dialog);
+        closePuzzleMenu();
+    }
+    const closeDialog = () => {
+        setDialog(null);
+    }
 
     const view = useView();
     const ToolpanelIcon = view.orientation === 'landscape' 
@@ -65,6 +79,11 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
     const anchorOrigin: PopoverOrigin = view.orientation === 'landscape'
         ? { vertical: 'top',    horizontal: 'right' }
         : { vertical: 'bottom', horizontal: 'left' };
+
+    const resetBoard = () => {
+        view.actions.board.reset(props.model);
+        closePuzzleMenu();
+    }
 
     return <>
         <Toolbar className={ props.className }>
@@ -109,7 +128,7 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
             */}
             <MenuItem style={{ display: 'none' }} />
 
-            <MenuItem data-dialog="new-puzzle" onClick={ closePuzzleMenu }>
+            <MenuItem data-dialog="new-puzzle" onClick={ openDialog }>
                 <ListItemIcon><NewIcon /></ListItemIcon>
                 <ListItemText primary="New" />
             </MenuItem>
@@ -124,16 +143,19 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
                 <ListItemText primary="Save" />
             </MenuItem>
 
-            <MenuItem onClick={closePuzzleMenu}>
+            <MenuItem onClick={ resetBoard }>
                 <ListItemIcon><ResetIcon /></ListItemIcon>
                 <ListItemText primary="Reset" />
             </MenuItem>
 
-            <MenuItem onClick={closePuzzleMenu}>
+            <MenuItem data-dialog="share" onClick={ openDialog }>
                 <ListItemIcon><ShareIcon /></ListItemIcon>
                 <ListItemText primary="Share" />
             </MenuItem>
         </SubMenu>
+
+        <NewPuzzleDialog    open={ dialog === 'new-puzzle' }    model={ props.model } onClose={ closeDialog } />
+        <ShareDialog        open={ dialog === 'share' }         model={ props.model } onClose={ closeDialog } />
     </>;
 }
 

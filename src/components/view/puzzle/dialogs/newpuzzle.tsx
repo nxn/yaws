@@ -14,8 +14,12 @@ import {
 
 import CustomizeIcon from '@material-ui/icons/AddCircle';
 
-export interface NewPuzzleProps {
-    open?: boolean,
+import type { IBoard } from '@components/sudoku/models/board';
+import useView from '../../context';
+
+export interface NewPuzzleDialogProperties {
+	model: IBoard,
+	open?: boolean,
     onClose: () => void
 };
 
@@ -25,30 +29,58 @@ function CustomRadio(props: RadioProps) {
 	);
 }
 
-export default function NewPuzzleDialog(props: NewPuzzleProps) {
+type TDifficulty = 'easy' | 'medium' | 'hard';
+
+const getGenerateSettings = (difficulty: TDifficulty) => {
+	switch (difficulty) {
+		case 'easy':
+			return { samples: 0, iterations: 1, removals: 1 };
+		case 'medium':
+			return { samples: 5, iterations: 29, removals: 2 };
+		case 'hard':
+			return { samples: 21, iterations: 58, removals: 1 };
+	}
+}
+
+export default function NewPuzzleDialog(props: NewPuzzleDialogProperties) {
+	const [difficulty, setDifficulty] = React.useState<TDifficulty | 'custom'>('medium');
+	const handleDifficultyChange = (_: React.ChangeEvent<HTMLInputElement>, value: TDifficulty) => {
+		setDifficulty(value)
+	}
+
+	const view = useView();
+
+	const generate = () => {
+		if (difficulty === 'custom') {
+
+		}
+		else {
+			view.actions.puzzle.generate(props.model, getGenerateSettings(difficulty));
+		}
+
+		props.onClose();
+	}
     return (
-        <div>
-            <Dialog onClose={ props.onClose } aria-labelledby="customized-dialog-title" open={!!props.open}>
-                <DialogTitle>New Puzzle Difficulty</DialogTitle>
+		<Dialog onClose={ props.onClose } open={!!props.open}>
+			<DialogTitle>New Puzzle Difficulty</DialogTitle>
 
-				<DialogContent dividers>
-					<RadioGroup aria-label="difficulty" name="difficulty">
-						<FormControlLabel value="easy" key="easy" control={<Radio />} label="Easy" />
-						<FormControlLabel value="medium" key="medium" control={<Radio />} label="Medium" />
-						<FormControlLabel value="hard" key="hard" control={<Radio />} label="Hard" />
-						<FormControlLabel value="custom" key="custom" control={<CustomRadio />} label="Advanced" />
-					</RadioGroup>
-				</DialogContent>
+			<DialogContent dividers>
+				<RadioGroup aria-label="difficulty" name="difficulty" value={difficulty} onChange={ handleDifficultyChange } >
+					<FormControlLabel value="easy" key="easy" control={<Radio />} label="Easy" />
+					<FormControlLabel value="medium" key="medium" control={<Radio />} label="Medium" />
+					<FormControlLabel value="hard" key="hard" control={<Radio />} label="Hard" />
+					<FormControlLabel value="custom" key="custom" control={<CustomRadio />} label="Advanced" disabled />
+				</RadioGroup>
+			</DialogContent>
 
-				<DialogActions>
-					<Button color="primary" autoFocus onClick={ props.onClose }>
-						Cancel
-					</Button>
-					<Button color="secondary" onClick={ props.onClose }>
-						Ok
-					</Button>
-				</DialogActions>
-            </Dialog>
-        </div>
+			<DialogActions>
+				<Button color="primary" autoFocus onClick={ props.onClose }>
+					Cancel
+				</Button>
+				<Button color="secondary" onClick={ generate }>
+					Ok
+				</Button>
+			</DialogActions>
+		</Dialog>
     );
 }

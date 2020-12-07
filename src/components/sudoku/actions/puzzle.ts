@@ -21,10 +21,10 @@ export interface ILocation {
 export interface IPuzzleActions {
     listSaved(): { id: number, info: IPuzzleInfo }[];
 
-    open(board: IBoard, id: number): void;
-    openLink(board: IBoard, link: string): void;
-    openMostRecent(board: IBoard): void;
-    generate(board: IBoard, settings: IPuzzleSettings): void;
+    open(board: IBoard, id: number): boolean;
+    openLink(board: IBoard, link: string): boolean;
+    openMostRecent(board: IBoard): boolean;
+    generate(board: IBoard, settings: IPuzzleSettings): Promise<boolean>;
 
     getLink(board: IBoard, includeProgress: boolean, location: ILocation): string;
 
@@ -55,35 +55,49 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
         const puzzle = storage.get(id);
 
         if (!puzzle) {
-            throw new Error(`[Error] PuzzleManager::open(${ id }): Puzzle with given id not found`);
+            return false;
         }
 
-        loadBinary(board, puzzle.buffer);
-        board.setPuzzleInfo(storage.meta(id));
+        if (loadBinary(board, puzzle.buffer)) {
+            board.setPuzzleInfo(storage.meta(id));
+            return true;
+        }
+
+        return false;
     },
 
     openMostRecent: function(board: IBoard) {
         const list = storage.list()
         const mostRecentId = Math.max(...list.map(r => r.id));
 
-        loadBinary(board, storage.get(mostRecentId));
-        board.setPuzzleInfo(storage.meta(mostRecentId));
+        if (loadBinary(board, storage.get(mostRecentId))) {
+            board.setPuzzleInfo(storage.meta(mostRecentId));
+            return true;
+        }
+        return false;
     },
 
     generate: async function(board: IBoard, settings: IPuzzleSettings) {
+        board.setReady(false);
+
         const response = await sudoku.generate(settings);
-        loadValueArray(board, response.puzzle);
 
-        const now = Date.now();
-        board.setPuzzleInfo({
-            name: `Generated Puzzle [${response.difficulty}]`,
-            created: now,
-            modified: now,
+        if (loadValueArray(board, response.puzzle)) {
+            const now = Date.now();
+            board.setPuzzleInfo({
+                name: `Generated Puzzle [${response.difficulty}]`,
+                created: now,
+                modified: now,
+    
+                difficulty: response.difficulty,
+                solution: response.solution,
+                settings: settings
+            });
 
-            difficulty: response.difficulty,
-            solution: response.solution,
-            settings: settings
-        });
+            return true;
+        }
+
+        return false;
     },
 
     getLink: function(board: IBoard, includeProgress: boolean, locationObj: ILocation = location) {
@@ -103,9 +117,7 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
         const params = new URLSearchParams(url.search);
         let p = params.get('p');
     
-        if (!p) { 
-            throw new Error(`[Error] PuzzleManager::loadLink(link: string): Link does not contain query string "p"`);
-        }
+        if (!p) { return false; }
     
         p = decodeURIComponent(p);
     
@@ -114,20 +126,26 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
             p = p.replace(/\((\d+)\)/g, (_,g) => Array(parseInt(g)).fill(0).join(''));
         }
     
+        let loaded = false;
+
         // Verify 81 digit number, otherwise assume base64 binary.
         if (/^\d{81}$/.test(p)) {
-            loadValueString(board, p);
+            loaded = loadValueString(board, p);
         }
         else {
-            loadBinary(board, (expand(atob(p)) as Uint8Array).buffer);
+            loaded = loadBinary(board, (expand(atob(p)) as Uint8Array).buffer);
         }
     
-        const now = Date.now();
-        board.setPuzzleInfo({
-            name: 'Linked Puzzle',
-            created: now,
-            modified: now
-        });
+        if (loaded) {
+            const now = Date.now();
+            board.setPuzzleInfo({
+                name: 'Linked Puzzle',
+                created: now,
+                modified: now
+            });
+        }
+
+        return loaded;
     },
 
     delete: function(id: number) {
@@ -145,69 +163,79 @@ function getValueArray(board: IBoard) {
     return Uint8Array.from(board.cells.map(c => c.isStatic() ? c.getValue() : 0));
 }
 
-function loadValueArray(board: IBoard, array: Uint8Array) {
+function loadValueArray(board: IBoard, array: Uint8Array): boolean {
     if (array.length !== board.cells.length) {
-        throw new Error(`[Error] PuzzleManager::loadValueArray(array: Uint8Array): Unexpected array.length (${ array.length })`);
+        return false;
     }
 
     board.setReady(false);
 
+    let loaded = true;
     for (let i = 0; i < board.cells.length; i++) {
         let value = array[i];
         let cell = board.cells[i];
-        loadCellData(cell, { v: value, s: value !== 0, c: [] });
+        loaded = loaded && loadCellData(cell, { v: value, s: value !== 0, c: [] });
     }
 
     board.validate(true);
     board.setReady(true);
+
+    return loaded;
 }
 
 function getData(board: IBoard, ignoreHiddenCandidates?: boolean) {
     return board.cells.map(cell => getCellData(cell, ignoreHiddenCandidates));
 }
 
-function loadData(board: IBoard, data: ICellData[]) {
+function loadData(board: IBoard, data: ICellData[]): boolean {
     if (!Array.isArray(data)) {
-        throw new Error(`[Error] PuzzleManager::loadData(data: ICellData[]): Unexpected data (not array)`);
+        return false;
     }
 
     if (data.length !== board.cells.length) {
-        throw new Error(`[Error] PuzzleManager::loadData(data: ICellData[]): Unexpected data.length (${ data.length })`);
+        return false;
     }
 
     board.setReady(false);
 
     const iter = data[Symbol.iterator]();
-    board.cells.forEach(cell => loadCellData(cell, iter.next().value));
+    let loaded = true;
+    board.cells.forEach(cell => loaded = loaded && loadCellData(cell, iter.next().value));
 
     board.validate(true);
     board.setReady(true);
+
+    return loaded;
 }
 
 function getValueString(board: IBoard) {
-    return board.cells.map(c => c.isStatic ? c.getValue() : 0).join('');
+    return board.cells.map(c => c.isStatic() ? c.getValue() : 0).join('');
 }
 
-function loadValueString(board: IBoard, puzzle: string) {
+function loadValueString(board: IBoard, puzzle: string): boolean {
     puzzle = puzzle && typeof puzzle.toString === 'function'
         ? puzzle.toString().trim()
         : "";
 
     // Verify string represents 81 digit number
     if (!/^\d{81}$/.test(puzzle)) {
-        throw new Error(`[Error] PuzzleManager::loadValueString(puzzle: string): Unexpected puzzle string format (${ puzzle })`);
+        return false;
     }
 
     board.setReady(false);
 
     const iter = puzzle[Symbol.iterator]();
+
+    let loaded = true;
     board.cells.forEach(cell => {
         let v = parseInt(iter.next().value);
-        loadCellData(cell, { v: v, s: v !== 0, c: [] });
+        loaded = loaded && loadCellData(cell, { v: v, s: v !== 0, c: [] });
     });
 
     board.validate(true);
     board.setReady(true);
+
+    return loaded;
 };
 
 function getBinary(board: IBoard, ignoreHiddenCandidates?: boolean): Uint8Array { 
@@ -227,22 +255,26 @@ function getBinary(board: IBoard, ignoreHiddenCandidates?: boolean): Uint8Array 
     return new Uint8Array(buffer);
 }
 
-function loadBinary(board: IBoard, buffer: ArrayBuffer) {
+function loadBinary(board: IBoard, buffer: ArrayBuffer): boolean {
     const cells = board.cells;
     const view16 = new Uint16Array(buffer);
     
     if (cells.length !== view16.length) {
-        throw new Error(`[Error] PuzzleManager::loadBinary(buffer: ArrayBuffer): Unexpected buffer.length (${ view16.length })`);
+        return false;
     }
 
     board.setReady(false);
 
+    let loaded = true;
+
     for (let i = 0; i < view16.length; i++) {
-        loadCellBinary(cells[i], view16[i]);
+        loaded = loaded && loadCellBinary(cells[i], view16[i]);
     }
 
     board.validate(true);
     board.setReady(true);
+
+    return loaded;
 }
 
 function getCellData(cell: ICell, ignoreHiddenCandidates: boolean): ICellData {
@@ -256,9 +288,9 @@ function getCellData(cell: ICell, ignoreHiddenCandidates: boolean): ICellData {
     );
 }
 
-function loadCellData(cell: ICell, data: ICellData) {
+function loadCellData(cell: ICell, data: ICellData): boolean {
     if (typeof data !== 'object') {
-        throw new Error(`[Error] PuzzleManager::loadCellData(cell: ICell, data: ICellData): Unexpected data, not an object (${ typeof data })`);
+        return false;
     }
 
     // Set cell as non-static so we can update its values
@@ -275,6 +307,8 @@ function loadCellData(cell: ICell, data: ICellData) {
     if (typeof data.s === 'boolean') {
         cell.setStatic(data.s, true);
     }
+
+    return true;
 }
 
 function getCellBinary(cell: ICell, ignoreHiddenCandidates: boolean): number {
@@ -290,13 +324,13 @@ function getCellBinary(cell: ICell, ignoreHiddenCandidates: boolean): number {
     return v;
 }
 
-function loadCellBinary(cell: ICell, v: number): void {
+function loadCellBinary(cell: ICell, v: number): boolean {
     cell.setStatic(false, true);
 
     // Cell values are only valid if they're in the 0 to 16383 range (4 bits for value, 1 isStatic bit, 9 bits to mark
     // whether each candidate is selected).
     if (v < 0 || v >= 2 ** CellConstants.bitLength) {
-        throw new Error(`[Error] PuzzleManager::loadCellBinary(cell: ICell, value: number): Unexpected binary value (${ v })`);
+        return false;
     }
 
     for (let i = 0; i < cell.candidates.length; i++) {
@@ -308,4 +342,6 @@ function loadCellBinary(cell: ICell, v: number): void {
 
     cell.setValue(v >> 1, true, false);
     cell.setStatic(isStatic, true);
+
+    return true;
 }

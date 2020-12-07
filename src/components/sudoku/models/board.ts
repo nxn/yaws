@@ -156,7 +156,7 @@ export class Board implements IBoard {
     };
 
     reset(silent = false): IBoard {
-        this.cells.forEach(c => !c.isStatic && c.clear(silent));
+        this.cells.forEach(c => !c.isStatic() && c.clear(silent));
         if (!silent) {
             this.events.get(BoardEvents.Reset).fire(this);
         }
