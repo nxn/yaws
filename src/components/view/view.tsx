@@ -19,6 +19,7 @@ import clsx from 'clsx';
 
 import type { IBoard } from '@components/sudoku/models/board';
 import type { IActions } from '@components/sudoku/actions/actions';
+import type { IKeyboardHandler } from '@components/sudoku/keyboard';
 
 import PuzzleView,      { IPuzzleViewProperties }       from './puzzle/puzzleview';
 import PuzzleTools,     { IPuzzleToolsProperties }      from './puzzle/puzzletools';
@@ -39,6 +40,7 @@ import { light, dark } from './theme';
 type YawsProperties = {
     model:          IBoard,
     actions:        IActions,
+    keyboard:       IKeyboardHandler,
     className?:     string
 };
 
@@ -99,6 +101,17 @@ export const Yaws = (props: YawsProperties) => {
 
         actions: props.actions
     }
+
+    React.useEffect(() => {
+        const handler = (event: KeyboardEvent) => {
+            if (view === 'board') {
+                props.keyboard.onKey(event);
+            }
+        }
+
+        document.addEventListener('keydown', handler);
+        return () => document.removeEventListener('keydown', handler);
+    });
 
     React.useEffect(() => {
         const install = () => {
@@ -218,11 +231,11 @@ export const AppView = styled(Yaws)({
     },
 });
 
-export function init(board: IBoard, actions: IActions, containerId: string) {
+export function init(board: IBoard, actions: IActions, keyboard: IKeyboardHandler, containerId: string) {
     const container = document.getElementById(containerId);
 
     return () => ReactDOM.render(
-        <AppView model={board} actions={actions} />, container
+        <AppView model={board} actions={actions} keyboard={keyboard} />, container
     );
 }
 

@@ -20,10 +20,10 @@ export const HelpTools = (props: IHelpToolsProperties) => {
             <Divider />
             <ToggleButton 
                 guttered
-                value       = "content" 
+                value       = "contents" 
                 selected    = { content }
                 icon        = { <NavIcon /> } 
-                label       = "Content" 
+                label       = "Contents" 
                 onChange    = { toggleContent } />
         </Toolbar>
     );

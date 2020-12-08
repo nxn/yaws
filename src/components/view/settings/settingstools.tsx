@@ -30,10 +30,10 @@ export const SettingsTools = (props: ISettingsToolsProperties) => {
 
             <ToggleButton 
                 guttered
-                value       = "content" 
+                value       = "contents" 
                 selected    = { content }
                 icon        = { <NavIcon /> } 
-                label       = "Content" 
+                label       = "Contents" 
                 onChange    = { toggleContent } />
         </Toolbar>
     );

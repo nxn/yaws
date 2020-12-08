@@ -30,10 +30,7 @@ function init() {
 
     const keyboard = KeyboardHandler.create(models.board, actions);
 
-    const render = initView(models.board, actions, 'sudoku');
-    document.addEventListener(
-        'keydown', event => { keyboard.onKey(event); }
-    );
+    const render = initView(models.board, actions, keyboard, 'sudoku');
 
     // check if URL contains puzzle
     let loaded = false;
@@ -50,14 +47,7 @@ function init() {
         actions.puzzle.generate(models.board, { samples: 15, iterations: 29, removals: 2 });
     }
 
-    const renderStart = 'render start';
-    performance.mark(renderStart);
-
     render();
-
-    const renderEnd = 'render end';
-    performance.mark(renderEnd);
-    performance.measure("Render", renderStart, renderEnd);
 };
 
 init();

@@ -26,7 +26,7 @@ const Title = styled(Box)({
 export const AccountView = (props: IAccountViewProperties) => (
     <div className={ clsx('view', props.className) }>
         <Title>
-            <Typography variant="h2" component="h1" gutterBottom>Account</Typography>
+            <Typography variant="h4" component="h1" gutterBottom>Account</Typography>
         </Title>
     </div>
 );
