@@ -143,7 +143,7 @@ export class Board implements IBoard {
     setPuzzleInfo(info: IPuzzleInfo, silent = false) {
         this.puzzle = info;
         if (!silent) {
-            this.events.get(BoardEvents.PuzzleChanged).fire(this);
+            this.events.get(BoardEvents.PuzzleChanged).fire(this, info);
         }
     }
 

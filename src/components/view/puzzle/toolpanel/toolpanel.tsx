@@ -3,11 +3,6 @@ import React from 'react';
 import {
     Drawer,
     Typography,
-    Table,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell,
     experimentalStyled as styled
 } from '@material-ui/core';
 
@@ -28,6 +23,7 @@ import {
 
 import useView from '../../context';
 import type { IBoard } from '@components/sudoku/models/board';
+import { PuzzleInfo } from './puzzleinfo';
 
 type ToolpanelProperties = {
     model:      IBoard,
@@ -52,16 +48,6 @@ export const ToolpanelUnstyled = (props: ToolpanelProperties) => {
         setExpanded(panels);
     }
 
-    const now = Date.now();
-    let info = props.model.getPuzzleInfo();
-    if (!info) {
-        info = {
-            name: 'Unknown',
-            created: now,
-            modified: now
-        }
-    }
-
     return (
         <Drawer
             className   = { clsx(props.className, variant === 'persistent' && (props.open ? 'expanded' : 'collapsed')) }
@@ -80,45 +66,7 @@ export const ToolpanelUnstyled = (props: ToolpanelProperties) => {
                     <Typography variant="button" color="textSecondary">Puzzle Details</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell colSpan={2}>
-                                    <Typography variant="subtitle1" color="textSecondary">{ info.name }</Typography>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            { info.difficulty &&
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" color="textSecondary">Difficulty</Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        { info.difficulty }
-                                    </TableCell>
-                                </TableRow>
-                            }
-                            <TableRow>
-                                <TableCell>
-                                    <Typography variant="subtitle2" color="textSecondary">Created</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    { new Date(info.created).toLocaleString() }
-                                </TableCell>
-                            </TableRow>
-                            { info.created !== info.modified &&
-                                <TableRow>
-                                    <TableCell>
-                                        <Typography variant="subtitle2" color="textSecondary">Modified</Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        { new Date(info.modified).toLocaleString() }
-                                    </TableCell>
-                                </TableRow>
-                            }
-                        </TableBody>
-                    </Table>
+                    <PuzzleInfo model={ props.model } />
                 </AccordionDetails>
             </Accordion>
 
@@ -151,7 +99,7 @@ export const ToolpanelUnstyled = (props: ToolpanelProperties) => {
     );
 }
 
-const width = 260;
+const width = 320;
 export const Toolpanel = styled(ToolpanelUnstyled)(({theme}) => ({
     '&.MuiDrawer-docked': {
         '& > .MuiDrawer-paper': {
