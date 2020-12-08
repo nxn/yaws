@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Zoom as Animation, experimentalStyled as styled } from '@material-ui/core';
+import { experimentalStyled as styled } from '@material-ui/core';
 import IconClear from '@material-ui/icons/Clear';
 import clsx from 'clsx';
 

@@ -8,8 +8,8 @@ import {
 } from '@material-ui/core';
 
 import { 
-    Edit                as EditIcon,
-    PaletteOutlined     as ColorIcon,
+    PlayArrow           as PlayIcon,
+    Pause               as PauseIcon,
     VerticalSplit       as PanelVertical,
     HorizontalSplit     as PanelHorizontal,
     TouchApp            as ControlsIcon,
@@ -44,7 +44,7 @@ export interface IPuzzleToolsProperties {
 };
 
 export const PuzzleTools = (props: IPuzzleToolsProperties) => {
-    const [mode, setMode] = React.useState('edit');
+    const [mode, setMode] = React.useState('play');
     const changeMode = (_: React.MouseEvent<HTMLElement>, mode: string | null) => {
         if (mode) {
             setMode(mode);
@@ -88,8 +88,8 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
             <Button icon={<MenuIcon />} label="Puzzle" variant="full" onClick={ openPuzzleMenu } />
 
             <ToggleButtonGroup exclusive guttered value={ mode } onChange={ changeMode }>
-                <ToggleButton value="edit" icon={<EditIcon />} label="Edit" />
-                <ToggleButton value="color" icon={<ColorIcon />} label="Color" disabled />
+                <ToggleButton value="play" icon={<PlayIcon />} label="Play" />
+                <ToggleButton value="pause" icon={<PauseIcon />} label="Pause" disabled />
             </ToggleButtonGroup>
 
             <ToggleButton guttered

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
     Accordion           as MuiAccordion,
     AccordionSummary    as MuiAccordionSummary,

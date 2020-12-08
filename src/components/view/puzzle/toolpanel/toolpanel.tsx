@@ -63,7 +63,7 @@ export const ToolpanelUnstyled = (props: ToolpanelProperties) => {
                     id="panel1a-header">
                     
                     <InfoIcon color="action" />
-                    <Typography variant="button" color="textSecondary">Puzzle Details</Typography>
+                    <Typography variant="button" color="textSecondary">Info</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <PuzzleInfo model={ props.model } />
