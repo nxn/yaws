@@ -42,7 +42,7 @@ export const PuzzleInfo = (props: TPuzzleInfoProperties) => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                { info.difficulty &&
+                { !info.difficulty ? null :
                     <TableRow>
                         <TableCell>
                             <Typography variant="subtitle2" color="textSecondary">Difficulty</Typography>
@@ -52,17 +52,17 @@ export const PuzzleInfo = (props: TPuzzleInfoProperties) => {
                         </TableCell>
                     </TableRow>
                 }
-                { info.created &&
-                <TableRow>
-                    <TableCell>
-                        <Typography variant="subtitle2" color="textSecondary">Created</Typography>
-                    </TableCell>
-                    <TableCell>
-                        { new Date(info.created).toLocaleString() }
-                    </TableCell>
-                </TableRow>
+                { !info.created ? null :
+                    <TableRow>
+                        <TableCell>
+                            <Typography variant="subtitle2" color="textSecondary">Created</Typography>
+                        </TableCell>
+                        <TableCell>
+                            { new Date(info.created).toLocaleString() }
+                        </TableCell>
+                    </TableRow>
                 }
-                { info.modified && info.created !== info.modified &&
+                { !info.modified || info.created === info.modified ? null :
                     <TableRow>
                         <TableCell>
                             <Typography variant="subtitle2" color="textSecondary">Modified</Typography>
