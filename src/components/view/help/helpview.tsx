@@ -27,11 +27,11 @@ const Title = styled(Box)({
 export const HelpView = (props: IHelpViewProperties) => (
     <div className={ clsx('view', props.className) }>
         <Title>
-            <Typography variant="h2" component="h1" gutterBottom>Help: General Information</Typography>
+            <Typography variant="h4" component="h1" gutterBottom>Help: General Information</Typography>
         </Title>
 
         <Section>
-            <Typography variant="h4" component="h2" gutterBottom>Sudoku Rules</Typography>
+            <Typography variant="h5" component="h2" gutterBottom>Sudoku Rules</Typography>
             <Typography variant="body1" gutterBottom>
                 The objective is to fill the 9×9 grid with digits so that each column, each row, and each of the
                 nine 3×3 subgrids contain all of the digits from 1 to 9. For more information regarding Sudoku,
@@ -41,7 +41,7 @@ export const HelpView = (props: IHelpViewProperties) => (
         </Section>
 
         <Section>
-            <Typography variant="h4" component="h2" gutterBottom>Keyboard Controls</Typography>
+            <Typography variant="h5" component="h2" gutterBottom>Keyboard Controls</Typography>
 
             <Typography variant="body1" gutterBottom>
                 Besides using a <strong>mouse</strong>, or <strong>touch</strong>, you can use <strong>Arrow 
@@ -75,24 +75,22 @@ export const HelpView = (props: IHelpViewProperties) => (
         </Section>
 
         <Section>
-            <Typography variant="h4" component="h2" gutterBottom>About This Project</Typography>
+            <Typography variant="h5" component="h2" gutterBottom>About This Project</Typography>
 
             <Typography variant="body1" gutterBottom>
-                <strong>YAWS</strong> is a personal project to create a modern and functional web-based sudoku
-                game using standard browser technologies. It is able to solve and generate challenging puzzles 
+                <strong>YAWS</strong> is a Sudoku puzzle app that hopes to create a unified user experience
+                across multiple device types. It is able to solve and generate challenging puzzles 
                 in a consistant manner via the use of <Link href="https://webassembly.org/" target="_blank"
-                rel="noreferrer">Web Assembly</Link> for its core code. The user interface was created using 
-                standard HTML5, CSS, and JavaScript techniques.
+                rel="noreferrer">Web Assembly</Link> for its core code.
             </Typography>
         </Section>
 
         <Section>
-            <Typography variant="h4" component="h2" gutterBottom>Disclaimer</Typography>
+            <Typography variant="h5" component="h2" gutterBottom>Disclaimer</Typography>
 
             <Typography variant="body1" gutterBottom>
-                This game is in a very early stage of development; lots of things may be broken, misbehaving, or
-                simply not be implemented yet. This page is an early demo that does not capture the full scope
-                of the project.
+                This app is in a very early stage of development. Currently, many features are not yet implemented 
+                and you may also encounter bugs or experience poor performance.
             </Typography>
         </Section>
     </div>

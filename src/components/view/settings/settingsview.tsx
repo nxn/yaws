@@ -29,7 +29,7 @@ export const SettingsView = (props: ISettingsViewProperties) => {
     return (
         <div className={ clsx(props.className) }>
             <Title>
-                <Typography variant="h2" component="h1" gutterBottom>Settings</Typography>
+                <Typography variant="h4" component="h1" gutterBottom>Settings</Typography>
             </Title>
             {/* <Tabs value="game-settings">
                 <Tab label="Game" value="game-settings" />
