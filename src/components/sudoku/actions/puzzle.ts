@@ -85,7 +85,7 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
         if (loadValueArray(board, response.puzzle)) {
             const now = Date.now();
             board.setPuzzleInfo({
-                name: `Generated Puzzle [${response.difficulty}]`,
+                name: `Generated Puzzle`,
                 created: now,
                 modified: now,
     

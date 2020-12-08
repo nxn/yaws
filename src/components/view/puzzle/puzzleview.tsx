@@ -12,21 +12,22 @@ import useView      from '../context';
 
 export interface IPuzzleViewProperties {
     model:              IBoard;
+    onToolpanelClose?:  () => void;
     displayControls?:   boolean;
-    displaySidePanel?:  boolean;
+    displayToolpanel?:  boolean;
     className?:         string;
 }
 
 export const PuzzleViewUnstyled = (props: IPuzzleViewProperties) => {
     const view = useView();
-    const displayControls   = props.displayControls === undefined ? true : props.displayControls;
-    const displaySidePanel  = props.displaySidePanel === undefined ? false : props.displaySidePanel;
 
     return (
         <div className={ clsx(props.className) }>
-            <Board      model={ props.model } actions={ view.actions } scale={ view.scale } />
-            <Controls   board={ props.model } actions={ view.actions } scale={ view.scale } visible={ displayControls }/>
-            {/* <SidePanel  visible={ displaySidePanel } /> */}
+            <div className={ 'game-ui'}>
+                <Board      model={ props.model } actions={ view.actions } scale={ view.scale } />
+                <Controls   model={ props.model } actions={ view.actions } scale={ view.scale } open={ props.displayControls } />
+            </div>
+            <Toolpanel  model={ props.model } open={ props.displayToolpanel } onClose={ props.onToolpanelClose } />
         </div>
     );
 }
@@ -39,17 +40,27 @@ export const PuzzleView = styled(PuzzleViewUnstyled)({
     height:         '100%',
     width:          '100%',
 
+    '& .game-ui': {
+        display:        'flex',
+        height:         '100%',
+        width:          '100%',
+        alignItems:     'center',
+        justifyContent: 'space-evenly',
+        '.landscape &': {
+            flexDirection:  'row',
+        },
+        '.portrait &': {
+            flexDirection: 'column',
+        },
+    },
+
     '.landscape &': {
         flexDirection:  'row',
-        justifyContent: 'space-evenly'
     },
 
     '.portrait &': {
         flexDirection: 'column',
-        justifyContent: 'space-evenly'
     },
-    
-    '& .board': { flexGrow: 0 }
 });
 
 export default PuzzleView;

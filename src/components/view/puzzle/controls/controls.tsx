@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { experimentalStyled as styled } from '@material-ui/core/styles';
+import { Zoom as Animation, experimentalStyled as styled } from '@material-ui/core';
 import IconClear from '@material-ui/icons/Clear';
 import clsx from 'clsx';
 
@@ -12,10 +12,10 @@ import { range } from '@components/utilities/misc';
 import { Fab } from './button';
 
 type ControlProperties = { 
-    board:      IBoard,
+    model:      IBoard,
     actions:    IActions,
     scale:      number,
-    visible?:   boolean,
+    open?:      boolean,
     className?: string
 };
 
@@ -25,20 +25,20 @@ export class Controls extends React.Component<ControlProperties, any> {
     }
 
     setCellValue = (value: number) => {
-        this.props.actions.cell.setValue(this.props.board, this.props.board.getCursor(), value);
+        this.props.actions.cell.setValue(this.props.model, this.props.model.getCursor(), value);
     }
 
     toggleCandidate = (value: number) => {
-        this.props.actions.candidate.toggle(this.props.board, this.props.board.getCursor(), value);
+        this.props.actions.candidate.toggle(this.props.model, this.props.model.getCursor(), value);
     }
 
     clear = () => {
-        this.props.actions.cell.clear(this.props.board, this.props.board.getCursor());
+        this.props.actions.cell.clear(this.props.model, this.props.model.getCursor());
     }
 
     render() {
         return (
-            <div className={ clsx('control-panel', this.props.className) }>
+            <div className={ clsx('control-panel', this.props.className, this.props.open ? 'expanded' : 'collapsed') }>
                 <div className="values">{
                     range(1, 9).map(n => (
                         <Fab
@@ -80,7 +80,7 @@ export class Controls extends React.Component<ControlProperties, any> {
 }
 
 export default styled(Controls)(
-    ({scale}) => ({
+    ({theme, scale}) => ({
         display: 'grid',
         gap: `${ scale }rem`,
         '& .values, & .notes': {
@@ -113,5 +113,30 @@ export default styled(Controls)(
         '.portrait &': {
             gridTemplateAreas:  '"values clear notes"'
         },
+
+        '&.collapsed': {
+            transform: 'scale(0)',
+            transformOrigin: 'top left',
+            opacity: 0,
+            // width: 0,
+            // height: 0,
+            display: 'none',
+            transition: theme.transitions.create(['transform', 'width', 'height', 'opacity'], {
+                easing: theme.transitions.easing.easeOut,
+                duration: theme.transitions.duration.leavingScreen,
+            })
+        },
+        '&.expanded': {
+            transform: 'scale(1)',
+            transformOrigin: 'top left',
+            opacity: 1,
+            // height: `488px`,
+            // width: '184px',
+            
+            transition: theme.transitions.create(['transform', 'width', 'height', 'opacity'], {
+                easing: theme.transitions.easing.easeOut,
+                duration: theme.transitions.duration.enteringScreen,
+            })
+        }
     })
 );

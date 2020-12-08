@@ -7,6 +7,8 @@ import {
 
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 
+import clsx from 'clsx';
+
 import useView from '../context';
 import Button from './button';
 
@@ -20,12 +22,13 @@ const AppBarUnstyled = (props: AppBarProperties) => {
     const view = useView();
     const title = <Typography style={{ textTransform: 'capitalize' }} variant="body1">{ props.title }</Typography>;
 
+    const collapseToggle = !view.tiny && view.orientation === 'landscape';
     return (
-        <div className={ props.className }>
+        <div className={ clsx(props.className, collapseToggle && (view.appBar.labels ? 'expanded' : 'collapsed')) }>
             { 
-                view.orientation === 'landscape' && !view.tiny &&
+                collapseToggle &&
                     <Button
-                        className   = { 'expander' }
+                        className   = { 'toggle' }
                         icon        = { view.appBar.labels ? <ChevronLeft /> : <ChevronRight /> } 
                         label       = { title }
                         onClick     = { view.appBar.toggleLabels } />
@@ -41,7 +44,8 @@ export const AppBar = styled(AppBarUnstyled)(({theme}) => ({
     left: 0,
     zIndex: 1,
     display: 'flex',
-    
+    overflow: 'hidden',
+
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
 
@@ -62,8 +66,23 @@ export const AppBar = styled(AppBarUnstyled)(({theme}) => ({
             '0px 3px 3px 0px rgba(0,0,0,0.12)'
     },
 
+    '&.collapsed': {
+        width: '58px',
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        })
+    },
 
-    '& .expander': {
+    '&.expanded': {
+        width: '180px',
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        })
+    },
+
+    '& .toggle': {
         margin: `${ theme.spacing(1) } !important`
     },
 }));

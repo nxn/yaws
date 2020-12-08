@@ -35,8 +35,12 @@ import {
 } from '../appbar/button';
 
 export interface IPuzzleToolsProperties {
-    model: IBoard,
-    className?: string
+    model:              IBoard,
+    controlsOpen?:      boolean,
+    toolpanelOpen?:     boolean,
+    toggleControls?:    () => void,
+    toggleToolpanel?:   () => void,
+    className?:         string
 };
 
 export const PuzzleTools = (props: IPuzzleToolsProperties) => {
@@ -46,12 +50,6 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
             setMode(mode);
         }
     };
-
-    const [toolpanel, setToolpanel] = React.useState(false);
-    const toggleToolpanel = () => setToolpanel(!toolpanel);
-
-    const [controls, setControls] = React.useState(true);
-    const toggleControls = () => setControls(!controls);
 
     const [anchor, setAnchor] = React.useState<null | HTMLElement>(null);
     const openPuzzleMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -96,17 +94,17 @@ export const PuzzleTools = (props: IPuzzleToolsProperties) => {
 
             <ToggleButton guttered
                 value       = "controls" 
-                selected    = { controls }
+                selected    = { props.controlsOpen }
                 icon        = { <ControlsIcon /> } 
                 label       = "Controls"
-                onChange    = { toggleControls } />
+                onChange    = { props.toggleControls } />
 
             <ToggleButton guttered
                 value       = "toolpanel" 
-                selected    = { toolpanel } 
+                selected    = { props.toolpanelOpen } 
                 icon        = { ToolpanelIcon } 
                 label       = "Tools"
-                onChange    = { toggleToolpanel } />
+                onChange    = { props.toggleToolpanel } />
         </Toolbar>
 
         <SubMenu

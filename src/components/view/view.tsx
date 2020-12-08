@@ -62,10 +62,15 @@ export const Yaws = (props: YawsProperties) => {
     };
 
     const viewInfo = getViewInfo();
-    const [orientation,     setOrientationState]    = React.useState(viewInfo.orientation as 'landscape' | 'portrait');
-    const [scale,           setScaleState]          = React.useState(viewInfo.scale);
-    const [tiny,            setTinyState]           = React.useState(viewInfo.tiny);
-    const [appBarLabels,    setAppBarLabelState]    = React.useState(false);
+    const [orientation,         setOrientationState]    = React.useState(viewInfo.orientation as 'landscape' | 'portrait');
+    const [scale,               setScaleState]          = React.useState(viewInfo.scale);
+    const [tiny,                setTinyState]           = React.useState(viewInfo.tiny);
+    const [appBarLabels,        setAppBarLabelState]    = React.useState(false);
+    const [puzzleControlsOpen,  setPuzzleControlsOpen]  = React.useState(true);
+    const [puzzleToolpanelOpen, setPuzzleToolpanelOpen] = React.useState(false);
+
+    const toggleControls    = () => setPuzzleControlsOpen(!puzzleControlsOpen);
+    const toggleToolpanel   = () => setPuzzleToolpanelOpen(!puzzleToolpanelOpen);
 
     const viewContext: IViewContext = {
         orientation: orientation,
@@ -143,7 +148,14 @@ export const Yaws = (props: YawsProperties) => {
                 <div className={ clsx(props.className, viewInfo.orientation) }>
                     <AppBar className="app-menu" title={ view }>
                         <TabPanelContainer id="tool-panel" className="tools" value={ view }>
-                            <PuzzleToolTab   value="board" model={ props.model } />
+                            <PuzzleToolTab   
+                                value           = "board"
+                                model           = { props.model }
+                                controlsOpen    = { puzzleControlsOpen }
+                                toolpanelOpen   = { puzzleToolpanelOpen }
+                                toggleControls  = { toggleControls }
+                                toggleToolpanel = { toggleToolpanel } />
+
                             <AccountToolTab  value="account" />
                             <SettingsToolTab value="settings" />
                             <HelpToolTab     value="help" />
@@ -158,7 +170,13 @@ export const Yaws = (props: YawsProperties) => {
                     </AppBar>
 
                     <TabPanelContainer id="view-panel" className="views" value={ view }>
-                        <PuzzleViewTab   value="board" model={ props.model } />
+                        <PuzzleViewTab
+                            value               = "board"
+                            model               = { props.model }
+                            displayControls     = { puzzleControlsOpen }
+                            displayToolpanel    = { puzzleToolpanelOpen }
+                            onToolpanelClose    = { toggleToolpanel } />
+
                         <AccountViewTab  value="account" />
                         <SettingsViewTab value="settings" />
                         <HelpViewTab     value="help" />
