@@ -57,9 +57,7 @@ export default function ShareDialog(props: ShareDialogProperties) {
         props.onClose();
     };
 
-    const handleClose = () => {
-        setShowResult(false);
-    };
+    const handleAlertClose = () => setShowResult(false);
 
     return <>
 		<Dialog onClose={ props.onClose } aria-labelledby="customized-dialog-title" open={!!props.open} maxWidth="md" fullWidth>
@@ -81,8 +79,8 @@ export default function ShareDialog(props: ShareDialogProperties) {
 			</DialogActions>
 		</Dialog>
         
-        <Snackbar open={ showResult } onClose={ handleClose }>
-            <Alert severity={ severity } onClose={ handleClose }>
+        <Snackbar open={ showResult } onClose={ handleAlertClose }>
+            <Alert severity={ severity } onClose={ handleAlertClose }>
                 { severity === 'success' ? "Link copied!" : "Could not copy link!" }
             </Alert>
         </Snackbar>
