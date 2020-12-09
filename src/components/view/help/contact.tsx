@@ -197,7 +197,7 @@ export const Contact = () => {
             </Send>
         </Email>
 
-        <Snackbar open={ showResult } onClose={ handleAlertClose }>
+        <Snackbar open={ showResult } onClose={ handleAlertClose } autoHideDuration={ 10000 }>
             <Alert severity={ severity } onClose={ handleAlertClose }>
                 { severity === 'success' ? "Message sent!" : "Could not deliver message!" }
             </Alert>

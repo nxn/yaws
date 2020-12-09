@@ -14,7 +14,7 @@ import {
 
 import Info from './info';
 import Contact from './contact';
-import useView from '../context';
+import useView, { IViewContext } from '../context';
 
 export interface IHelpViewProperties {
     className?: string
@@ -31,19 +31,41 @@ export function asTabPanel<P>(Component: React.ComponentType<P>) {
 const InfoTab = asTabPanel(Info);
 const ContactTab = asTabPanel(Contact);
 
-export const HelpView = (props: IHelpViewProperties) => {
-    const view = useView();
+// TODO: Do this with CSS
+const getBasePaddingStyle = (defaultValue: string | number) => ({
+    paddingTop:    defaultValue,
+    paddingRight:  defaultValue,
+    paddingBottom: defaultValue,
+    paddingLeft:   defaultValue
+});
 
+const getViewPaddingStyle = (view: IViewContext) => {
+    let style = getBasePaddingStyle('3rem');
+
+    if (view.tiny) {
+        if (view.orientation === 'landscape') {
+            style = getBasePaddingStyle('2rem');
+        }
+        else {
+            style = getBasePaddingStyle('1rem');
+        }
+    }
+    else {
+        style.paddingTop = '2rem';
+    }
+
+    style.paddingBottom = 0;
+    return style;
+}
+
+export const HelpView = (props: IHelpViewProperties) => {
     const [tab, setTab] = React.useState('info');
 
     const handleChange = (_: React.SyntheticEvent<Element, Event>, value: string) => {
         setTab(value);
     };
 
-    let padding = '2rem 3rem';
-    if (view.tiny) {
-        padding = view.orientation === 'landscape' ? '2rem' : '1rem'
-    }
+    const style = getViewPaddingStyle(useView());
 
     return (
         <div className={ clsx('view', props.className) }>
@@ -52,7 +74,7 @@ export const HelpView = (props: IHelpViewProperties) => {
                 <Tab icon={ <ContactIcon /> } label="Contact" value="contact" />
             </Tabs>
 
-            <div style={{padding: padding, paddingBottom: 0}}>
+            <div style={ style }>
                 <InfoTab visible={ tab === 'info' } />
                 <ContactTab visible={ tab === 'contact' } />
             </div>
