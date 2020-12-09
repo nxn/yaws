@@ -22,8 +22,8 @@ const defaultProps = {
     },
     MuiSnackbar: {
         defaultProps: {
-            anchorOrigin: { vertical: 'top', horizontal: 'center' } as TPosition,
-            TransitionComponent: (props: SlideProps) => <Slide direction="down" {...props} />,
+            anchorOrigin: { vertical: 'bottom', horizontal: 'center' } as TPosition,
+            TransitionComponent: (props: SlideProps) => <Slide direction="up" {...props} />,
             autoHideDuration: 3000 
         }
     },

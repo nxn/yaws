@@ -80,6 +80,7 @@ export default function ShareDialog(props: ShareDialogProperties) {
 				</Button>
 			</DialogActions>
 		</Dialog>
+        
         <Snackbar open={ showResult } onClose={ handleClose }>
             <Alert severity={ severity } onClose={ handleClose }>
                 { severity === 'success' ? "Link copied!" : "Could not copy link!" }
