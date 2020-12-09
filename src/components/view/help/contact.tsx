@@ -17,7 +17,7 @@ import {
     Send as SendIcon
 } from '@material-ui/icons';
 
-const Email = styled(Box)({
+const Email = styled('form')({
     display: 'grid',
     maxWidth: '800px',
     //margin: '0 auto',
@@ -60,39 +60,95 @@ const Send = styled(Fab)(({theme}) => ({
     }
 }));
 
+type TFormValues = {
+    subject: string,
+    message: string,
+    address: string
+}
+
+type TFormErrors = {
+    subject?: string,
+    message?: string,
+    address?: string
+}
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+const emptyRegex = /^[\s]*$/;
+
+const validate = (values: TFormValues): TFormErrors => {
+    let result = {
+        subject: 'Subject is required',
+        message: 'Message is required',
+        address: 'Address is required'
+    }
+
+    if (!values) { return result; }
+
+    if (values.subject && !emptyRegex.test(values.subject)) {
+        delete result.subject;
+    }
+
+    if (values.message && !emptyRegex.test(values.message)) {
+        delete result.message;
+    }
+
+    if (values.address && !emptyRegex.test(values.address)) {
+        if (emailRegex.test(values.address)) {
+            delete result.address
+        }
+        else {
+            result.address = "Invalid email format"
+        }
+    }
+
+    return result;
+}
+
 export const Contact = () => {
-    const [subject, setSubject] = React.useState('');
-    const [message, setMessage] = React.useState('');
-    const [address, setAddress] = React.useState('');
+    const blankForm: TFormValues = { subject: '', message: '', address: '' };
 
-    const [severity, setSeverity] = React.useState<'success' | 'error'>('success');
-    const [disableSend, setDisableSend] = React.useState(false);
-    const [showResult, setShowResult] = React.useState(false);
+    const [formValues, setFormValues] = React.useState<TFormValues>(blankForm);
+    const [formErrors, setFormErrors] = React.useState<TFormErrors>({});
 
-    const handleSubjectChange = (event: React.ChangeEvent<HTMLInputElement>) => setSubject(event.target.value);
-    const handleMessageChange = (event: React.ChangeEvent<HTMLInputElement>) => setMessage(event.target.value);
-    const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => setAddress(event.target.value);
+    const [severity, setSeverity]       = React.useState<'success' | 'error'>('success');
+    const [disabled, setDisabled] = React.useState(false);
+    const [showResult, setShowResult]   = React.useState(false);
 
-    const success = () => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setFormValues({ ...formValues, [name]: value.trimStart() });
+    }
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const errors = validate(formValues);
+        setFormErrors(errors);
+
+        if (Object.keys(errors).length === 0) {
+            setDisabled(true);
+
+            email.send(
+                config.serviceID, 
+                config.templateID, 
+                formValues
+            ).then(handleSendSuccess, handleSendError);
+        }
+
+        return false;
+    }
+
+    const handleSendSuccess = () => {
         setSeverity('success');
         setShowResult(true);
-        setDisableSend(false);
+        setFormValues(blankForm);
+        setDisabled(false);
     }
 
-    const error = (_reason: any) => {
+    const handleSendError = (_reason: any) => {
         setSeverity('error');
         setShowResult(true);
-        setDisableSend(false);
-    }
-
-    const send = () => {
-        setDisableSend(true);
-
-        email.send(
-            config.serviceID, 
-            config.templateID, 
-            { subject: subject, message: message, address: address }
-        ).then(success, error);
+        setDisabled(false);
     }
 
     const handleAlertClose = () => setShowResult(false);
@@ -100,40 +156,48 @@ export const Contact = () => {
     return <>
         <Typography variant="h4" component="h1">Help: Contact Form</Typography>
         <br /><br />
-        <Email>
-            <Subject
-                id="subject"
-                label="Subject"
-                placeholder="Subject"
-                variant="standard"
-                onChange={ handleSubjectChange }
-                fullWidth
-                required />
+        <Email onSubmit={ handleSubmit } noValidate>
+            <Subject fullWidth
+                variant     = "standard"
+                label       = "Subject:"
+                id          = "subject"
+                name        = "subject"
+                value       = { formValues.subject }
+                helperText  = { formErrors.subject }
+                error       = { !!formErrors.subject }
+                onChange    = { handleChange }
+                disabled    = { disabled } />
 
-            <Message
-                id="body"
-                label="Message"
-                variant="outlined"
-                rows={10}
-                onChange={ handleMessageChange }
-                fullWidth
-                multiline
-                required />
+            <Message fullWidth multiline
+                rows        = {10}
+                variant     = "outlined"
+                label       = "Message:"
+                id          = "message"
+                name        = "message"
+                value       = { formValues.message }
+                helperText  = { formErrors.message }
+                error       = { !!formErrors.message }
+                onChange    = { handleChange }
+                disabled    = { disabled } />
 
-            <Address
-                id="address"
-                label="Your Email"
-                placeholder="email@address.com"
-                variant="standard"
-                margin="normal"
-                onChange={ handleAddressChange }
-                fullWidth
-                required />
+            <Address fullWidth
+                variant     = "standard"
+                margin      = "normal"
+                label       = "Send replies to:"
+                placeholder = "your.email@address.com"
+                id          = "address"
+                name        = "address"
+                value       = { formValues.address }
+                helperText  = { formErrors.address }
+                error       = { !!formErrors.address }
+                onChange    = { handleChange }
+                disabled    = { disabled } />
 
-            <Send variant="extended" size="small" color="secondary" onClick={ send } disabled={ disableSend }>
+            <Send variant="extended" size="small" color="secondary" type="submit" disabled={ disabled }>
                 <SendIcon />Send
             </Send>
         </Email>
+
         <Snackbar open={ showResult } onClose={ handleAlertClose }>
             <Alert severity={ severity } onClose={ handleAlertClose }>
                 { severity === 'success' ? "Message sent!" : "Could not deliver message!" }
