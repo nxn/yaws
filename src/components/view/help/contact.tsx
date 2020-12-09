@@ -4,7 +4,6 @@ import config from '../../../emailjs';
 import email from 'emailjs-com';
 
 import {
-    Box,
     TextField,
     Typography,
     Fab,
@@ -111,7 +110,7 @@ export const Contact = () => {
     const [formErrors, setFormErrors] = React.useState<TFormErrors>({});
 
     const [severity, setSeverity]       = React.useState<'success' | 'error'>('success');
-    const [disabled, setDisabled] = React.useState(false);
+    const [disabled, setDisabled]       = React.useState(false);
     const [showResult, setShowResult]   = React.useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
