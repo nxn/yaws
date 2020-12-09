@@ -8,7 +8,9 @@ import {
     Button,
     FormControlLabel,
     Checkbox,
-    TextField
+    TextField,
+    Snackbar,
+    Alert
 } from '@material-ui/core';
 
 import type { IBoard } from '@components/sudoku/models/board';
@@ -25,6 +27,11 @@ export default function ShareDialog(props: ShareDialogProperties) {
     const view = useView();
 
     const [progress, setProgress] = React.useState(true);
+
+    // The Alert component crashes if it receives a null severity value, therefore the @severity state must contain an acceptable 
+    // value at all times, even when it isn't being displayed.
+    const [severity, setSeverity] = React.useState<'success' | 'error'>('success');
+    const [showResult, setShowResult] = React.useState(false);
     
     const handleChange = (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         setProgress(checked);
@@ -35,12 +42,26 @@ export default function ShareDialog(props: ShareDialogProperties) {
 
     const select = (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => event.target.select();
 
+    const success = () => {
+        setSeverity("success");
+        setShowResult(true);
+    }
+
+    const fail = () => {
+        setSeverity("error");
+        setShowResult(true);
+    }
+
     const copy = () => {
-        navigator.clipboard.writeText(url);
+        navigator.clipboard.writeText(url).then(success, fail);
         props.onClose();
     };
 
-    return (
+    const handleClose = () => {
+        setShowResult(false);
+    };
+
+    return <>
 		<Dialog onClose={ props.onClose } aria-labelledby="customized-dialog-title" open={!!props.open} maxWidth="md" fullWidth>
 			<DialogTitle>Share Link</DialogTitle>
 
@@ -59,5 +80,10 @@ export default function ShareDialog(props: ShareDialogProperties) {
 				</Button>
 			</DialogActions>
 		</Dialog>
-    );
+        <Snackbar open={ showResult } onClose={ handleClose }>
+            <Alert severity={ severity } onClose={ handleClose }>
+                { severity === 'success' ? "Link copied!" : "Could not copy link!" }
+            </Alert>
+        </Snackbar>
+    </>;
 }
