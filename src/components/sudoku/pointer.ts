@@ -1,4 +1,4 @@
-// This function provides a workaround to problems stemming from TouchEvent.preventDefault() failing to consistantly
+// This function provides a workaround to problems stemming from TouchEvent.preventDefault() failing to consistently
 // stop touch inputs from turning into mouse related events. Using the PointerEvent APIs is necessary because it is the
 // only reliable way to determine whether the source of an event is a touch input or not. Since the goal is to 
 // completely prevent touch based inputs from involuntarily triggering mouse events, the fact PointerEvents have poor

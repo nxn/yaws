@@ -73,7 +73,7 @@ export const Info = () => {
                 <Typography variant="body1" gutterBottom>
                     <strong>YAWS</strong> is a Sudoku puzzle app that hopes to create a unified user experience
                     across multiple device types. It is able to solve and generate challenging puzzles 
-                    in a consistant manner via the use of <Link href="https://webassembly.org/" target="_blank"
+                    in a consistent manner via the use of <Link href="https://webassembly.org/" target="_blank"
                     rel="noreferrer">Web Assembly</Link> for its core code.
                 </Typography>
             </Section>
