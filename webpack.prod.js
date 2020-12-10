@@ -1,10 +1,13 @@
 const path                    = require('path');
 const webpack                 = require('webpack');
+
 const WorkerPlugin            = require('worker-plugin');
 const HtmlWebpackPlugin       = require('html-webpack-plugin');
 const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
 const MiniCssExtractPlugin    = require('mini-css-extract-plugin');
 const CopyPlugin              = require('copy-webpack-plugin');
+const FaviconsWebpackPlugin   = require('favicons-webpack-plugin');
+const WorkboxPlugin           = require('workbox-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin            = require('terser-webpack-plugin');
 
@@ -19,8 +22,8 @@ module.exports = {
   target: 'web',
   module: {
     rules: [{ // Main JS/TS loader via babel -> tsc
-      test: /\.(js|jsx|tsx|ts)$/,
-      loaders: 'babel-loader',
+      test: /\.(js|ts)x?$/i,
+      loader: 'babel-loader',
       exclude: [workers, /node_modules/]
     },{ // Web Worker TypeScript loader instance (requires separate tsconfig)
       test: workers,
@@ -86,7 +89,50 @@ module.exports = {
       filename: "[name].[contenthash].css", 
       chunkFilename: "[id].[contenthash].css"
     }),
-    new HtmlWebpackPlugin({ template: 'src/components/page/index.ejs' })
+    new HtmlWebpackPlugin({ template: 'src/components/shell/index.ejs' }),
+    new FaviconsWebpackPlugin({
+      logo: './logo.svg',
+      mode: 'webapp',
+      devMode: 'webapp',
+      cache: true,
+      inject: true,
+      prefix: 'assets/app-icon',
+      favicons: {
+        appShortName: 'Yaws',
+        appName: 'Aw Yaws - Yet Another Web Sudoku',
+        appDescription: 'Sudoku puzzle generator for all your devices.',
+        developerName: 'ernie@nxn.io',
+        developerURL: 'https://nxn.io/', // prevent retrieving from the nearest package.json
+        background: '#222',
+        theme_color: '#333',
+        // icons: {
+        //   coast: false,
+        //   yandex: false
+        // }
+      }
+    }),
+    new WorkboxPlugin.GenerateSW({
+      // these options encourage the ServiceWorkers to get in there fast
+      // and not allow any straggling "old" SWs to hang around
+      clientsClaim: true,
+      skipWaiting: true,
+      // swSrc: 'src/components/workers/service-worker',
+      // swDest: 'service-worker.js',
+      maximumFileSizeToCacheInBytes: 20 * 1024 * 1024,
+      exclude: [
+        /(?:assets[\/\\].*)$/,
+        /\.map$/,
+        /CNAME/
+      ],
+      runtimeCaching: [{
+        urlPattern: /(?:\/assets\/.*)$/,
+        handler: 'CacheFirst',
+
+        options: {
+          cacheName: 'assets',
+        },
+      }],
+    })
   ],
   optimization: {
     minimize: true,

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                        console.log('SW registered: ', registration);
+                    }).catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+                });
+            }
+        </script>
+        
+        <title>Aw Yaws - Yet Another Web Sudoku</title>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <meta name="description" content="Sudoku puzzle generator for all your devices.">
+
+        <link rel="canonical" href="https://sudoku.nxn.io/" />
+
+        <link rel="preload" href="<%= require('@components/view/fonts/Roboto-Light.woff2').default %>"
+            as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="<%= require('@components/view/fonts/Roboto-Regular.woff2').default %>"
+            as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="<%= require('@components/view/fonts/Roboto-Medium.woff2').default %>"
+            as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="<%= require('@components/view/fonts/Roboto-Bold.woff2').default %>"
+            as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="<%= require('@components/view/fonts/cabincondensed-bold-digits.woff2').default %>"
+            as="font" type="font/woff2" crossorigin>
+
+        <style type="text/css">
+            :focus { outline: none }
+            ::-moz-focus-inner { border: 0 }
+
+            @font-face {
+                font-family: 'Roboto';
+                src: url("<%= require('@components/view/fonts/Roboto-Light.woff2').default %>") format('woff2'),
+                    url("<%= require('@components/view/fonts/Roboto-Light.woff').default %>") format('woff');
+                font-weight: 300;
+                font-style: normal;
+                font-display: swap;
+                unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+            }
+
+            @font-face {
+                font-family: 'Roboto';
+                src: url("<%= require('@components/view/fonts/Roboto-Regular.woff2').default %>") format('woff2'),
+                    url("<%= require('@components/view/fonts/Roboto-Regular.woff').default %>") format('woff');
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+                unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+            }
+
+            @font-face {
+                font-family: 'Roboto';
+                src: url("<%= require('@components/view/fonts/Roboto-Medium.woff2').default %>") format('woff2'),
+                    url("<%= require('@components/view/fonts/Roboto-Medium.woff').default %>") format('woff');
+                font-weight: 500;
+                font-style: normal;
+                font-display: swap;
+                unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+            }
+
+            @font-face {
+                font-family: 'Roboto';
+                src: url("<%= require('@components/view/fonts/Roboto-Bold.woff2').default %>") format('woff2'),
+                    url("<%= require('@components/view/fonts/Roboto-Bold.woff').default %>") format('woff');
+                font-weight: 700;
+                font-style: normal;
+                font-display: swap;
+                unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+            }
+
+            @font-face {
+                font-family: "Cabin Condensed";
+                font-style: normal;
+                font-weight: 700;
+                font-display: swap;
+                src: url("<%= require('@components/view/fonts/cabincondensed-bold-digits.woff2').default %>") format("woff2"),
+                    url("<%= require('@components/view/fonts/cabincondensed-bold-digits.woff').default %>") format("woff");
+            }
+
+            body { padding: 0; margin: 0; }
+            #splash {
+                width: 100vw;
+                height: 100vh;
+                background-color: #222;
+                display: flex;
+                justify-content: center;
+            }
+            #logo { 
+                min-width: 256px;
+                max-width: 512px;
+                animation-name: pulse-animation;
+                animation-iteration-count: infinite;
+                animation-duration: 2s;
+            }
+            #logo .white { fill: #fff; }
+            #logo .blue { fill: #006ABA; }
+            @keyframes pulse-animation {
+                0%, 50%, 100% { 
+                    transform: scale(.50); 
+                    animation-timing-function: ease-in; 
+                }
+                15%, 35% {
+                    transform: scale(.75);
+                    animation-timing-function: ease-out;
+                }
+                25% {
+                    transform: scale(.60);
+                    animation-timing-function: ease-in;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="sudoku">
+            <div id="splash">
+                <svg version="1.1" id="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                viewBox="0 0 313 256" style="enable-background:new 0 0 313 256;" xml:space="preserve">
+                    <polygon id="Fill" class="white" points="143.5,158.1 13,233.4 13,22.6 260.8,165.6 260.8,90.4 208.7,120.5 169.5,97.9
+                        300,22.6 300,233.4 52.2,90.4 52.2,165.6 104.3,135.5 "/>
+                    <g id="Stripe">
+                        <polygon class="blue" points="52.2,180.7 52.2,195.8 130.4,150.6 117.4,143.1"/>
+                        <polygon class="blue" points="260.8,60.2 182.6,105.4 195.6,112.9 260.8,75.3"/>
+                    </g>
+                    <path id="Outline" d="M65.2,143.1l0-30.1L91.3,128L65.2,143.1z M13,233.4l0-210.8l247.8,143.1l0-75.3l-52.2,30.1l-39.1-22.6
+                        L300,22.6l0,210.8L52.2,90.4l0,75.3l52.2-30.1l39.1,22.6L13,233.4z M156.5,165.6L313,256l0-256L156.5,90.4L0,0l0,256L156.5,165.6z
+                        M247.8,112.9l0,30.1L221.7,128L247.8,112.9z"/>
+                </svg>
+            </div>
+        </div>
+    </body>
+</html>

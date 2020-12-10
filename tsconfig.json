@@ -7,14 +7,14 @@
       "src/components/web-workers",
       "node_modules"
     ],
+    "compileOnSave": false,
     "compilerOptions": {
       "target": "ESNext",
       "module": "ESNext",
       "outDir": "dist",
-      "types": ["inferno"],
       "moduleResolution": "node",
       "sourceMap": true,
-      "jsx": "preserve",
+      "jsx": "react",
       "baseUrl": "./src",
 
       "allowSyntheticDefaultImports": true,

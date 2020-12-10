@@ -1,5 +1,5 @@
-import type { IBoard } from "./board";
-import type { IBoardController } from './controller';
+import type { IBoard } from "./models/board";
+import type { IActions } from "./actions/actions";
 
 const rxNumberInput = /(?:Digit|Numpad)([1-9])/i;
 
@@ -61,29 +61,29 @@ export const defaultMap: { [key: string]: KeyboardActions[] } = {
     'shift+x'     : [KeyboardActions.clearCell],
 };
 
-const actionMap: { [key: string]: (board: IBoard, controller: IBoardController) => void } = {
-    [KeyboardActions.left]:         (b,c) => c.columnLeft(b),
-    [KeyboardActions.right]:        (b,c) => c.columnRight(b),
-    [KeyboardActions.up]:           (b,c) => c.rowUp(b),
-    [KeyboardActions.down]:         (b,c) => c.rowDown(b),
-    [KeyboardActions.boxLeft]:      (b,c) => c.boxLeft(b),
-    [KeyboardActions.boxRight]:     (b,c) => c.boxRight(b),
-    [KeyboardActions.boxUp]:        (b,c) => c.boxUp(b),
-    [KeyboardActions.boxDown]:      (b,c) => c.boxDown(b),
-    [KeyboardActions.nextError]:    (b,c) => c.nextError(b),
-    [KeyboardActions.prevError]:    (b,c) => c.previousError(b),
-    [KeyboardActions.clearCell]:    (b,c) => c.clear(b, b.getCursor())
+const actionMap: { [key: string]: (board: IBoard, actions: IActions) => void } = {
+    [KeyboardActions.left]:         (b,c) => c.cursor.columnLeft(b),
+    [KeyboardActions.right]:        (b,c) => c.cursor.columnRight(b),
+    [KeyboardActions.up]:           (b,c) => c.cursor.rowUp(b),
+    [KeyboardActions.down]:         (b,c) => c.cursor.rowDown(b),
+    [KeyboardActions.boxLeft]:      (b,c) => c.cursor.boxLeft(b),
+    [KeyboardActions.boxRight]:     (b,c) => c.cursor.boxRight(b),
+    [KeyboardActions.boxUp]:        (b,c) => c.cursor.boxUp(b),
+    [KeyboardActions.boxDown]:      (b,c) => c.cursor.boxDown(b),
+    [KeyboardActions.nextError]:    (b,c) => c.cursor.nextError(b),
+    [KeyboardActions.prevError]:    (b,c) => c.cursor.previousError(b),
+    [KeyboardActions.clearCell]:    (b,c) => c.cell.clear(b, b.getCursor())
 };
 
 export class KeyboardHandler implements IKeyboardHandler {
     private constructor(
         readonly board: IBoard,
-        readonly controller: IBoardController,
+        readonly actions: IActions,
         readonly bindings = defaultMap
     ) { }
 
-    static create(board: IBoard, controller: IBoardController, map = defaultMap): IKeyboardHandler {
-        return new KeyboardHandler(board, controller, map);
+    static create(board: IBoard, actions: IActions, map = defaultMap): IKeyboardHandler {
+        return new KeyboardHandler(board, actions, map);
     }
 
     get map() { 
@@ -103,7 +103,7 @@ export class KeyboardHandler implements IKeyboardHandler {
     
         keyPress.preventDefault();
         for (let action of actions) {
-            actionMap[action](this.board, this.controller);
+            actionMap[action](this.board, this.actions);
         }
     }
     
@@ -122,7 +122,7 @@ export class KeyboardHandler implements IKeyboardHandler {
         // case for other reasons, of course, but this will have to do for the time being.
         if (num !== parseInt(keyPress.key)) {
             keyPress.preventDefault();
-            this.controller.setCellValue(this.board, this.board.getCursor(), num);
+            this.actions.cell.setValue(this.board, this.board.getCursor(), num);
             return;
         }
         
@@ -130,11 +130,11 @@ export class KeyboardHandler implements IKeyboardHandler {
             keyPress.preventDefault();
             if (this.board.getCursor().getValue() > 0) {
                 // If cell already has a value set, update it
-                this.controller.setCellValue(this.board, this.board.getCursor(), num);
+                this.actions.cell.setValue(this.board, this.board.getCursor(), num);
             }
             else {
                 // Otherwise flip the candidate selection
-                this.controller.toggleCandidate(this.board, this.board.getCursor(), num);
+                this.actions.candidate.toggle(this.board, this.board.getCursor(), num);
             }
         }
     }

@@ -1,75 +1,58 @@
 import config               from './config';
-import { EventManager }     from '@components/sudoku/events';
-import { Board }            from '@components/sudoku/board';
-import { StateManager }     from '@components/sudoku/statemanager';
-import { BoardController }  from '@components/sudoku/controller';
-import { KeyboardHandler }  from '@components/sudoku/keyboard';
-import { init as initView } from '@components/sudoku/view/view';
-import { init as initPage } from '@components/page/page';
-import { storage, proxies } from '@components/storage/storage';
-import { waffleIron }       from '@components/web-workers/waffle-iron';
+import emailConfig          from './emailjs';
+
+import { init as emailInit }    from 'emailjs-com';
+import { EventManager }         from '@components/sudoku/events';
+import { Board }                from '@components/sudoku/models/board';
+import { KeyboardHandler }      from '@components/sudoku/keyboard';
+import { init as initView }     from '@components/view/view';
+import { storage, proxies }     from '@components/storage/storage';
+import { waffleIron }           from '@components/workers/waffle-iron';
+
+import { createBoardActions }       from '@components/sudoku/actions/board';
+import { createPuzzleActions  }     from '@components/sudoku/actions/puzzle';
+import { createCandidateActions }   from '@components/sudoku/actions/candidate';
+import { createCellActions }        from '@components/sudoku/actions/cell';
+import { createCursorActions }      from '@components/sudoku/actions/cursor';
 
 function init() {
-    const events        = EventManager.create();
-    const board         = Board.create(events);
-    const controller    = BoardController.create();
-    const keyboard      = KeyboardHandler.create(board, controller);
-    const state         = StateManager.create(board);
-    const puzzleStore   = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
+    emailInit(emailConfig.userID);
 
-    initPage();
-    const render = initView(board, controller, 'sudoku');
-    document.addEventListener(
-        'keydown', event => { keyboard.onKey(event); }
-    );
+    const events    = EventManager.create();
+    const puzzles   = storage(config.appName || 'yaws').data<Uint8Array>('puzzle', proxies.compress);
+
+    const models = {
+        board: Board.create(events)
+    }
+
+    const actions = {
+        board:      createBoardActions(),
+        puzzle:     createPuzzleActions(puzzles, waffleIron),
+        cell:       createCellActions(),
+        cursor:     createCursorActions(),
+        candidate:  createCandidateActions()
+    }
+
+    const keyboard = KeyboardHandler.create(models.board, actions);
+
+    const render = initView(models.board, actions, keyboard, 'sudoku');
 
     // check if URL contains puzzle
-    if (false) {
-        state.loadLink(location.toString())
-    }
-    else if (!puzzleStore.empty) {
-        state.loadBinary(puzzleStore.mostRecent.buffer)
-    }
-    else {
-        const generateStart = 'generate start';
-        performance.mark(generateStart);
-
-        waffleIron.generate(
-            { samples: 15, iterations: 29, removals: 2}
-        ).then(response => {
-            const generateEnd = 'generate end';
-            performance.mark(generateEnd);
-            performance.measure("Generate", generateStart, generateEnd);
-
-            const loadStart = 'load start';
-            performance.mark(loadStart);
-
-            state.loadTypedArray(response.puzzle);
-
-            const loadEnd = 'load end';
-            performance.mark(loadEnd);
-            performance.measure("Load", loadStart, loadEnd);
-
-            const measurements = performance.getEntriesByType("measure");
-            performance.clearMarks();
-            performance.clearMeasures();
-
-            let output = "";
-            for(const m of measurements) {
-                output += (`- ${m.name}: ${m.duration} -`);
-            }
-            document.appendChild(document.createComment(output));
-        });
+    let loaded = false;
+    
+    if (new URLSearchParams(location.search).has('p')) {
+        loaded = actions.puzzle.openLink(models.board, location.toString())
     }
 
-    const renderStart = 'render start';
-    performance.mark(renderStart);
+    if (!loaded && !puzzles.empty) {
+        loaded = actions.puzzle.openMostRecent(models.board);
+    }
+    
+    if (!loaded) {
+        actions.puzzle.generate(models.board, { samples: 15, iterations: 29, removals: 2 });
+    }
 
     render();
-
-    const renderEnd = 'render end';
-    performance.mark(renderEnd);
-    performance.measure("Render", renderStart, renderEnd);
 };
 
 init();
