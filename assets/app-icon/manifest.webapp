@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "name": "Aw Yaws - Yet Another Web Sudoku",
+  "description": "Sudoku puzzle generator for all your devices.",
+  "icons": {
+    "60": "/assets/app-icon/firefox_app_60x60.png",
+    "128": "/assets/app-icon/firefox_app_128x128.png",
+    "512": "/assets/app-icon/firefox_app_512x512.png"
+  },
+  "developer": {
+    "name": "ernie@nxn.io",
+    "url": "https://nxn.io/"
+  }
+}

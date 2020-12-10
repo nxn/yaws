@@ -1,0 +1,102 @@
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+/**
+ * A better abstraction over CSS.
+ *
+ * @copyright Oleg Isonen (Slobodskoi) / Isonen 2014-present
+ * @website https://github.com/cssinjs/jss
+ * @license MIT
+ */
+
+/** @license React v0.20.1
+ * scheduler.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v16.13.1
+ * react-is.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v17.0.1
+ * react-dom.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @license React v17.0.1
+ * react.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/** @preserve base32k.js / https://github.com/simonratner/base32k
+ ** Copyright (C) 2012 Simon Ratner, distributed under the MIT license. 
+ *
+ *  Javascript implementation of base32k encoding, used to efficiently pack
+ *  binary data into javascript's UTF-16 strings.
+ *
+ *  Based on comments by Perry A. Caro <caro@adobe.com>:
+ *      http://lists.xml.org/archives/xml-dev/200307/msg00505.html
+ *      http://lists.xml.org/archives/xml-dev/200307/msg00507.html
+ *
+ *  [Original comments follow, with corrections.]
+ *
+ *  Because of Unicode normalization requirements, it is important to pick an
+ *  alphabet of codepoints that are unaffected by normalization, composition,
+ *  or decomposition, and that are legal XML of course. I used the following
+ *  ranges:
+ *
+ *      U+3400 thru U+4DB5 for 15-bit values of 0 thru 6581
+ *      U+4E00 thru U+9FA5 for 15-bit values of 6582 thru 27483
+ *      U+E000 thru U+F4A3 for 15-bit values of 27484 thru 32767
+ *
+ *  I was a little worried about using the private use area, since there are
+ *  no guarantees about how an XML processor will report them, but there is
+ *  no other contiguous range of Unicode codepoints of that size that avoid
+ *  normalization issues.
+ *
+ *  Rather than padding, it turns out to be more useful to think about which
+ *  bits are significant in the very last text character of the encoded data.
+ *  Unless the original data was an even multiple of 15 bits, there will be
+ *  from 1 to 14 bits left to encode. These bits can easily fit into a 16-bit
+ *  text character, but unless some additional information is provided, a
+ *  decoder will not be able to tell how many of the bits in the final text
+ *  character are significant.
+ *
+ *  To solve this problem, a final UTF-16 character is used. This character is
+ *  outside of the ranges listed above, so as not to be confused with data, and
+ *  is used as a clear termination for the encoded data. It is selected from a
+ *  contiguous range of 15 characters that have no normalization issues. I
+ *  chose the following range, but there are several possible alternatives:
+ *
+ *      U+2401 thru U+240F
+ *
+ *  When this character is encountered, it signals the end of the encoding, and
+ *  specifies the number of significant bits in the previous text character.
+ *  U+2401 specifies 1 bit is significant, U+2402 specifies 2 bits, etc., thru
+ *  U+240F for all 15 bits significant. This means that every encoded sequence
+ *  is terminated by one of these characters, regardless of how many bits were
+ *  in the original data.
+ *
+ *  As for all of the text characters, the data bits are read from most
+ *  significant (0x4000) to least significant (0x0001).
+ */
