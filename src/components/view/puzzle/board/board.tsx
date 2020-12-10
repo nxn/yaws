@@ -187,7 +187,7 @@ export default styled(Board)(
     
             '& > .invalid.value': {
                 color:              `${ theme.palette.error.dark } !important`,
-                backgroundColor:    `${ theme.palette.error.light }`,
+                backgroundColor:    `${ theme.palette.action.disabledBackground }`,
                 borderColor:        `${ theme.palette.error.dark }`,
                 borderWidth:        `${ 0.0625 * scale }rem`,
                 lineHeight:         `${ 1.3125 * scale }rem`

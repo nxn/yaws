@@ -5,6 +5,8 @@ import ReactDOM from 'react-dom';
 import {
     ThemeProvider,
     CssBaseline,
+    Snackbar,
+    Alert,
     experimentalStyled as styled
 } from '@material-ui/core';
 
@@ -70,9 +72,14 @@ export const Yaws = (props: YawsProperties) => {
     const [appBarLabels,        setAppBarLabelState]    = React.useState(false);
     const [puzzleControlsOpen,  setPuzzleControlsOpen]  = React.useState(true);
     const [puzzleToolpanelOpen, setPuzzleToolpanelOpen] = React.useState(false);
+    const [showDisclaimer,      setShowDisclaimer]      = React.useState(true);
 
     const toggleControls    = () => setPuzzleControlsOpen(!puzzleControlsOpen);
     const toggleToolpanel   = () => setPuzzleToolpanelOpen(!puzzleToolpanelOpen);
+
+    const handleDisclaimerClose = () => {
+        setShowDisclaimer(false);
+    }
 
     const viewContext: IViewContext = {
         orientation: orientation,
@@ -177,7 +184,7 @@ export const Yaws = (props: YawsProperties) => {
                         <Tabs value={ view } onChange={ switchView } className="nav">
                             <Tab value="board"    label="Board"    icon={ <GridIcon /> } />
                             <Tab value="account"  label="Account"  icon={ <AccountIcon /> } disabled />
-                            <Tab value="settings" label="Settings" icon={ <SettingsIcon /> } />
+                            <Tab value="settings" label="Settings" icon={ <SettingsIcon /> } disabled />
                             <Tab value="help"     label="Help"     icon={ <HelpIcon /> } />
                         </Tabs>
                     </AppBar>
@@ -196,6 +203,12 @@ export const Yaws = (props: YawsProperties) => {
                     </TabPanelContainer>
 
                     <div id="modal-root" className={ viewInfo.orientation } />
+
+                    <Snackbar open={ showDisclaimer } onClose={ handleDisclaimerClose } autoHideDuration={ 10000 }>
+                        <Alert severity="info" onClose={ handleDisclaimerClose }>
+                            Disclaimer: This app is in a very early stage of development!
+                        </Alert>
+                    </Snackbar>
                 </div>
             </ViewProvider>
         </ThemeProvider>

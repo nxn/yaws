@@ -2,7 +2,7 @@ import type { IEventManager, IEventStore } from '../events';
 import { IModel, ModelType } from './model';
 import { ISet, Set } from './set';
 import { ICell, Cell } from './cell';
-import { IPuzzleInfo } from './puzzleinfo';
+import { Puzzle, IPuzzle, IPuzzleInfo } from './puzzle';
 
 let boardCount = 1;
 
@@ -42,8 +42,8 @@ export interface IBoard extends IModel {
     boxes:          ISet[];
     getCursor:      () => ICell;
     setCursor:      (to: ICell, silent?: boolean) => void;
-    getPuzzleInfo:  () => IPuzzleInfo | null;
-    setPuzzleInfo:  (info: IPuzzleInfo, silent?: boolean) => void;
+    getPuzzle:      () => IPuzzle | null;
+    setPuzzle:      (info: IPuzzleInfo, silent?: boolean) => void;
     isReady:        () => boolean;
     setReady:       (value: boolean, silent?: boolean) => void;
     validate:       (silent?: boolean) => IBoard;
@@ -57,9 +57,10 @@ export class Board implements IBoard {
     private constructor(
         readonly id:        string, 
         readonly cells:     ICell[], 
-        readonly rows:      ISet[], 
+        readonly rows:      ISet[],
         readonly columns:   ISet[], 
         readonly boxes:     ISet[],
+        readonly puzzle:    IPuzzle,
         readonly events:    IEventStore
     ) { }
 
@@ -72,8 +73,9 @@ export class Board implements IBoard {
         const rows    = new Array(Constants.rowCount);
         const columns = new Array(Constants.columnCount);
         const boxes   = new Array(Constants.boxCount);
+        const puzzle  = Puzzle.create();
     
-        const board = new Board(id, cells, rows, columns, boxes, boardEvents);
+        const board = new Board(id, cells, rows, columns, boxes, puzzle, boardEvents);
     
         const length = Math.max(
             Constants.rowCount, 
@@ -138,12 +140,12 @@ export class Board implements IBoard {
         }
     };
 
-    private puzzle: IPuzzleInfo = null;
-    getPuzzleInfo() { return this.puzzle; }
-    setPuzzleInfo(info: IPuzzleInfo, silent = false) {
-        this.puzzle = info;
+    getPuzzle() { return this.puzzle; }
+    setPuzzle(info: IPuzzleInfo, silent = false) {
+        this.puzzle.info(info);
+
         if (!silent) {
-            this.events.get(BoardEvents.PuzzleChanged).fire(this, info);
+            this.events.get(BoardEvents.PuzzleChanged).fire(this, this.puzzle);
         }
     }
 

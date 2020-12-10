@@ -10,21 +10,24 @@ import {
 } from '@material-ui/core';
 
 import { IBoard, BoardEvents } from '@components/sudoku/models/board';
-import type { IPuzzleInfo } from '@components/sudoku/models/puzzleinfo';
+import type { IPuzzle } from '@components/sudoku/models/puzzle';
 
 type TPuzzleInfoProperties = {
     model: IBoard
 }
 
+const info = (puzzle: IPuzzle) => ({
+    name:       puzzle.getName(),
+    difficulty: puzzle.getDifficulty(),
+    created:    puzzle.getCreated(),
+    modified:   puzzle.getModified(),
+});
+
 export const PuzzleInfo = (props: TPuzzleInfoProperties) => {
-    const [info, setInfo] = React.useState(props.model.getPuzzleInfo() || {
-        name: 'Empty',
-        created: 0,
-        modified: 0
-    })
+    const [puzzle, setPuzzle] = React.useState(info(props.model.getPuzzle()));
 
     React.useEffect(() => {
-        const handler = (_: IBoard, info: IPuzzleInfo) => setInfo(info);
+        const handler = (_: IBoard, puzzle: IPuzzle) => setPuzzle(info(puzzle));
 
         const eventStore = props.model.events.get(BoardEvents.PuzzleChanged);
         const eventListenerKey = eventStore.attach(handler);
@@ -37,38 +40,38 @@ export const PuzzleInfo = (props: TPuzzleInfoProperties) => {
             <TableHead>
                 <TableRow>
                     <TableCell colSpan={2}>
-                        <Typography variant="subtitle1" color="textSecondary">{ info.name }</Typography>
+                        <Typography variant="subtitle1" color="textSecondary">{ puzzle.name }</Typography>
                     </TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
-                { !info.difficulty ? null :
+                { !puzzle.difficulty ? null :
                     <TableRow>
                         <TableCell>
                             <Typography variant="subtitle2" color="textSecondary">Difficulty</Typography>
                         </TableCell>
                         <TableCell>
-                            { info.difficulty }
+                            { puzzle.difficulty }
                         </TableCell>
                     </TableRow>
                 }
-                { !info.created ? null :
+                { !puzzle.created ? null :
                     <TableRow>
                         <TableCell>
                             <Typography variant="subtitle2" color="textSecondary">Created</Typography>
                         </TableCell>
                         <TableCell>
-                            { new Date(info.created).toLocaleString() }
+                            { puzzle.created.toLocaleString() }
                         </TableCell>
                     </TableRow>
                 }
-                { !info.modified || info.created === info.modified ? null :
+                { !puzzle.modified ? null :
                     <TableRow>
                         <TableCell>
                             <Typography variant="subtitle2" color="textSecondary">Modified</Typography>
                         </TableCell>
                         <TableCell>
-                            { new Date(info.modified).toLocaleString() }
+                            { puzzle.modified.toLocaleString() }
                         </TableCell>
                     </TableRow>
                 }

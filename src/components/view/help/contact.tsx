@@ -153,7 +153,7 @@ export const Contact = () => {
     const handleAlertClose = () => setShowResult(false);
 
     return <>
-        <Typography variant="h4" component="h1">Help: Contact Form</Typography>
+        <Typography variant="h4" component="h1">Send us a message:</Typography>
         <br /><br />
         <Email onSubmit={ handleSubmit } noValidate>
             <Subject fullWidth

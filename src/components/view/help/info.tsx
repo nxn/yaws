@@ -20,7 +20,7 @@ export const Info = () => {
     return (
         <>
             <Title>
-                <Typography variant="h4" component="h1">Help: General Information</Typography>
+                <Typography variant="h4" component="h1">General Information:</Typography>
             </Title>
 
             <Section>
@@ -82,8 +82,8 @@ export const Info = () => {
                 <Typography variant="h5" component="h2" gutterBottom>Disclaimer</Typography>
 
                 <Typography variant="body1" gutterBottom>
-                    This app is in a very early stage of development; currently, many planned features have not 
-                    yet been implemented. In addition, you may also encounter bugs or experience poor performance.
+                    This app is in a very early stage of development; many planned features are currently missing and
+                    you may encounter bugs or experience poor performance.
                 </Typography>
             </Section>
         </>

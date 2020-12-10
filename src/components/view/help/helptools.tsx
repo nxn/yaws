@@ -19,6 +19,7 @@ export const HelpTools = (props: IHelpToolsProperties) => {
         <Toolbar className={ props.className }>
             <Divider />
             <ToggleButton 
+                disabled
                 guttered
                 value       = "contents" 
                 selected    = { content }

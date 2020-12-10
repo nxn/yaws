@@ -1,7 +1,7 @@
 import { ICell, Constants as CellConstants } from "../models/cell";
 
 import type { IBoard } from "../models/board";
-import type { IPuzzleInfo } from "../models/puzzleinfo";
+import type { IPuzzleInfo } from "../models/puzzle";
 import type { IStorageCollection } from "@components/contracts/storageprovider";
 import type { ISudokuProvider, IGenerateRequestData as IPuzzleSettings } from "@components/contracts/sudokuprovider";
 
@@ -38,7 +38,7 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
         return storage.list().map(r => ({ id: r.id, info: r.meta }));
     },
 
-    save: function(board: IBoard, info: IPuzzleInfo = board.getPuzzleInfo()) {
+    save: function(board: IBoard, info: IPuzzleInfo = board.getPuzzle().info()) {
         if (info.storageId) {
             storage.update(info.storageId, getBinary(board))
         }
@@ -48,7 +48,7 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
         }
 
         storage.meta(info.storageId, info);
-        board.setPuzzleInfo(info);
+        board.setPuzzle(info);
     },
 
     open: function(board: IBoard, id: number) {
@@ -59,7 +59,7 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
         }
 
         if (loadBinary(board, puzzle.buffer)) {
-            board.setPuzzleInfo(storage.meta(id));
+            board.setPuzzle(storage.meta(id));
             return true;
         }
 
@@ -71,7 +71,7 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
         const mostRecentId = Math.max(...list.map(r => r.id));
 
         if (loadBinary(board, storage.get(mostRecentId))) {
-            board.setPuzzleInfo(storage.meta(mostRecentId));
+            board.setPuzzle(storage.meta(mostRecentId));
             return true;
         }
         return false;
@@ -84,7 +84,7 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
 
         if (loadValueArray(board, response.puzzle)) {
             const now = Date.now();
-            board.setPuzzleInfo({
+            board.setPuzzle({
                 name: `Generated Puzzle`,
                 created: now,
                 modified: now,
@@ -138,7 +138,7 @@ export const createPuzzleActions = (storage: IStorageCollection<Uint8Array>, sud
     
         if (loaded) {
             const now = Date.now();
-            board.setPuzzleInfo({
+            board.setPuzzle({
                 name: 'Linked Puzzle',
                 created: now,
                 modified: now

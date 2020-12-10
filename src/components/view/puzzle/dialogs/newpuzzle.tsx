@@ -29,7 +29,7 @@ function CustomRadio(props: RadioProps) {
 	);
 }
 
-type TDifficulty = 'easy' | 'medium' | 'hard';
+type TDifficulty = 'easy' | 'medium' | 'hard' | 'random';
 
 const getGenerateSettings = (difficulty: TDifficulty) => {
 	switch (difficulty) {
@@ -39,11 +39,13 @@ const getGenerateSettings = (difficulty: TDifficulty) => {
 			return { samples: 5, iterations: 29, removals: 2 };
 		case 'hard':
 			return { samples: 21, iterations: 58, removals: 1 };
+		case 'random':
+			return { samples: 15, iterations: 29, removals: 2 };
 	}
 }
 
 export default function NewPuzzleDialog(props: NewPuzzleDialogProperties) {
-	const [difficulty, setDifficulty] = React.useState<TDifficulty | 'custom'>('medium');
+	const [difficulty, setDifficulty] = React.useState<TDifficulty | 'custom'>('random');
 	const handleDifficultyChange = (_: React.ChangeEvent<HTMLInputElement>, value: TDifficulty) => {
 		setDifficulty(value)
 	}
@@ -66,9 +68,10 @@ export default function NewPuzzleDialog(props: NewPuzzleDialogProperties) {
 
 			<DialogContent dividers>
 				<RadioGroup aria-label="difficulty" name="difficulty" value={difficulty} onChange={ handleDifficultyChange } >
-					<FormControlLabel value="easy" key="easy" control={<Radio />} label="Easy" />
-					<FormControlLabel value="medium" key="medium" control={<Radio />} label="Medium" />
-					<FormControlLabel value="hard" key="hard" control={<Radio />} label="Hard" />
+					<FormControlLabel value="easy" key="easy" control={<Radio />} label="Easy" disabled />
+					<FormControlLabel value="medium" key="medium" control={<Radio />} label="Medium" disabled />
+					<FormControlLabel value="hard" key="hard" control={<Radio />} label="Hard" disabled />
+					<FormControlLabel value="random" key="random" control={<Radio />} label="Random" />
 					<FormControlLabel value="custom" key="custom" control={<CustomRadio />} label="Advanced" disabled />
 				</RadioGroup>
 			</DialogContent>
